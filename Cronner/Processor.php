@@ -3,6 +3,7 @@
 namespace stekycz\Cronner;
 
 use Nette;
+use stekycz\Cronner\Tasks\Task;
 use Nette\Object;
 use DateTime;
 use ReflectionMethod;
@@ -16,7 +17,7 @@ final class Processor extends Object {
 	/**
 	 * @var \stekycz\Cronner\Tasks[]
 	 */
-	protected $tasks = array();
+	private $tasks = array();
 
 	/**
 	 * Adds task case to be processed when cronner runs. If tasks
@@ -59,9 +60,9 @@ final class Processor extends Object {
 	private function processTasks(Tasks $tasks, DateTime $now) {
 		$methods = $tasks->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-			$parameters = new Parameters($method);
-			if ($parameters->shouldBeRun($now)) {
-				$tasks->{$method->getName()}();
+			$task = new Task($tasks, $method);
+			if ($task->shouldBeRun($now)) {
+				$task();
 			}
 		}
 	}
