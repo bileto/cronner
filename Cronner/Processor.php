@@ -2,7 +2,9 @@
 
 namespace stekycz\Cronner;
 
+use Nette;
 use Nette\Object;
+use DateTime;
 use ReflectionMethod;
 
 /**
@@ -30,16 +32,21 @@ final class Processor extends Object {
 			throw new InvalidArgumentException("Tasks with name '" . $tasks->getName() . "' have been already added.");
 		}
 		$this->tasks[$tasks->getName()] = $tasks;
-
 		return $this;
 	}
 
 	/**
 	 * Runs all registered tasks.
+	 *
+	 * @param \DateTime $now
 	 */
-	public function process() {
+	public function process(DateTime $now = null) {
+		if ($now === null) {
+			$now = new Nette\DateTime();
+		}
+
 		foreach ($this->tasks as $task) {
-			$this->process($task);
+			$this->processTasks($task, $now);
 		}
 	}
 
@@ -47,13 +54,13 @@ final class Processor extends Object {
 	 * Processes all tasks in given object.
 	 *
 	 * @param \stekycz\Cronner\Tasks $tasks
+	 * @param \DateTime $now
 	 */
-	private function processTasks(Tasks $tasks) {
-		$reflection = $tasks->getReflection();
-		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-
+	private function processTasks(Tasks $tasks, DateTime $now) {
+		$methods = $tasks->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-			if (Parameters::shouldBeRun($method)) {
+			$parameters = new Parameters($method);
+			if ($parameters->shouldBeRun($now)) {
 				$tasks->{$method->getName()}();
 			}
 		}

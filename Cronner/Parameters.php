@@ -2,55 +2,68 @@
 
 namespace stekycz\Cronner;
 
+use Nette;
+use Nette\Object;
 use Nette\Reflection\Method;
-use Nette\DateTime;
+use DateTime;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-final class Parameters {
+final class Parameters extends Object {
 
 	const TASK = 'cronner-task';
 	const TIME = 'cronner-time';
 	const PERIOD = 'cronner-period';
 	const DAYS = 'cronner-days';
 
-	private function __construct() {
+	/**
+	 * @var \Nette\Reflection\Method
+	 */
+	private $method;
+
+	/**
+	 * @param \Nette\Reflection\Method $method
+	 */
+	public function __construct(Method $method) {
+		$this->method = $method;
 	}
 
 	/**
 	 * Returns True if given method should be run.
 	 *
-	 * @param \Nette\Reflection\Method $method
+	 * @param \DateTime $now
 	 * @return bool
 	 */
-	public static function shouldBeRun(Method $method) {
-		return static::isTask($method)
-			&& static::isInTime($method)
-			&& static::isNextPeriod($method);
+	public function shouldBeRun(DateTime $now = null) {
+		return $this->isTask()
+			&& $this->isInTime($now)
+			&& $this->isNextPeriod();
 	}
 
-	private static function isTask(Method $method) {
-		return $method->hasAnnotation(static::TASK);
+	private function isTask() {
+		return $this->method->hasAnnotation(static::TASK);
 	}
 
-	private static function isInTime(Method $method) {
-		$now = new DateTime();
-
-		if ($method->hasAnnotation(static::DAYS)) {
-			$annotation = $method->getAnnotation(static::DAYS);
+	private function isInTime(DateTime $now = null) {
+		if ($now === null) {
+			$now = new Nette\DateTime();
 		}
-		if ($method->hasAnnotation(static::TIME)) {
-			$annotation = $method->getAnnotation(static::TIME);
+
+		if ($this->method->hasAnnotation(static::DAYS)) {
+			$annotation = $this->method->getAnnotation(static::DAYS);
+		}
+		if ($this->method->hasAnnotation(static::TIME)) {
+			$annotation = $this->method->getAnnotation(static::TIME);
 		}
 
 		return true;
 	}
 
-	private static function isNextPeriod(Method $method) {
-		if ($method->hasAnnotation(static::PERIOD)) {
-			$annotation = $method->getAnnotation(static::PERIOD);
+	private function isNextPeriod() {
+		if ($this->method->hasAnnotation(static::PERIOD)) {
+			$annotation = $this->method->getAnnotation(static::PERIOD);
 		}
 
 		return true;
