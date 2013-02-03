@@ -1,0 +1,13 @@
+{
+    "name": "stekycz/cronner",
+    "description": "Simple tool for easy maintenance cron tasks",
+    "authors": [
+        {
+            "name": "Martin Štekl",
+            "email": "martin.stekl@gmail.com"
+        }
+    ],
+    "require": {
+
+    }
+}
