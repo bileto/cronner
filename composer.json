@@ -1,7 +1,7 @@
 {
     "name": "stekycz/cronner",
 	"type": "nette-addon",
-    "description": "Simple tool for easy maintenance cron tasks",
+    "description": "Simple tool for easy maintenance cron tasks.",
 	"keywords": ["nette", "cron"],
 	"version": "0.1",
 	"license": "MIT",

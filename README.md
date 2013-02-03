@@ -1,1 +1,3 @@
-This file was created by JetBrains PhpStorm 5.0.4 for binding GitHub repository
+Simple tool for easy maintenance cron tasks.
+
+It is under development and it is not for use yet.
