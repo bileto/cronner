@@ -1,13 +1,21 @@
 {
     "name": "stekycz/cronner",
+	"type": "nette-addon",
     "description": "Simple tool for easy maintenance cron tasks",
+	"keywords": ["nette", "cron"],
+	"version": "0.1",
+	"license": "MIT",
     "authors": [
         {
             "name": "Martin Štekl",
             "email": "martin.stekl@gmail.com"
         }
     ],
+	"autoload": {
+		"classmap": ["Cronner/"]
+	},
     "require": {
-
+	    "php" : ">=5.3.0",
+	    "nette/nette": "2.0.*"
     }
 }
