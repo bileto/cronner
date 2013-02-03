@@ -1,2 +1,5 @@
 /vendor
 /composer.lock
+/tests/coverage.xml
+/tests/log/*
+/tests/temp/*
