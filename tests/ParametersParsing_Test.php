@@ -51,7 +51,7 @@ class ParametersParsing_Test extends PHPUnit_Framework_TestCase {
 			array(array(
 					Parameters::TASK => 'stekycz\Cronner\tests\objects\TestObject - test02',
 					Parameters::PERIOD => '1 hour',
-					Parameters::DAYS => array('Mo', 'We', 'Fr', ),
+					Parameters::DAYS => array('Mon', 'Wed', 'Fri', ),
 					Parameters::TIME => array(
 						array(
 							'from' => '09:00',
@@ -63,6 +63,25 @@ class ParametersParsing_Test extends PHPUnit_Framework_TestCase {
 						),
 					),
 				), 'test02'
+			),
+			array(array(
+					Parameters::TASK => 'Test 3',
+					Parameters::PERIOD => '17 minutes',
+					Parameters::DAYS => array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', ),
+					Parameters::TIME => array(
+						array(
+							'from' => '09:00',
+							'to' => '10:45',
+						),
+					),
+				), 'test03'
+			),
+			array(array(
+					Parameters::TASK => 'Test 4',
+					Parameters::PERIOD => '1 day',
+					Parameters::DAYS => array('Sat', 'Sun', ),
+					Parameters::TIME => null
+				), 'test04'
 			),
 		);
 	}
