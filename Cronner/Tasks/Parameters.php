@@ -48,7 +48,7 @@ final class Parameters extends Object {
 	public function isTask() {
 		return (
 			is_string($this->values[static::TASK])
-			&& Strings::length(Strings::trim($this->values[static::TASK])) > 0
+			&& Strings::length($this->values[static::TASK]) > 0
 		);
 	}
 
@@ -101,31 +101,26 @@ final class Parameters extends Object {
 	 * @return array
 	 */
 	public static function parseParameters(Method $method) {
-		$parameters = array(
-			static::TASK => null,
-			static::PERIOD => null,
-			static::DAYS => null,
-			static::TIME => null,
-		);
+		$taskName = null;
+		if ($method->hasAnnotation(Parameters::TASK)) {
+			$className = $method->getDeclaringClass()->getName();
+			$methodName = $method->getName();
+			$taskName = $className . ' - ' . $methodName;
+		}
 
-		if ($method->hasAnnotation(static::TASK)) {
-			if (is_string($annotation = $method->getAnnotation(static::TASK))) {
-				$parameters[static::TASK] = $annotation;
-			} else {
-				$className = $method->getDeclaringClass()->getName();
-				$methodName = $method->getName();
-				$parameters[static::TASK] = $className . ' - ' . $methodName;
-			}
-		}
-		if ($method->hasAnnotation(static::PERIOD)) {
-			$parameters[static::PERIOD] = $method->getAnnotation(static::PERIOD);
-		}
-		if ($method->hasAnnotation(static::DAYS)) {
-			$parameters[static::DAYS] = $method->getAnnotation(static::DAYS);
-		}
-		if ($method->hasAnnotation(static::TIME)) {
-			$parameters[static::TIME] = $method->getAnnotation(static::TIME);
-		}
+		$parameters = array(
+			static::TASK => Parser::parseName($method->getAnnotation(Parameters::TASK))
+				?: $taskName,
+			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
+				? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
+				: null,
+			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
+				? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
+				: null,
+			static::TIME => $method->hasAnnotation(Parameters::TIME)
+				? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
+				: null,
+		);
 
 		return $parameters;
 	}
