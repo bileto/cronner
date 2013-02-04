@@ -18,6 +18,25 @@ class Cronner extends Object {
 	protected $callbacks = array();
 
 	/**
+	 * @var \stekycz\Cronner\ITimestampStorage
+	 */
+	private $timestampStorage;
+
+	/**
+	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 */
+	public function __construct(ITimestampStorage $timestampStorage) {
+		$this->setTimestampStorage($timestampStorage);
+	}
+
+	/**
+	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 */
+	public function setTimestampStorage(ITimestampStorage $timestampStorage) {
+		$this->timestampStorage = $timestampStorage;
+	}
+
+	/**
 	 * Adds callback which creates an instance of tasks.
 	 *
 	 * @param callable $callback
@@ -41,7 +60,7 @@ class Cronner extends Object {
 		if ($now === null) {
 			$now = new Nette\DateTime();
 		}
-		$processor = new Processor();
+		$processor = new Processor($this->timestampStorage);
 
 		foreach ($this->callbacks as $callback) {
 			$tasks = call_user_func($callback);

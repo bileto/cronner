@@ -20,6 +20,18 @@ final class Processor extends Object {
 	private $tasks = array();
 
 	/**
+	 * @var \stekycz\Cronner\ITimestampStorage
+	 */
+	private $timestampStorage;
+
+	/**
+	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 */
+	public function __construct(ITimestampStorage $timestampStorage) {
+		$this->timestampStorage = $timestampStorage;
+	}
+
+	/**
 	 * Adds task case to be processed when cronner runs. If tasks
 	 * with name which is already added are given then throws
 	 * an exception.
@@ -32,6 +44,7 @@ final class Processor extends Object {
 		if (array_key_exists($tasks->getName(), $this->tasks)) {
 			throw new InvalidArgumentException("Tasks with name '" . $tasks->getName() . "' have been already added.");
 		}
+		// TODO - check if instance contains some task
 		$this->tasks[$tasks->getName()] = $tasks;
 		return $this;
 	}
@@ -60,7 +73,7 @@ final class Processor extends Object {
 	private function processTasks(Tasks $tasks, DateTime $now) {
 		$methods = $tasks->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-			$task = new Task($tasks, $method);
+			$task = new Task($tasks, $method, $this->timestampStorage);
 			if ($task->shouldBeRun($now)) {
 				$task();
 			}

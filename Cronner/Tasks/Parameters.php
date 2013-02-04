@@ -62,6 +62,7 @@ final class Parameters extends Object {
 		if ($this->values[static::DAYS]) {
 			$annotation = $this->values[static::DAYS];
 		}
+		// TODO - implement
 		return true;
 	}
 
@@ -75,6 +76,7 @@ final class Parameters extends Object {
 		if ($this->values[static::TIME]) {
 			$annotation = $this->values[static::TIME];
 		}
+		// TODO - implement
 		return true;
 	}
 
@@ -82,10 +84,10 @@ final class Parameters extends Object {
 	 * Returns true if current time is next period of invocation.
 	 *
 	 * @param \DateTime $now
-	 * @param \DateTime $lastRunTime
+	 * @param \DateTime|null $lastRunTime
 	 * @return bool
 	 */
-	public function isNextPeriod(DateTime $now, DateTime $lastRunTime) {
+	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = null) {
 		if ($this->values[static::PERIOD]) {
 			return $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}

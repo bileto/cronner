@@ -3,6 +3,7 @@
 namespace stekycz\Cronner\Tasks;
 
 use Nette;
+use stekycz\Cronner\ITimestampStorage;
 use stekycz\Cronner\Tasks;
 use DateTime;
 use Nette\Object;
@@ -25,6 +26,11 @@ final class Task extends Object {
 	private $method;
 
 	/**
+	 * @var \stekycz\Cronner\ITimestampStorage
+	 */
+	private $timestampStorage;
+
+	/**
 	 * @var \stekycz\Cronner\Tasks\Parameters|null
 	 */
 	private $parameters = null;
@@ -32,12 +38,14 @@ final class Task extends Object {
 	/**
 	 * Creates instance of one task.
 	 *
-	 * @param \stekycz\Cronner\Tasks $tasks
+	 * @param \stekycz\Cronner\Tasks $object
 	 * @param \Nette\Reflection\Method $method
+	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
 	 */
-	public function __construct(Tasks $tasks, Method $method) {
-		$this->object = $tasks;
+	public function __construct(Tasks $object, Method $method, ITimestampStorage $timestampStorage) {
+		$this->object = $object;
 		$this->method = $method;
+		$this->timestampStorage = $timestampStorage;
 	}
 
 	/**
@@ -55,12 +63,12 @@ final class Task extends Object {
 		return $parameters->isTask()
 			&& $parameters->isInDay($now)
 			&& $parameters->isInTime($now)
-			&& $parameters->isNextPeriod($now, $this->loadLastRunTime());
+			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
 	}
 
 	public function __invoke() {
 		$this->method->invoke($this->object);
-		$this->saveRunTime();
+		$this->timestampStorage->saveRunTime(new Nette\DateTime());
 	}
 
 	/**
@@ -73,23 +81,6 @@ final class Task extends Object {
 			$this->parameters = new Parameters(Parameters::parseParameters($this->method));
 		}
 		return $this->parameters;
-	}
-
-	/**
-	 * Saves current date and time as last invocation time.
-	 */
-	private function saveRunTime() {
-		// TODO - save current date & time
-	}
-
-	/**
-	 * Returns date and time of last cron task invocation.
-	 *
-	 * @return \DateTime
-	 */
-	private function loadLastRunTime() {
-		// TODO - load date & time of last invocation
-		return new Nette\DateTime('2013-01-01 00:00:00');
 	}
 
 }
