@@ -109,10 +109,13 @@ final class Parameters extends Object {
 		);
 
 		if ($method->hasAnnotation(static::TASK)) {
-			$className = $method->getDeclaringClass()->getName();
-			$methodName = $method->getName();
-			$annotation = $method->getAnnotation(static::TASK);
-			$parameters[static::TASK] = $className . ' - ' . ($annotation ?: $methodName);
+			if (is_string($annotation = $method->getAnnotation(static::TASK))) {
+				$parameters[static::TASK] = $annotation;
+			} else {
+				$className = $method->getDeclaringClass()->getName();
+				$methodName = $method->getName();
+				$parameters[static::TASK] = $className . ' - ' . $methodName;
+			}
 		}
 		if ($method->hasAnnotation(static::PERIOD)) {
 			$parameters[static::PERIOD] = $method->getAnnotation(static::PERIOD);
