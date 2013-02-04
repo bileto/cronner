@@ -15,9 +15,14 @@ use ReflectionMethod;
 final class Processor extends Object {
 
 	/**
-	 * @var \stekycz\Cronner\Tasks[]
+	 * @var \stekycz\Cronner\Tasks\Task[]
 	 */
 	private $tasks = array();
+
+	/**
+	 * @var string[]
+	 */
+	private $registeredTaskObjects = array();
 
 	/**
 	 * @var \stekycz\Cronner\ITimestampStorage
@@ -40,12 +45,17 @@ final class Processor extends Object {
 	 * @return \stekycz\Cronner\Cronner
 	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function addTaskCase(Tasks $tasks) {
-		if (array_key_exists($tasks->getName(), $this->tasks)) {
+	public function addTasks(Tasks $tasks) {
+		if (in_array($tasks->getName(), $this->registeredTaskObjects)) {
 			throw new InvalidArgumentException("Tasks with name '" . $tasks->getName() . "' have been already added.");
 		}
-		// TODO - check if instance contains some task
-		$this->tasks[$tasks->getName()] = $tasks;
+
+		$methods = $tasks->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+		foreach ($methods as $method) {
+			$this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
+		}
+		$this->registeredTaskObjects[] = $tasks->getName();
+
 		return $this;
 	}
 
@@ -60,20 +70,6 @@ final class Processor extends Object {
 		}
 
 		foreach ($this->tasks as $task) {
-			$this->processTasks($task, $now);
-		}
-	}
-
-	/**
-	 * Processes all tasks in given object.
-	 *
-	 * @param \stekycz\Cronner\Tasks $tasks
-	 * @param \DateTime $now
-	 */
-	private function processTasks(Tasks $tasks, DateTime $now) {
-		$methods = $tasks->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
-		foreach ($methods as $method) {
-			$task = new Task($tasks, $method, $this->timestampStorage);
 			if ($task->shouldBeRun($now)) {
 				$task();
 			}

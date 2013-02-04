@@ -64,7 +64,7 @@ class Cronner extends Object {
 
 		foreach ($this->callbacks as $callback) {
 			$tasks = call_user_func($callback);
-			$processor->addTaskCase($tasks);
+			$processor->addTasks($tasks);
 		}
 
 		$processor->process($now);
