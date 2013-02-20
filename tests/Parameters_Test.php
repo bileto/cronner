@@ -15,11 +15,36 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @test
-	 * @dataProvider dataProviderIsTask
+	 * @dataProvider dataProviderGetName
 	 * @param bool $expected
 	 * @param array $parameters
 	 */
 	public function returnsTaskName($expected, array $parameters) {
+		$params = new Parameters($parameters);
+		$this->assertEquals($expected, $params->getName());
+	}
+
+	public function dataProviderGetName() {
+		return array(
+			array('Name of task', array (Parameters::TASK => 'Name of task',)),
+			array('0', array (Parameters::TASK => '0',)),
+			array('', array (Parameters::TASK => '   ',)),
+			array('', array (Parameters::TASK => '',)),
+			array('', array (Parameters::TASK => true,)),
+			array('', array (Parameters::TASK => false,)),
+			array('', array (Parameters::TASK => null,)),
+			array('', array (Parameters::TASK => 0,)),
+			array('', array ()),
+		);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider dataProviderIsTask
+	 * @param bool $expected
+	 * @param array $parameters
+	 */
+	public function detectsTask($expected, array $parameters) {
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isTask());
 	}
