@@ -83,4 +83,63 @@ class Parser_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
+	/**
+	 * @test
+	 * @dataProvider dataProviderParseDays
+	 * @param string $expected
+	 * @param string $annotation
+	 */
+	public function parsesDays($expected, $annotation) {
+		$this->assertEquals($expected, Parser::parseDays($annotation));
+	}
+
+	public function dataProviderParseDays() {
+		return array(
+			// Regular and simple values
+			array(array('Mon', ), 'Mon'),
+			array(array('Mon', 'Tue', ), 'Mon, Tue'),
+			array(array('Mon', 'Fri', ), 'Mon, Fri'),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', ), 'working days'),
+			array(array('Sat', 'Sun', ), 'weekend'),
+			// Day groups
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', ), 'working days, weekend'),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', ), 'weekend, working days'),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', ), 'working days, Mon'),
+			array(array('Sat', 'Sun', ), 'weekend, Sat'),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', ), 'Wed, working days'),
+			array(array('Sat', 'Sun', ), 'Sat, weekend'),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', ), 'Sat, working days'),
+			array(array('Wed', 'Sat', 'Sun', ), 'Wed, weekend'),
+			// Special cases (whitespaces)
+			array(array('Mon', ), '   Mon   '),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', ), '   working days   '),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', ), '   Mon   ,   weekend   ,   working days   '),
+		);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \stekycz\Cronner\InvalidParameter
+	 * @dataProvider dataProviderParseDaysError
+	 * @param string $annotation
+	 */
+	public function throwsExceptionOnWrongDaysDefinition($annotation) {
+		Parser::parseDays($annotation);
+	}
+
+	public function dataProviderParseDaysError() {
+		return array(
+			array('nejaky blabol'),
+			array('true'),
+			array('false'),
+			array('0'),
+			array('1'),
+			array(true),
+			array(false),
+			array(0),
+			array(1),
+			array(new stdClass()),
+		);
+	}
+
 }
