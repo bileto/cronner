@@ -3,6 +3,7 @@
 namespace stekycz\Cronner\TimestampStorage;
 
 use Nette\Object;
+use LogicException;
 use DateTime;
 use stekycz\Cronner\ITimestampStorage;
 
@@ -31,6 +32,7 @@ class FileStorage extends Object implements ITimestampStorage {
 	 */
 	public function saveRunTime(DateTime $now) {
 		// TODO - save current date & time
+		throw new LogicException("Not implemented yet.");
 	}
 
 	/**
@@ -40,6 +42,7 @@ class FileStorage extends Object implements ITimestampStorage {
 	 */
 	public function loadLastRunTime() {
 		// TODO - load date & time of last invocation
+		throw new LogicException("Not implemented yet.");
 		return null;
 	}
 
