@@ -13,11 +13,12 @@ use stekycz\Cronner\Tasks\Parser;
 class Parser_Test extends PHPUnit_Framework_TestCase {
 
 	/**
+	 * @test
 	 * @dataProvider dataProviderParseName
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function testParseName($expected, $annotation) {
+	public function parsesName($expected, $annotation) {
 		$this->assertEquals($expected, Parser::parseName($annotation));
 	}
 
@@ -38,11 +39,12 @@ class Parser_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @test
 	 * @dataProvider dataProviderParsePeriod
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function testParsePeriod($expected, $annotation) {
+	public function parsesPeriod($expected, $annotation) {
 		$this->assertEquals($expected, Parser::parsePeriod($annotation));
 	}
 
@@ -57,11 +59,12 @@ class Parser_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @test
 	 * @expectedException \stekycz\Cronner\InvalidParameter
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
 	 */
-	public function testParsePeriodError($annotation) {
+	public function throwsExceptionOnWrongPeriodDefinition($annotation) {
 		Parser::parsePeriod($annotation);
 	}
 

@@ -26,11 +26,12 @@ class ParametersParsing_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @test
 	 * @dataProvider dataProviderParse
 	 * @param array $expected
 	 * @param string $methodName
 	 */
-	public function testParse(array $expected, $methodName) {
+	public function parsesTaskSettings(array $expected, $methodName) {
 		if (!$this->object->getReflection()->hasMethod($methodName)) {
 			$this->fail('Tested class does not have method "' . $methodName . '".');
 			return;

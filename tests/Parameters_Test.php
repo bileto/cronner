@@ -14,11 +14,12 @@ use Nette;
 class Parameters_Test extends PHPUnit_Framework_TestCase {
 
 	/**
+	 * @test
 	 * @dataProvider dataProviderIsTask
 	 * @param bool $expected
 	 * @param array $parameters
 	 */
-	public function testIsTask($expected, array $parameters) {
+	public function returnsTaskName($expected, array $parameters) {
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isTask());
 	}
@@ -38,13 +39,14 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @test
 	 * @dataProvider dataProviderIsNextPeriod
 	 * @param bool $expected
 	 * @param \DateTime $now
 	 * @param \DateTime $lastRunTime
 	 * @param array $parameters
 	 */
-	public function testIsNextPeriod($expected, DateTime $now, DateTime $lastRunTime, array $parameters) {
+	public function detectsIfNowIsInNextPeriod($expected, DateTime $now, DateTime $lastRunTime, array $parameters) {
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isNextPeriod($now, $lastRunTime));
 	}
