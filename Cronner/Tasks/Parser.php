@@ -37,12 +37,7 @@ class Parser extends Object {
 	 */
 	public static function parsePeriod($annotation) {
 		$period = null;
-		if (!is_string($annotation)) {
-			throw new InvalidParameter(
-				"Period annotation must be string but '" .
-				is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
-			);
-		}
+		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
 			if (strtotime('+ ' . $annotation) === false) {
@@ -63,12 +58,7 @@ class Parser extends Object {
 	 */
 	public static function parseDays($annotation) {
 		$days = null;
-		if (!is_string($annotation)) {
-			throw new InvalidParameter(
-				"Days annotation must be string but '" .
-				is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
-			);
-		}
+		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
 			$validValues = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', );
@@ -114,12 +104,7 @@ class Parser extends Object {
 	 */
 	public static function parseTimes($annotation) {
 		$times = null;
-		if (!is_string($annotation)) {
-			throw new InvalidParameter(
-				"Times annotation must be string but '" .
-				is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
-			);
-		}
+		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
 			$values = Strings::split($annotation, '/\s*,\s*/');
@@ -164,6 +149,21 @@ class Parser extends Object {
 	 */
 	private static function isValidTime($time) {
 		return (bool) Strings::match($time, '/^\d{2}:\d{2}$/u');
+	}
+
+	/**
+	 * Checks if given annotation is valid. Throws exception if not.
+	 *
+	 * @param string $annotation
+	 * @throws \stekycz\Cronner\InvalidParameter
+	 */
+	private static function checkAnnotation($annotation) {
+		if (!is_string($annotation)) {
+			throw new InvalidParameter(
+				"Cron task annotation must be string but '" .
+					is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
+			);
+		}
 	}
 
 }
