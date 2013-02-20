@@ -58,11 +58,9 @@ final class Parameters extends Object {
 	 * @return bool
 	 */
 	public function isInDay(DateTime $now) {
-		if ($this->values[static::DAYS]) {
-			$annotation = $this->values[static::DAYS];
+		if (($days = $this->values[static::DAYS]) !== null) {
+			return in_array($now->format('D'), $days);
 		}
-		// TODO - implement
-		throw new LogicException("Not implemented yet.");
 		return true;
 	}
 
@@ -73,11 +71,10 @@ final class Parameters extends Object {
 	 * @return bool
 	 */
 	public function isInTime(DateTime $now) {
-		if ($this->values[static::TIME]) {
-			$annotation = $this->values[static::TIME];
+		if (($times = $this->values[static::TIME]) !== null) {
+			// TODO - implement
+			throw new LogicException("Not implemented yet.");
 		}
-		// TODO - implement
-		throw new LogicException("Not implemented yet.");
 		return true;
 	}
 
@@ -90,7 +87,7 @@ final class Parameters extends Object {
 	 */
 	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = null) {
 		if ($this->values[static::PERIOD]) {
-			return $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
+			return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
 		return true;
 	}
