@@ -121,20 +121,49 @@ class Parser extends Object {
 			);
 		}
 		$annotation = Strings::trim($annotation);
-		if ($annotation) {
+		if (Strings::length($annotation)) {
 			$values = Strings::split($annotation, '/\s*,\s*/');
 			if ($values) {
 				$times = array();
 				foreach ($values as $time) {
 					$parts = Strings::split($time, '/\s*-\s*/');
-					$times[] = array(
-						'from' => $parts[0],
-						'to' => $parts[1] ?: null,
-					);
+					if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
+						throw new InvalidParameter(
+							"Times annotation is not in valid format. It must looks like 'hh:mm[ - hh:mm]' but '" . $time . "' was given."
+						);
+					}
+					if (isset($parts[1]) && $parts[1] < $parts[0]) {
+						$times[] = array(
+							'from' => '00:00',
+							'to' => $parts[1],
+						);
+						$times[] = array(
+							'from' => $parts[0],
+							'to' => '23:59',
+						);
+					} else {
+						$times[] = array(
+							'from' => $parts[0],
+							'to' => $parts[1] ?: null,
+						);
+					}
 				}
+				usort($times, function ($a, $b) {
+					return $a < $b ? -1 : ($a > $b ? 1 : 0);
+				});
 			}
 		}
 		return $times ?: null;
+	}
+
+	/**
+	 * Returns True if time in valid format is given, False otherwise.
+	 *
+	 * @param string $time
+	 * @return bool
+	 */
+	private static function isValidTime($time) {
+		return (bool) Strings::match($time, '/^\d{2}:\d{2}$/u');
 	}
 
 }
