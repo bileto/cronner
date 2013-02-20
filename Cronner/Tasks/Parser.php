@@ -57,31 +57,13 @@ class Parser extends Object {
 	 * @throws \stekycz\Cronner\InvalidParameter
 	 */
 	public static function parseDays($annotation) {
+		static $validValues = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', );
+
 		$days = null;
 		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
-			$validValues = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', );
-			$workingDays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', );
-			$weekend = array('Sat', 'Sun', );
-
-			$values = Strings::split($annotation, '/\s*,\s*/') ?: null;
-
-			$days = array();
-			foreach ($values as $value) {
-				switch ($value) {
-					case 'working days':
-						$days = array_merge($days, $workingDays);
-						break;
-					case 'weekend':
-						$days = array_merge($days, $weekend);
-						break;
-					default:
-						$days[] = $value;
-						break;
-				}
-			}
-			$days = array_unique($days);
+			$days = static::translateToDayNames($annotation);
 			foreach ($days as $day) {
 				if (!in_array($day, $validValues)) {
 					throw new InvalidParameter(
@@ -107,31 +89,10 @@ class Parser extends Object {
 		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
-			$values = Strings::split($annotation, '/\s*,\s*/');
-			if ($values) {
+			if ($values = static::splitMultipleValues($annotation)) {
 				$times = array();
 				foreach ($values as $time) {
-					$parts = Strings::split($time, '/\s*-\s*/');
-					if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
-						throw new InvalidParameter(
-							"Times annotation is not in valid format. It must looks like 'hh:mm[ - hh:mm]' but '" . $time . "' was given."
-						);
-					}
-					if (isset($parts[1]) && $parts[1] < $parts[0]) {
-						$times[] = array(
-							'from' => '00:00',
-							'to' => $parts[1],
-						);
-						$times[] = array(
-							'from' => $parts[0],
-							'to' => '23:59',
-						);
-					} else {
-						$times[] = array(
-							'from' => $parts[0],
-							'to' => $parts[1] ?: null,
-						);
-					}
+					$times = array_merge($times, static::parseOneTime($time));
 				}
 				usort($times, function ($a, $b) {
 					return $a < $b ? -1 : ($a > $b ? 1 : 0);
@@ -139,6 +100,37 @@ class Parser extends Object {
 			}
 		}
 		return $times ?: null;
+	}
+
+	private static function translateToDayNames($annotation) {
+		static $workingDays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', );
+		static $weekend = array('Sat', 'Sun', );
+
+		$days = array();
+		foreach (static::splitMultipleValues($annotation) as $value) {
+			switch ($value) {
+				case 'working days':
+					$days = array_merge($days, $workingDays);
+					break;
+				case 'weekend':
+					$days = array_merge($days, $weekend);
+					break;
+				default:
+					$days[] = $value;
+					break;
+			}
+		}
+		return array_unique($days);
+	}
+
+	/**
+	 * Splits given annotation by comma into array.
+	 *
+	 * @param $annotation
+	 * @return string[]
+	 */
+	private static function splitMultipleValues($annotation) {
+		return Strings::split($annotation, '/\s*,\s*/');
 	}
 
 	/**
@@ -149,6 +141,55 @@ class Parser extends Object {
 	 */
 	private static function isValidTime($time) {
 		return (bool) Strings::match($time, '/^\d{2}:\d{2}$/u');
+	}
+
+	/**
+	 * Parses one time annotation. If it is invalid throws exception.
+	 *
+	 * @param string $time
+	 * @return string[][]
+	 * @throws \stekycz\Cronner\InvalidParameter
+	 */
+	private static function parseOneTime($time) {
+		$parts = Strings::split($time, '/\s*-\s*/');
+		if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
+			throw new InvalidParameter(
+				"Times annotation is not in valid format. It must looks like 'hh:mm[ - hh:mm]' but '" . $time . "' was given."
+			);
+		}
+		$times = array();
+		if (static::isTimeOverMidnight($parts[0], $parts[1])) {
+			$times[] = static::timePartsToArray('00:00', $parts[1]);
+			$times[] = static::timePartsToArray($parts[0], '23:59');
+		} else {
+			$times[] = static::timePartsToArray($parts[0], $parts[1] ?: null);
+		}
+		return $times;
+	}
+
+	/**
+	 * Returns True if given times includes midnight, False otherwise.
+	 *
+	 * @param string $from
+	 * @param string $to
+	 * @return bool
+	 */
+	private static function isTimeOverMidnight($from, $to) {
+		return $to !== null && $to < $from;
+	}
+
+	/**
+	 * Returns array structure with given times.
+	 *
+	 * @param string $from
+	 * @param string $to
+	 * @return array
+	 */
+	private static function timePartsToArray($from, $to) {
+		return array(
+			'from' => $from,
+			'to' => $to,
+		);
 	}
 
 	/**
