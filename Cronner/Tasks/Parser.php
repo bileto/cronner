@@ -23,12 +23,13 @@ class Parser extends Object {
 		$name = null;
 		if (is_string($annotation) && Strings::length($annotation)) {
 			$name = Strings::trim($annotation);
+			$name = Strings::length($name) ? $name : null;
 		}
-		return Strings::length($name) ? $name : null;
+		return $name;
 	}
 
 	/**
-	 * Parses period of cron task. If period is invalid throws exception.
+	 * Parses period of cron task. If annotation is invalid throws exception.
 	 *
 	 * @param string $annotation
 	 * @return string|null
@@ -37,7 +38,10 @@ class Parser extends Object {
 	public static function parsePeriod($annotation) {
 		$period = null;
 		if (!is_string($annotation)) {
-			throw new InvalidParameter("Period parameter must be string.");
+			throw new InvalidParameter(
+				"Period annotation must be string but '" .
+				is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
+			);
 		}
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
@@ -50,7 +54,7 @@ class Parser extends Object {
 	}
 
 	/**
-	 * Parses allowed days for cron task. If one of days is invalid
+	 * Parses allowed days for cron task. If annotation is invalid
 	 * throws exception.
 	 *
 	 * @param string $annotation
@@ -59,8 +63,14 @@ class Parser extends Object {
 	 */
 	public static function parseDays($annotation) {
 		$days = null;
+		if (!is_string($annotation)) {
+			throw new InvalidParameter(
+				"Days annotation must be string but '" .
+				is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
+			);
+		}
 		$annotation = Strings::trim($annotation);
-		if ($annotation) {
+		if (Strings::length($annotation)) {
 			$validValues = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', );
 			$workingDays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', );
 			$weekend = array('Sat', 'Sun', );
@@ -84,21 +94,32 @@ class Parser extends Object {
 			$days = array_unique($days);
 			foreach ($days as $day) {
 				if (!in_array($day, $validValues)) {
-					throw new InvalidParameter("Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . ".");
+					throw new InvalidParameter(
+						"Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . "."
+					);
 				}
 			}
+			$days = array_values(array_intersect($validValues, $days));
 		}
 		return $days ?: null;
 	}
 
 	/**
-	 * Parses allowed time ranges for cron task.
+	 * Parses allowed time ranges for cron task. If annotation is invalid
+	 * throws exception.
 	 *
 	 * @param string $annotation
 	 * @return string[][]|null
+	 * @throws \stekycz\Cronner\InvalidParameter
 	 */
 	public static function parseTimes($annotation) {
 		$times = null;
+		if (!is_string($annotation)) {
+			throw new InvalidParameter(
+				"Times annotation must be string but '" .
+				is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
+			);
+		}
 		$annotation = Strings::trim($annotation);
 		if ($annotation) {
 			$values = Strings::split($annotation, '/\s*,\s*/');
