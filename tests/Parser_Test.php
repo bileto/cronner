@@ -142,4 +142,137 @@ class Parser_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
+	/**
+	 * @test
+	 * @dataProvider dataProviderParseTimes
+	 * @param string $expected
+	 * @param string $annotation
+	 */
+	public function parsesTimes($expected, $annotation) {
+		$this->assertEquals($expected, Parser::parseTimes($annotation));
+	}
+
+	public function dataProviderParseTimes() {
+		return array(
+			// Basic
+			array(
+				array(
+					array(
+						'from' => '11:00',
+						'to' => null,
+					),
+				), '11:00',
+			),
+			array(
+				array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+				), '11:00 - 12:00',
+			),
+			// Multiple
+			array(
+				array(
+					array(
+						'from' => '11:00',
+						'to' => null,
+					),
+					array(
+						'from' => '17:00',
+						'to' => null,
+					),
+				), '11:00, 17:00',
+			),
+			array(
+				array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+					array(
+						'from' => '17:00',
+						'to' => '19:00',
+					),
+				), '11:00 - 12:00, 17:00-19:00',
+			),
+			// Many whitespaces
+			array(
+				array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+				), '    11:00     -     12:00    ',
+			),
+			array(
+				array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+					array(
+						'from' => '17:00',
+						'to' => '19:00',
+					),
+				), '   11:00   -   12:00   ,   17:00   -   19:00   ',
+			),
+			// Over midnight
+			array(
+				array(
+					array(
+						'from' => '00:00',
+						'to' => '05:00',
+					),
+					array(
+						'from' => '21:30',
+						'to' => '23:59',
+					),
+				), '21:30 - 05:00',
+			),
+			// Critical
+			array(
+				array(
+					array(
+						'from' => '00:00',
+						'to' => '05:00',
+					),
+					array(
+						'from' => '16:00',
+						'to' => '18:00',
+					),
+					array(
+						'from' => '21:30',
+						'to' => '23:59',
+					),
+				), '16:00 - 18:00, 21:30 - 05:00',
+			),
+		);
+	}
+
+	/**
+	 * @test
+	 * @expectedException \stekycz\Cronner\InvalidParameter
+	 * @dataProvider dataProviderParseTimesError
+	 * @param string $annotation
+	 */
+	public function throwsExceptionOnWrongTimesDefinition($annotation) {
+		Parser::parseTimes($annotation);
+	}
+
+	public function dataProviderParseTimesError() {
+		return array(
+			array('nejaky blabol'),
+			array('true'),
+			array('false'),
+			array('0'),
+			array('1'),
+			array(true),
+			array(false),
+			array(0),
+			array(1),
+			array(new stdClass()),
+		);
+	}
+
 }
