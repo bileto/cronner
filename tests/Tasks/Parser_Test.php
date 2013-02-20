@@ -1,6 +1,6 @@
 <?php
 
-namespace stekycz\Cronner\tests;
+namespace stekycz\Cronner\tests\Tasks;
 
 use PHPUnit_Framework_TestCase;
 use stdClass;

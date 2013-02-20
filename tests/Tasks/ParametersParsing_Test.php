@@ -1,6 +1,6 @@
 <?php
 
-namespace stekycz\Cronner\tests;
+namespace stekycz\Cronner\tests\Tasks;
 
 require_once(TEST_DIR . '/objects/TestObject.php');
 
