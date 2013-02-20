@@ -3,6 +3,7 @@
 namespace stekycz\Cronner\Tasks;
 
 use Nette;
+use LogicException;
 use Nette\Utils\Strings;
 use Nette\Object;
 use Nette\Reflection\Method;
@@ -28,6 +29,7 @@ final class Parameters extends Object {
 	 * @param array $values
 	 */
 	public function __construct(array $values) {
+		$values[static::TASK] = is_string($values[static::TASK]) ? Strings::trim($values[static::TASK]) : '';
 		$this->values = $values;
 	}
 
@@ -37,7 +39,7 @@ final class Parameters extends Object {
 	 * @return string
 	 */
 	public function getName() {
-		return (string) $this->values[static::TASK];
+		return $this->values[static::TASK];
 	}
 
 	/**
@@ -46,10 +48,7 @@ final class Parameters extends Object {
 	 * @return bool
 	 */
 	public function isTask() {
-		return (
-			is_string($this->values[static::TASK])
-			&& Strings::length($this->values[static::TASK]) > 0
-		);
+		return Strings::length($this->values[static::TASK]) > 0;
 	}
 
 	/**
@@ -63,6 +62,7 @@ final class Parameters extends Object {
 			$annotation = $this->values[static::DAYS];
 		}
 		// TODO - implement
+		throw new LogicException("Not implemented yet.");
 		return true;
 	}
 
@@ -77,6 +77,7 @@ final class Parameters extends Object {
 			$annotation = $this->values[static::TIME];
 		}
 		// TODO - implement
+		throw new LogicException("Not implemented yet.");
 		return true;
 	}
 
