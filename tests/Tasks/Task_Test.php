@@ -78,9 +78,11 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 			array(true, 1, 'test01', '2013-02-01 12:10:00', '2013-02-01 12:00:00'),
 			array(false, 1, 'test01', '2013-02-01 12:04:00', '2013-02-01 12:00:00'),
 			// Test 02
-			array(true, 0, 'test02', '2013-02-04 09:30:00', null),
-			array(false, 1, 'test02', '2013-02-04 12:00:00', null),
-			array(true, 1, 'test02', '2013-02-04 10:00:00', '2013-02-03 15:30:00'),
+			array(false, 0, 'test02', '2013-02-05 12:00:00', null),
+			array(false, 0, 'test02', '2013-02-04 12:00:00', null),
+			array(false, 1, 'test02', '2013-02-04 09:30:00', '2013-02-04 09:00:00'),
+			array(true, 1, 'test02', '2013-02-04 09:30:00', null),
+			array(true, 1, 'test02', '2013-02-04 09:30:00', '2013-02-03 15:30:00'),
 		);
 	}
 
