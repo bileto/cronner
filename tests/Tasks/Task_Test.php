@@ -5,7 +5,6 @@ namespace stekycz\Cronner\tests\Tasks;
 require_once(TEST_DIR . '/objects/TestObject.php');
 
 use PHPUnit_Framework_TestCase;
-use DateTime;
 use Nette;
 use stekycz\Cronner\Tasks\Task;
 use stekycz\Cronner\tests\objects\TestObject;
@@ -24,7 +23,6 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 	protected function setUp() {
 		parent::setUp();
 		$this->object = new TestObject();
-		$a = '';
 	}
 
 	/**
