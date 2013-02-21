@@ -71,9 +71,17 @@ final class Parameters extends Object {
 	 * @return bool
 	 */
 	public function isInTime(DateTime $now) {
-		if (($times = $this->values[static::TIME]) !== null) {
-			// TODO - implement
-			throw new LogicException("Not implemented yet.");
+		if ($times = $this->values[static::TIME]) {
+			foreach ($times as $time) {
+				if ($time['to'] && $time['to'] >= $now->format('H:i') && $time['from'] <= $now->format('H:i')) {
+					// Is in range with precision to minutes
+					return true;
+				} elseif ($time['from'] == $now->format('H:i')) {
+					// Is in specific minute
+					return true;
+				}
+			}
+			return false;
 		}
 		return true;
 	}
