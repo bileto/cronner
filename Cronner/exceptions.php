@@ -15,3 +15,49 @@ class InvalidArgumentException extends \InvalidArgumentException {
  */
 class InvalidParameter extends InvalidArgumentException {
 }
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-02-21
+ */
+class RuntimeException extends \RuntimeException {
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-02-21
+ */
+class IOException extends RuntimeException
+{
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-02-21
+ */
+class FileNotFoundException extends IOException
+{
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-02-21
+ */
+class FileCannotBeOpenedException extends IOException
+{
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-02-21
+ */
+class FileCannotBeClosedException extends IOException
+{
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-02-21
+ */
+class DirectoryNotFoundException extends IOException {
+}
