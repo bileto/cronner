@@ -76,4 +76,13 @@ final class Processor extends Object {
 		}
 	}
 
+	/**
+	 * Returns count of added task objects.
+	 *
+	 * @return int
+	 */
+	public function countTaskObjects() {
+		return count($this->registeredTaskObjects);
+	}
+
 }
