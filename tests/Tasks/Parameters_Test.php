@@ -177,4 +177,134 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
+	/**
+	 * @test
+	 * @dataProvider dataProviderIsInTime
+	 * @param bool $expected
+	 * @param array $parameters
+	 * @param string $now
+	 */
+	public function detectsAllowedTimeRange($expected, array $parameters, $now) {
+		$now = new Nette\DateTime($now);
+		$params = new Parameters($parameters);
+		$this->assertEquals($expected, $params->isInTime($now));
+	}
+
+	public function dataProviderIsInTime() {
+		return array(
+			// One minute
+			array(
+				true,
+				array(Parameters::TIME => array(
+						array(
+							'from' => '11:00',
+							'to' => null,
+						),
+					),
+				),
+				'2013-02-11 11:00:00'
+			),
+			array(
+				true,
+				array(Parameters::TIME => array(
+						array(
+							'from' => '11:00',
+							'to' => null,
+						),
+					),
+				),
+				'2013-02-11 11:00:59'
+			),
+			array(
+				false,
+				array(Parameters::TIME => array(
+						array(
+							'from' => '11:00',
+							'to' => null,
+						),
+					),
+				),
+				'2013-02-11 10:59:59'
+			),
+			array(
+				false,
+				array(Parameters::TIME => array(
+						array(
+							'from' => '11:00',
+							'to' => null,
+						),
+					),
+				),
+				'2013-02-11 11:01:00'
+			),
+			// Range
+			array(
+				true,
+				array(Parameters::TIME => array(
+						array(
+							'from' => '11:00',
+							'to' => '12:00',
+						),
+					),
+				),
+				'2013-02-11 11:00:00'
+			),
+			array(
+				true,
+				array(Parameters::TIME => array(
+						array(
+							'from' => '11:00',
+							'to' => '12:00',
+						),
+					),
+				),
+				'2013-02-11 11:30:00'
+			),
+			array(
+				true,
+				array(Parameters::TIME => array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+				),
+				),
+				'2013-02-11 12:00:59'
+			),
+			array(
+				false,
+				array(Parameters::TIME => array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+				),
+				),
+				'2013-02-11 10:59:59'
+			),
+			array(
+				false,
+				array(Parameters::TIME => array(
+					array(
+						'from' => '11:00',
+						'to' => '12:00',
+					),
+				),
+				),
+				'2013-02-11 12:01:00'
+			),
+			// Empty
+			array(
+				true,
+				array(Parameters::TIME => array(),),
+				'2013-02-11 12:00:00'
+			),
+			array(
+				true,
+				array(Parameters::TIME => null,),
+				'2013-02-11 12:00:00'
+			),
+		);
+	}
+
 }
