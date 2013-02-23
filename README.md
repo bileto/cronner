@@ -57,6 +57,71 @@ services:
     cronner: stekycz\Cronner\Cronner
 ```
 
+## Annotations
+
+### @cronner-task
+
+This annotations is **required for all** public methods which should be used as a task.
+Its value is used as a name of task. If value is missing the name is build from class name
+and method name.
+
+If this annotation is single (for Cronner) in task method comment then the task is runned
+everytime when Cronner runs.
+
+#### Example
+
+```php
+/**
+ * @cronner-task Fetches all public data from all registered social networks
+ */
+```
+
+### @cronner-period
+
+Not required but recomanded annotation which specifies period of task execution.
+The period is minimal time between two executions of the task. It's value can be
+anything what is acceptable for `strtotime()` method.
+
+**Attention!** The value of this annotation must not contain any sign (+ or -).
+
+#### Example
+
+```php
+/**
+ * @cronner-period 1 day
+ */
+```
+
+### @cronner-days
+
+Allows run the task only on specified days. Possible values are abbreviations of week day names.
+It means `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` and `Sun`. For simplier usage there are two shortcuts:
+`working days` (`Mon`, `Tue`, `Wed`, `Thu`, `Fri`) and `weekend` (`Sat` and `Sun`) which are internaly
+expanded to specific days. Multiple values must be separated by comma.
+
+#### Example
+
+```php
+/**
+ * @cronner-days working days, Sun
+ */
+```
+
+### @cronner-time
+
+Specifies day time range (or ranges) in which the task can be run. It can be range or a specific minute.
+It uses 24 hour time model. Multiple values must be separated by comma.
+
+The time can be defined over midnight as it is in following example.
+
+#### Example
+
+```php
+/**
+ * @cronner-time 11:00, 23:30 - 05:00
+ */
+```
+
 ## Author
 
 My name is Martin Štekl. Feel free to contact me on [e-mail](mailto:martin.stekl@gmail.com)
