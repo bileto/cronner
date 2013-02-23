@@ -1,5 +1,11 @@
 # Collections
 
+- [Description](#description)
+- [Usage](#usage)
+- [Annotations](#annotations)
+- [Author](#author)
+- [License](#license)
+
 ## Description
 
 Simple tool which helps with maintenance of cron tasks.
