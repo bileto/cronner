@@ -17,7 +17,7 @@ It requires **PHP >= 5.3.0** and **Nette Framework >= 2.0.***.
 It is very simple to use it because configuration is only in method annotations. Example class follows:
 
 ```php
-class CronTasks extends Tasks {
+class CronTasks extends \stekycz\Cronner\Tasks {
     /**
      * @cronner-task E-mail sending
      * @cronner-period 1 day
@@ -41,18 +41,20 @@ class CronTasks extends Tasks {
 Then you can use it very easily in `Presenter`
 
 ```php
-private $cronner;
+class CronPresenter extends \Nette\Application\UI\Presenter {
+    private $cronner;
 
-public function injectCronner(Cronner $cronner) {
-    $this->cronner = $cronner;
-}
+    public function injectCronner(Cronner $cronner) {
+        $this->cronner = $cronner;
+    }
 
-public function actionCron() {
-    $this->cronner->addTasksCallback(function () {
-        // Some magic code can be here :-)
-        return new CronTasks();
-    });
-    $this->cronner->run();
+    public function actionCron() {
+        $this->cronner->addTasksCallback(function () {
+            // Some magic code can be here :-)
+            return new CronTasks();
+        });
+        $this->cronner->run();
+    }
 }
 ```
 
@@ -60,7 +62,7 @@ using configuration
 
 ```neon
 services:
-    cronner: stekycz\Cronner\Cronner
+    cronner: stekycz\Cronner\Cronner(new \stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
 ```
 
 ## Annotations
