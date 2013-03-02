@@ -16,7 +16,7 @@ use stekycz\Cronner\tests\objects\TestObject;
 class Task_Test extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * @var \stekycz\Cronner\Tasks
+	 * @var \stekycz\Cronner\ITasksContainer
 	 */
 	private $object;
 
@@ -55,15 +55,18 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 		$now = new Nette\DateTime($now);
 		$lastRunTime = $lastRunTime ? new Nette\DateTime($lastRunTime) : null;
 
-		$method = $this->object->reflection->getMethod($methodName);
+		$method = $this->object->getReflection()->getMethod($methodName);
 
 		$timestampStorage = $this->getMock(
 			'\stekycz\Cronner\ITimestampStorage',
-			array('saveRunTime', 'loadLastRunTime', )
+			array('setTaskName', 'saveRunTime', 'loadLastRunTime', )
 		);
 		$timestampStorage->expects($this->exactly($loads))
 			->method('loadLastRunTime')
 			->will($this->returnValue($lastRunTime));
+		$timestampStorage->expects($this->any())
+			->method('setTaskName')
+			->with('Test task');
 
 		$task = new Task($this->object, $method, $timestampStorage);
 		$this->assertEquals($expected, $task->shouldBeRun($now));

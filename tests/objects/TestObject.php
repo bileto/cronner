@@ -2,13 +2,14 @@
 
 namespace stekycz\Cronner\tests\objects;
 
-use stekycz\Cronner\Tasks;
+use stekycz\Cronner\ITasksContainer;
+use Nette\Object;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-class TestObject extends Tasks {
+class TestObject extends Object implements ITasksContainer {
 
 	/**
 	 * @cronner-task E-mail notifications

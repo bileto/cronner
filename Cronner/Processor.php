@@ -3,6 +3,7 @@
 namespace stekycz\Cronner;
 
 use Nette;
+use Nette\Reflection\ClassType;
 use stekycz\Cronner\Tasks\Task;
 use Nette\Object;
 use DateTime;
@@ -41,20 +42,22 @@ final class Processor extends Object {
 	 * with name which is already added are given then throws
 	 * an exception.
 	 *
-	 * @param \stekycz\Cronner\Tasks $tasks
+	 * @param \stekycz\Cronner\ITasksContainer $tasks
 	 * @return \stekycz\Cronner\Cronner
 	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function addTasks(Tasks $tasks) {
-		if (in_array($tasks->getName(), $this->registeredTaskObjects)) {
-			throw new InvalidArgumentException("Tasks with name '" . $tasks->getName() . "' have been already added.");
+	public function addTasks(ITasksContainer $tasks) {
+		$tasksId = $this->createIdFromObject($tasks);
+		if (in_array($tasksId, $this->registeredTaskObjects)) {
+			throw new InvalidArgumentException("Tasks with ID '" . $tasksId . "' have been already added.");
 		}
 
-		$methods = $tasks->reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+		$reflection = new ClassType($tasks);
+		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
 			$this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
 		}
-		$this->registeredTaskObjects[] = $tasks->getName();
+		$this->registeredTaskObjects[] = $tasksId;
 
 		return $this;
 	}
@@ -83,6 +86,15 @@ final class Processor extends Object {
 	 */
 	public function countTaskObjects() {
 		return count($this->registeredTaskObjects);
+	}
+
+	/**
+	 *
+	 *
+	 * @param \stekycz\Cronner\ITasksContainer $tasks
+	 */
+	private function createIdFromObject(ITasksContainer $tasks) {
+		return sha1(get_class($tasks));
 	}
 
 }

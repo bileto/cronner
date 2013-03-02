@@ -16,7 +16,7 @@ use stekycz\Cronner\Tasks\Parameters;
 class ParametersParsing_Test extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * @var \stekycz\Cronner\Tasks
+	 * @var \stekycz\Cronner\ITasksContainer
 	 */
 	private $object;
 
