@@ -3,6 +3,9 @@
 namespace stekycz\Cronner\TimestampStorage;
 
 use Nette;
+use stekycz\Cronner\EmptyTaskNameException;
+use Nette\Utils\Strings;
+use stekycz\Cronner\InvalidTaskNameException;
 use Nette\Object;
 use stekycz\Cronner\FileCannotBeClosedException;
 use stekycz\Cronner\FileCannotBeOpenedException;
@@ -19,13 +22,32 @@ class FileStorage extends Object implements ITimestampStorage {
 	/**
 	 * @var string
 	 */
-	private $filepath;
+	private $directory;
 
 	/**
-	 * @param string $filepath
+	 * @var string
 	 */
-	public function __construct($filepath) {
-		$this->filepath = $filepath;
+	private $taskName = null;
+
+	/**
+	 * @param string $directory
+	 */
+	public function __construct($directory) {
+		$this->directory = $directory;
+	}
+
+	/**
+	 * Sets name of current task.
+	 *
+	 * @param string|null $taskName
+	 */
+	public function setTaskName($taskName = null) {
+		if ($taskName !== null
+			&& (!$taskName || !is_string($taskName) || Strings::length($taskName) <= 0)
+		) {
+			throw new InvalidTaskNameException('Given task name is not valid.');
+		}
+		$this->taskName = $taskName;
 	}
 
 	/**
@@ -48,9 +70,10 @@ class FileStorage extends Object implements ITimestampStorage {
 	public function loadLastRunTime() {
 		$this->checkDirectoryExists();
 		$date = null;
-		if (file_exists($this->filepath)) {
+		$filepath = $this->buildFilePath();
+		if (file_exists($filepath)) {
 			$fileHandle = $this->openFile(true);
-			$size = filesize($this->filepath);
+			$size = filesize($filepath);
 			$date = fread($fileHandle, $size);
 			$this->closeFile($fileHandle);
 			$date = new Nette\DateTime($date);
@@ -62,10 +85,21 @@ class FileStorage extends Object implements ITimestampStorage {
 	 * Checks if directory exist.
 	 */
 	private function checkDirectoryExists() {
-		$dirpath = dirname($this->filepath);
-		if (!is_dir($dirpath)) {
+		if (!is_dir($this->directory)) {
 			throw new DirectoryNotFoundException();
 		}
+	}
+
+	/**
+	 * Builds file path from directory and task name.
+	 *
+	 * @return string
+	 */
+	private function buildFilePath() {
+		if ($this->taskName === null) {
+			throw new EmptyTaskNameException('Task name was not set.');
+		}
+		return $this->directory . '/' . sha1($this->taskName);
 	}
 
 	/**
@@ -75,7 +109,7 @@ class FileStorage extends Object implements ITimestampStorage {
 	 * @return resource
 	 */
 	private function openFile($read = false) {
-		$fileHandle = fopen($this->filepath, $read ? 'rb' : 'w+b');
+		$fileHandle = fopen($this->buildFilePath(), $read ? 'rb' : 'w+b');
 		if ($fileHandle === false) {
 			throw new FileCannotBeOpenedException();
 		}

@@ -18,6 +18,20 @@ class InvalidParameter extends InvalidArgumentException {
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-03-02
+ */
+class InvalidTaskNameException extends InvalidArgumentException {
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ * @since 2013-03-02
+ */
+class EmptyTaskNameException extends InvalidArgumentException {
+}
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-21
  */
 class RuntimeException extends \RuntimeException {

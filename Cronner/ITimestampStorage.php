@@ -11,7 +11,16 @@ use DateTime;
 interface ITimestampStorage {
 
 	/**
+	 * Sets name of current task.
+	 *
+	 * @param string|null $taskName
+	 */
+	public function setTaskName($taskName = null);
+
+	/**
 	 * Saves current date and time as last invocation time.
+	 *
+	 * @param \DateTime $now
 	 */
 	public function saveRunTime(DateTime $now);
 
