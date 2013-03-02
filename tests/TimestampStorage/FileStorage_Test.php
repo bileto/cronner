@@ -3,6 +3,7 @@
 namespace stekycz\Cronner\tests\TimestampStorage;
 
 use PHPUnit_Framework_TestCase;
+use Nette\Utils\Finder;
 use stdClass;
 use DateTime;
 use stekycz\Cronner\TimestampStorage\FileStorage;
@@ -13,8 +14,6 @@ use Nette;
  * @since 2013-02-21
  */
 class FileStorage_Test extends PHPUnit_Framework_TestCase {
-
-	const TEST_TASK_NAME = 'Testing task';
 
 	/**
 	 * @var \stekycz\Cronner\TimestampStorage\FileStorage
@@ -28,7 +27,10 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 
 	protected function tearDown() {
 		parent::tearDown();
-		unlink(static::getTempDirPath() . '/' . sha1(static::TEST_TASK_NAME));
+		/** @var \SplFileInfo $file */
+		foreach (Finder::find('*')->from(static::getTempDirPath()) as $file) {
+			unlink($file->getPathname());
+		}
 	}
 
 	public static function setUpBeforeClass() {
@@ -50,8 +52,9 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function isAbleToSetTaskName() {
-		$this->storage->setTaskName('test 1');
+		$this->storage->setTaskName('Test task 1');
 		$this->storage->setTaskName(null);
+		$this->storage->setTaskName();
 	}
 
 	/**
@@ -74,7 +77,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 			array(true),
 			array(new stdClass()),
 			array(array()),
-			array(array('test 1')),
+			array(array('Test task 1')),
 		);
 	}
 
@@ -86,7 +89,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	 * @param \DateTime $date
 	 */
 	public function loadsAndSavesLastRunTimeWithoutErrors(DateTime $date) {
-		$this->storage->setTaskName(static::TEST_TASK_NAME);
+		$this->storage->setTaskName('Test task 1');
 
 		$lastRunTime = $this->storage->loadLastRunTime();
 		$this->assertNull($lastRunTime);
@@ -113,7 +116,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	public function savesLastRunTimeByTaskName() {
 		$date = new Nette\DateTime('2013-01-30 17:30:00');
 
-		$this->storage->setTaskName('test 1');
+		$this->storage->setTaskName('Test task 1');
 		$lastRunTime = $this->storage->loadLastRunTime();
 		$this->assertNull($lastRunTime);
 		$this->storage->saveRunTime($date);
@@ -124,7 +127,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 		$this->assertNotNull($lastRunTime);
 		$this->assertEquals($date, $lastRunTime);
 
-		$this->storage->setTaskName('test 2');
+		$this->storage->setTaskName('Test task 2');
 		$lastRunTime = $this->storage->loadLastRunTime();
 		$this->assertNull($lastRunTime);
 		$this->storage->saveRunTime($date);
