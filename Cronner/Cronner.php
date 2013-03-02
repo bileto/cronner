@@ -41,13 +41,9 @@ class Cronner extends Object {
 	 *
 	 * @param callable $callback
 	 * @return \stekycz\Cronner\Cronner
-	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
 	public function addTasksCallback($callback) {
-		if (!is_callable($callback)) {
-			throw new InvalidArgumentException("Given tasks factory callback is not callable.");
-		}
-		$this->callbacks[] = $callback;
+		$this->callbacks[] = callback($callback);
 		return $this;
 	}
 
