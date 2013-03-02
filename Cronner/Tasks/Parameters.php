@@ -3,7 +3,6 @@
 namespace stekycz\Cronner\Tasks;
 
 use Nette;
-use LogicException;
 use Nette\Utils\Strings;
 use Nette\Object;
 use Nette\Reflection\Method;
