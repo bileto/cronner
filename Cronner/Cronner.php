@@ -23,10 +23,17 @@ class Cronner extends Object {
 	private $timestampStorage;
 
 	/**
-	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 * @var int Max execution time of PHP script in seconds
 	 */
-	public function __construct(ITimestampStorage $timestampStorage) {
+	private $maxExecutionTime;
+
+	/**
+	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 * @param int|null $maxExecutionTime It is used only when Cronner runs
+	 */
+	public function __construct(ITimestampStorage $timestampStorage, $maxExecutionTime = null) {
 		$this->setTimestampStorage($timestampStorage);
+		$this->setMaxExecutionTime($maxExecutionTime);
 	}
 
 	/**
@@ -34,6 +41,30 @@ class Cronner extends Object {
 	 */
 	public function setTimestampStorage(ITimestampStorage $timestampStorage) {
 		$this->timestampStorage = $timestampStorage;
+	}
+
+	/**
+	 * Sets max execution time for Cronner. It is used only when Cronner runs.
+	 *
+	 * @param int|null $maxExecutionTime
+	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 */
+	public function setMaxExecutionTime($maxExecutionTime = null) {
+		if ($maxExecutionTime !== null && (!is_numeric($maxExecutionTime) || ((int) $maxExecutionTime) <= 0)) {
+			throw new InvalidArgumentException(
+				"Max execution time must be NULL or numeric value. Type '" . gettype($maxExecutionTime) . "' was given."
+			);
+		}
+		$this->maxExecutionTime = $maxExecutionTime;
+	}
+
+	/**
+	 * Returns max execution time for Cronner. It does not load INI value.
+	 *
+	 * @return int|null
+	 */
+	public function getMaxExecutionTime() {
+		return !is_null($this->maxExecutionTime) ? (int) $this->maxExecutionTime : null;
 	}
 
 	/**
@@ -63,6 +94,9 @@ class Cronner extends Object {
 			$processor->addTasks($tasks);
 		}
 
+		if ($this->maxExecutionTime !== null) {
+			set_time_limit((int) $this->maxExecutionTime);
+		}
 		$processor->process($now);
 	}
 
