@@ -157,6 +157,7 @@ class Parser extends Object {
 	 * @throws \stekycz\Cronner\InvalidParameter
 	 */
 	private static function parseOneTime($time) {
+		$time = static::translateToTimes($time);
 		$parts = Strings::split($time, '/\s*-\s*/');
 		if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
 			throw new InvalidParameter(
@@ -171,6 +172,25 @@ class Parser extends Object {
 			$times[] = static::timePartsToArray($parts[0], $parts[1] ?: null);
 		}
 		return $times;
+	}
+
+	/**
+	 * Translates given annotation to day names.
+	 *
+	 * @param string $time
+	 * @return string[]
+	 */
+	private static function translateToTimes($time) {
+		static $translationMap = array(
+			'morning' => '06:00 - 11:59',
+			'noon' => '12:00 - 12:29',
+			'afternoon' => '12:30 - 16:59',
+			'evening' => '17:00 - 21:59',
+			'night' => '22:00 - 05:59',
+			'midnight' => '00:00 - 00:29',
+		);
+
+		return array_key_exists($time, $translationMap) ? $translationMap[$time] : $time;
 	}
 
 	/**

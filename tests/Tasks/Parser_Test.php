@@ -247,6 +247,88 @@ class Parser_Test extends PHPUnit_Framework_TestCase {
 					),
 				), '16:00 - 18:00, 21:30 - 05:00',
 			),
+			// Shortcuts
+			array(
+				array(
+					array(
+						'from' => '06:00',
+						'to' => '11:59',
+					),
+				), 'morning',
+			),
+			array(
+				array(
+					array(
+						'from' => '12:00',
+						'to' => '12:29',
+					),
+				), 'noon',
+			),
+			array(
+				array(
+					array(
+						'from' => '12:30',
+						'to' => '16:59',
+					),
+				), 'afternoon',
+			),
+			array(
+				array(
+					array(
+						'from' => '17:00',
+						'to' => '21:59',
+					),
+				), 'evening',
+			),
+			array(
+				array(
+					array(
+						'from' => '00:00',
+						'to' => '05:59',
+					),
+					array(
+						'from' => '22:00',
+						'to' => '23:59',
+					),
+				), 'night',
+			),
+			array(
+				array(
+					array(
+						'from' => '00:00',
+						'to' => '00:29',
+					),
+				), 'midnight',
+			),
+			// Combined
+			array(
+				array(
+					array(
+						'from' => '00:00',
+						'to' => '00:29',
+					),
+					array(
+						'from' => '06:00',
+						'to' => '11:59',
+					),
+				), 'morning, midnight',
+			),
+			array(
+				array(
+					array(
+						'from' => '00:00',
+						'to' => '00:29',
+					),
+					array(
+						'from' => '03:00',
+						'to' => '04:00',
+					),
+					array(
+						'from' => '06:00',
+						'to' => '11:59',
+					),
+				), 'morning, midnight, 03:00 - 04:00',
+			),
 		);
 	}
 
