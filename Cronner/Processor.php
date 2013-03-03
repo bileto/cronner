@@ -3,6 +3,8 @@
 namespace stekycz\Cronner;
 
 use Nette;
+use Nette\Diagnostics\Debugger;
+use Exception;
 use Nette\Reflection\ClassType;
 use stekycz\Cronner\Tasks\Task;
 use Nette\Object;
@@ -31,10 +33,31 @@ final class Processor extends Object {
 	private $timestampStorage;
 
 	/**
-	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 * @var \Nette\Callback
 	 */
-	public function __construct(ITimestampStorage $timestampStorage) {
+	private $logCallback;
+
+	/**
+	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
+	 */
+	public function __construct(ITimestampStorage $timestampStorage, $logCallback = null) {
 		$this->timestampStorage = $timestampStorage;
+		$this->setLogCallback($logCallback);
+	}
+
+	/**
+	 * Sets log callback.
+	 *
+	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
+	 */
+	public function setLogCallback($logCallback = null) {
+		if ($logCallback === null) {
+			$logCallback = function (Exception $exception) {
+				Debugger::log($exception, Debugger::ERROR);
+			};
+		}
+		$this->logCallback = callback($logCallback);
 	}
 
 	/**
@@ -73,8 +96,12 @@ final class Processor extends Object {
 		}
 
 		foreach ($this->tasks as $task) {
-			if ($task->shouldBeRun($now)) {
-				$task();
+			try {
+				if ($task->shouldBeRun($now)) {
+					$task();
+				}
+			} catch (Exception $e) {
+				$this->logCallback->invoke($e);
 			}
 		}
 	}

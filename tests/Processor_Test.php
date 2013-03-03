@@ -3,8 +3,11 @@
 namespace stekycz\Cronner\tests;
 
 require_once(TEST_DIR . '/objects/TestObject.php');
+require_once(TEST_DIR . '/objects/TestExceptionObject.php');
 
 use PHPUnit_Framework_TestCase;
+use stekycz\Cronner\tests\objects\TestExceptionObject;
+use Exception;
 use stekycz\Cronner\tests\objects\TestObject;
 use Nette\DateTime;
 use stekycz\Cronner\Processor;
@@ -73,6 +76,29 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 
 		$this->processor->addTasks($tasks);
 		$this->processor->process($now);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canSetLogCallback() {
+		$this->processor->setLogCallback(function (Exception $e) {
+			// This method is dummy
+		});
+	}
+
+	/**
+	 * @test
+	 */
+	public function isAbleToContinueWithNextTaskWhenOneTaskThrowException() {
+		$logCallback = $this->getMock('\Nette\Object', array('log'));
+		$logCallback->expects($this->once())
+			->method('log')
+			->with(new Exception('Test 01'));
+
+		$this->processor->setLogCallback(callback($logCallback, 'log'));
+		$this->processor->addTasks(new TestExceptionObject());
+		$this->processor->process();
 	}
 
 }
