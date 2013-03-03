@@ -89,9 +89,10 @@ final class Processor extends Object {
 	}
 
 	/**
-	 *
+	 * Creates and returns identification string for given object.
 	 *
 	 * @param \stekycz\Cronner\ITasksContainer $tasks
+	 * @return string
 	 */
 	private function createIdFromObject(ITasksContainer $tasks) {
 		return sha1(get_class($tasks));
