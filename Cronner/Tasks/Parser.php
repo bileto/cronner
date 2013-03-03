@@ -102,6 +102,12 @@ class Parser extends Object {
 		return $times ?: null;
 	}
 
+	/**
+	 * Translates given annotation to day names.
+	 *
+	 * @param string $annotation
+	 * @return string[]
+	 */
 	private static function translateToDayNames($annotation) {
 		static $workingDays = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', );
 		static $weekend = array('Sat', 'Sun', );
