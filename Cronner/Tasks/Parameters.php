@@ -28,7 +28,9 @@ final class Parameters extends Object {
 	 * @param array $values
 	 */
 	public function __construct(array $values) {
-		$values[static::TASK] = is_string($values[static::TASK]) ? Strings::trim($values[static::TASK]) : '';
+		$values[static::TASK] = isset($values[static::TASK]) && is_string($values[static::TASK])
+			? Strings::trim($values[static::TASK])
+			: '';
 		$this->values = $values;
 	}
 
@@ -93,7 +95,7 @@ final class Parameters extends Object {
 	 * @return bool
 	 */
 	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = null) {
-		if ($this->values[static::PERIOD]) {
+		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
 		return true;

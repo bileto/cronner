@@ -165,11 +165,11 @@ class Parser extends Object {
 			);
 		}
 		$times = array();
-		if (static::isTimeOverMidnight($parts[0], $parts[1])) {
+		if (static::isTimeOverMidnight($parts[0], isset($parts[1]) ? $parts[1] : null)) {
 			$times[] = static::timePartsToArray('00:00', $parts[1]);
 			$times[] = static::timePartsToArray($parts[0], '23:59');
 		} else {
-			$times[] = static::timePartsToArray($parts[0], $parts[1] ?: null);
+			$times[] = static::timePartsToArray($parts[0], isset($parts[1]) ? $parts[1] : null);
 		}
 		return $times;
 	}
@@ -228,7 +228,7 @@ class Parser extends Object {
 		if (!is_string($annotation)) {
 			throw new InvalidParameter(
 				"Cron task annotation must be string but '" .
-					is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
+					!is_bool($annotation) && is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
 			);
 		}
 	}
