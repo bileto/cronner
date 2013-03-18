@@ -58,11 +58,24 @@ class CronPresenter extends \Nette\Application\UI\Presenter {
 }
 ```
 
-using configuration
+using service configuration
 
 ```neon
 services:
-    cronner: stekycz\Cronner\Cronner(new \stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
+    cronner: stekycz\Cronner\Cronner(stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
+```
+
+or using compiler extension
+
+```neon
+cronner:
+    timestampStorage: stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner)
+```
+
+If you want to use Compiler Extension then do not forgot add following code to `bootstrap.php`.
+
+```php
+stekycz\Cronner\DI\CronnerExtension::register($configurator);
 ```
 
 ## Annotations
