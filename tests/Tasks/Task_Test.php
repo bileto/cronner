@@ -66,7 +66,7 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 			->will($this->returnValue($lastRunTime));
 		$timestampStorage->expects($this->any())
 			->method('setTaskName')
-			->with('Test task');
+			->withAnyParameters();
 
 		$task = new Task($this->object, $method, $timestampStorage);
 		$this->assertEquals($expected, $task->shouldBeRun($now));
