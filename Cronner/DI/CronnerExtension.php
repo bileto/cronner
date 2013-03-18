@@ -28,8 +28,12 @@ class CronnerExtension extends CompilerExtension {
 		$config = $this->getConfig($this->defaults);
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 
-		$container->addDefinition($this->prefix('storage'))
-			->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
+		$storage = $container->addDefinition($this->prefix('storage'));
+		if (is_string($config['timestampStorage'])) {
+			$storage->setClass($config['timestampStorage']);
+		} else {
+			$storage->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
+		}
 
 		$container->addDefinition($this->prefix('client'))
 			->setClass('stekycz\Cronner\Cronner');
