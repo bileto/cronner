@@ -60,6 +60,7 @@ final class Task extends Object {
 		}
 
 		$parameters = $this->getParameters();
+		$this->timestampStorage->setTaskName($parameters->getName());
 		return $parameters->isTask()
 			&& $parameters->isInDay($now)
 			&& $parameters->isInTime($now)
