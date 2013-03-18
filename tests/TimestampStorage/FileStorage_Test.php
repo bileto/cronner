@@ -35,8 +35,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
-		mkdir(static::getTempDirPath());
-		chmod(static::getTempDirPath(), '+rwx');
+		mkdir(static::getTempDirPath(), 777);
 	}
 
 	public static function tearDownAfterClass() {
@@ -45,7 +44,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	private static function getTempDirPath() {
-		return __DIR__ . '/temp';
+		return __DIR__ . '/temp/cronner';
 	}
 
 	/**

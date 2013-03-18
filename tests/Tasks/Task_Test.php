@@ -4,6 +4,7 @@ namespace stekycz\Cronner\tests\Tasks;
 
 require_once(TEST_DIR . '/objects/TestObject.php');
 
+use Nette\Reflection\Method;
 use PHPUnit_Framework_TestCase;
 use Nette;
 use stekycz\Cronner\Tasks\Task;
@@ -29,15 +30,11 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function invokesTaskWithSavingLastRunTime() {
-		$method = $this->getMock('\Nette\Reflection\Method');
-		$method->expects($this->once())
-			->method('invoke')
-			->with($this->equalTo($this->object));
-
 		$timestampStorage = $this->getMock('\stekycz\Cronner\ITimestampStorage');
 		$timestampStorage->expects($this->once())
 			->method('saveRunTime');
 
+		$method = new Method($this->object, 'test01');
 		$task = new Task($this->object, $method, $timestampStorage);
 		$task();
 	}
