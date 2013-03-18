@@ -101,6 +101,9 @@ final class Processor extends Object {
 					$task();
 				}
 			} catch (Exception $e) {
+				if ($e instanceof RuntimeException) {
+					throw $e; // Throw exception if it is Cronner Runtime exception
+				}
 				$this->logCallback->invoke($e);
 			}
 		}
