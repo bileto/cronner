@@ -35,12 +35,9 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
-		mkdir(static::getTempDirPath(), 777);
-	}
-
-	public static function tearDownAfterClass() {
-		parent::tearDownAfterClass();
-		rmdir(static::getTempDirPath());
+        if (!file_exists(static::getTempDirPath())) {
+            mkdir(static::getTempDirPath(), 777);
+        }
 	}
 
 	private static function getTempDirPath() {
