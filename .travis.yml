@@ -7,5 +7,5 @@ script: VERBOSE=true ./vendor/phpunit/phpunit/phpunit.php --bootstrap tests/boot
 
 before_script:
     - composer install --no-interaction --dev
-    - mkdir tests/log
-    - mkdir tests/temp
+    - mkdir -m 777 tests/log
+    - mkdir -m 777 tests/temp
