@@ -36,7 +36,11 @@ class CronnerExtension extends CompilerExtension {
 		}
 
 		$container->addDefinition($this->prefix('client'))
-			->setClass('stekycz\Cronner\Cronner');
+			->setClass('stekycz\Cronner\Cronner', array(
+                $storage,
+                $config['maxExecutionTime'],
+                !$config['debugMode'],
+            ));
 	}
 
 	/**

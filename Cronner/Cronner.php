@@ -28,12 +28,23 @@ class Cronner extends Object {
 	private $maxExecutionTime;
 
 	/**
+	 * @var bool
+	 */
+	private $skipFailedTask = true;
+
+	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
 	 * @param int|null $maxExecutionTime It is used only when Cronner runs
-	 */
-	public function __construct(ITimestampStorage $timestampStorage, $maxExecutionTime = null) {
+     * @param bool $skipFailedTask
+     */
+    public function __construct(
+        ITimestampStorage $timestampStorage,
+        $maxExecutionTime = null,
+        $skipFailedTask = true
+    ) {
 		$this->setTimestampStorage($timestampStorage);
 		$this->setMaxExecutionTime($maxExecutionTime);
+        $this->setSkipFailedTask($skipFailedTask);
 	}
 
 	/**
@@ -57,6 +68,16 @@ class Cronner extends Object {
 		}
 		$this->maxExecutionTime = $maxExecutionTime;
 	}
+
+    /**
+     * Sets flag that thrown exceptions will not be thrown but cached and logged.
+     *
+     * @param bool $skipFailedTask
+     */
+    public function setSkipFailedTask($skipFailedTask = true)
+    {
+        $this->skipFailedTask = (bool) $skipFailedTask;
+    }
 
 	/**
 	 * Returns max execution time for Cronner. It does not load INI value.
@@ -87,7 +108,7 @@ class Cronner extends Object {
 		if ($now === null) {
 			$now = new Nette\DateTime();
 		}
-		$processor = new Processor($this->timestampStorage);
+		$processor = new Processor($this->timestampStorage, $this->skipFailedTask);
 
 		foreach ($this->callbacks as $callback) {
 			$tasks = call_user_func($callback);

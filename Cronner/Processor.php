@@ -38,11 +38,22 @@ final class Processor extends Object {
 	private $logCallback;
 
 	/**
+	 * @var bool
+	 */
+	private $skipFailedTask = true;
+
+	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+     * @param bool $skipFailedTask
 	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
 	 */
-	public function __construct(ITimestampStorage $timestampStorage, $logCallback = null) {
+	public function __construct(
+        ITimestampStorage $timestampStorage,
+        $skipFailedTask = true,
+        $logCallback = null
+    ) {
 		$this->timestampStorage = $timestampStorage;
+        $this->skipFailedTask = (bool) $skipFailedTask;
 		$this->setLogCallback($logCallback);
 	}
 
@@ -103,7 +114,9 @@ final class Processor extends Object {
 			} catch (Exception $e) {
 				if ($e instanceof RuntimeException) {
 					throw $e; // Throw exception if it is Cronner Runtime exception
-				}
+				} elseif ($this->skipFailedTask === false) {
+                    throw $e; // Throw exception if failed task should not be skipped
+                }
 				$this->logCallback->invoke($e);
 			}
 		}
