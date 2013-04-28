@@ -44,7 +44,7 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	private static function getTempDirPath() {
-		return __DIR__ . '/temp/cronner';
+		return TEST_DIR . '/temp/cronner';
 	}
 
 	/**
