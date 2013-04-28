@@ -1,4 +1,4 @@
-# Collections
+# Cronner [![Build Status](https://travis-ci.org/stekycz/Cronner.png?branch=master)](https://travis-ci.org/stekycz/Cronner)
 
 - [Description](#description)
 - [Usage](#usage)
