@@ -68,6 +68,7 @@ class Parser extends Object
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
 			$days = static::translateToDayNames($annotation);
+			$days = static::expandDaysRange($days);
 			foreach ($days as $day) {
 				if (!in_array($day, $validValues)) {
 					throw new InvalidParameter(
@@ -133,6 +134,41 @@ class Parser extends Object
 			}
 		}
 		return array_unique($days);
+	}
+
+	/**
+	 * Expands given day names and day ranges to day names only. The day range must be
+	 * in "Mon-Fri" format.
+	 *
+	 * @param string[] $days
+	 * @return string[]
+	 */
+	private static function expandDaysRange(array $days)
+	{
+		static $dayNames = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',);
+		$expandedValues = array();
+
+		foreach ($days as $day) {
+			if (Strings::match($day, '~^\w{3}\s*-\s*\w{3}$~u')) {
+				list($begin, $end) = Strings::split($day, '~\s*-\s*~');
+				$started = false;
+				foreach ($dayNames as $dayName) {
+					if ($dayName === $begin) {
+						$started = true;
+					}
+					if ($started) {
+						$expandedValues[] = $dayName;
+					}
+					if ($dayName === $end) {
+						$started = false;
+					}
+				}
+			} else {
+				$expandedValues[] = $day;
+			}
+		}
+
+		return array_unique($expandedValues);
 	}
 
 	/**

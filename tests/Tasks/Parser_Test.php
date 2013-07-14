@@ -119,10 +119,18 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 			array(array('Sat', 'Sun',), 'Sat, weekend'),
 			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',), 'Sat, working days'),
 			array(array('Wed', 'Sat', 'Sun',), 'Wed, weekend'),
+			// Day ranges
+			array(array('Mon', 'Tue', 'Wed',), 'Mon-Wed'),
+			array(array('Mon', 'Tue', 'Wed', 'Fri',), 'Mon-Wed, Fri'),
+			array(array('Mon', 'Wed', 'Thu', 'Fri', 'Sun',), 'Mon, Wed-Fri, Sun'),
+			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',), 'Mon-Wed, Tue-Fri, Thu-Sun'),
+			array(array('Thu', 'Fri', 'Sat', 'Sun',), 'Thu-Sat, weekend'),
+			array(array('Sat', 'Sun',), 'Sat-Tue'),
 			// Special cases (whitespaces)
 			array(array('Mon',), '   Mon   '),
 			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri',), '   working days   '),
 			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',), '   Mon   ,   weekend   ,   working days   '),
+			array(array('Tue', 'Wed', 'Thu',), '   Tue   -   Thu   '),
 		);
 	}
 
