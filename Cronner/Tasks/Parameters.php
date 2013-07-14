@@ -2,17 +2,18 @@
 
 namespace stekycz\Cronner\Tasks;
 
+use DateTime;
 use Nette;
-use Nette\Utils\Strings;
 use Nette\Object;
 use Nette\Reflection\Method;
-use DateTime;
+use Nette\Utils\Strings;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-final class Parameters extends Object {
+final class Parameters extends Object
+{
 
 	const TASK = 'cronner-task';
 	const PERIOD = 'cronner-period';
@@ -27,7 +28,8 @@ final class Parameters extends Object {
 	/**
 	 * @param array $values
 	 */
-	public function __construct(array $values) {
+	public function __construct(array $values)
+	{
 		$values[static::TASK] = isset($values[static::TASK]) && is_string($values[static::TASK])
 			? Strings::trim($values[static::TASK])
 			: '';
@@ -39,7 +41,8 @@ final class Parameters extends Object {
 	 *
 	 * @return string
 	 */
-	public function getName() {
+	public function getName()
+	{
 		return $this->values[static::TASK];
 	}
 
@@ -48,7 +51,8 @@ final class Parameters extends Object {
 	 *
 	 * @return bool
 	 */
-	public function isTask() {
+	public function isTask()
+	{
 		return Strings::length($this->values[static::TASK]) > 0;
 	}
 
@@ -58,7 +62,8 @@ final class Parameters extends Object {
 	 * @param \DateTime $now
 	 * @return bool
 	 */
-	public function isInDay(DateTime $now) {
+	public function isInDay(DateTime $now)
+	{
 		if (($days = $this->values[static::DAYS]) !== null) {
 			return in_array($now->format('D'), $days);
 		}
@@ -71,7 +76,8 @@ final class Parameters extends Object {
 	 * @param \DateTime $now
 	 * @return bool
 	 */
-	public function isInTime(DateTime $now) {
+	public function isInTime(DateTime $now)
+	{
 		if ($times = $this->values[static::TIME]) {
 			foreach ($times as $time) {
 				if ($time['to'] && $time['to'] >= $now->format('H:i') && $time['from'] <= $now->format('H:i')) {
@@ -94,7 +100,8 @@ final class Parameters extends Object {
 	 * @param \DateTime|null $lastRunTime
 	 * @return bool
 	 */
-	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = null) {
+	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = null)
+	{
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
@@ -107,7 +114,8 @@ final class Parameters extends Object {
 	 * @param \Nette\Reflection\Method $method
 	 * @return array
 	 */
-	public static function parseParameters(Method $method) {
+	public static function parseParameters(Method $method)
+	{
 		$taskName = null;
 		if ($method->hasAnnotation(Parameters::TASK)) {
 			$className = $method->getDeclaringClass()->getName();

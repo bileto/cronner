@@ -8,7 +8,8 @@ use DateTime;
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-04
  */
-interface ITimestampStorage {
+interface ITimestampStorage
+{
 
 	/**
 	 * Sets name of current task.

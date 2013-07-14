@@ -2,22 +2,23 @@
 
 namespace stekycz\Cronner;
 
+use DateTime;
+use Exception;
 use Nette;
 use Nette\Diagnostics\Debugger;
-use Exception;
+use Nette\Object;
 use Nette\Reflection\ClassType;
 use Nette\Utils\Strings;
+use ReflectionMethod;
 use stekycz\Cronner\Tasks\Parameters;
 use stekycz\Cronner\Tasks\Task;
-use Nette\Object;
-use DateTime;
-use ReflectionMethod;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-final class Processor extends Object {
+final class Processor extends Object
+{
 
 	/**
 	 * @var \stekycz\Cronner\Tasks\Task[]
@@ -46,16 +47,16 @@ final class Processor extends Object {
 
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
-     * @param bool $skipFailedTask
+	 * @param bool $skipFailedTask
 	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
 	 */
 	public function __construct(
-        ITimestampStorage $timestampStorage,
-        $skipFailedTask = true,
-        $logCallback = null
-    ) {
+		ITimestampStorage $timestampStorage,
+		$skipFailedTask = true,
+		$logCallback = null
+	) {
 		$this->timestampStorage = $timestampStorage;
-        $this->skipFailedTask = (bool) $skipFailedTask;
+		$this->skipFailedTask = (bool) $skipFailedTask;
 		$this->setLogCallback($logCallback);
 	}
 
@@ -64,7 +65,8 @@ final class Processor extends Object {
 	 *
 	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
 	 */
-	public function setLogCallback($logCallback = null) {
+	public function setLogCallback($logCallback = null)
+	{
 		if ($logCallback === null) {
 			$logCallback = function (Exception $exception) {
 				Debugger::log($exception, Debugger::ERROR);
@@ -82,7 +84,8 @@ final class Processor extends Object {
 	 * @return \stekycz\Cronner\Cronner
 	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function addTasks(ITasksContainer $tasks) {
+	public function addTasks(ITasksContainer $tasks)
+	{
 		$tasksId = $this->createIdFromObject($tasks);
 		if (in_array($tasksId, $this->registeredTaskObjects)) {
 			throw new InvalidArgumentException("Tasks with ID '" . $tasksId . "' have been already added.");
@@ -91,9 +94,9 @@ final class Processor extends Object {
 		$reflection = new ClassType($tasks);
 		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-            if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
-                $this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
-            }
+			if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
+				$this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
+			}
 		}
 		$this->registeredTaskObjects[] = $tasksId;
 
@@ -105,7 +108,8 @@ final class Processor extends Object {
 	 *
 	 * @param \DateTime $now
 	 */
-	public function process(DateTime $now = null) {
+	public function process(DateTime $now = null)
+	{
 		if ($now === null) {
 			$now = new Nette\DateTime();
 		}
@@ -119,8 +123,8 @@ final class Processor extends Object {
 				if ($e instanceof RuntimeException) {
 					throw $e; // Throw exception if it is Cronner Runtime exception
 				} elseif ($this->skipFailedTask === false) {
-                    throw $e; // Throw exception if failed task should not be skipped
-                }
+					throw $e; // Throw exception if failed task should not be skipped
+				}
 				$this->logCallback->invoke($e);
 			}
 		}
@@ -131,19 +135,20 @@ final class Processor extends Object {
 	 *
 	 * @return int
 	 */
-	public function countTaskObjects() {
+	public function countTaskObjects()
+	{
 		return count($this->registeredTaskObjects);
 	}
 
-    /**
-     * Returns count of added tasks.
-     *
-     * @return int
-     */
-    public function countTasks()
-    {
-        return count($this->tasks);
-    }
+	/**
+	 * Returns count of added tasks.
+	 *
+	 * @return int
+	 */
+	public function countTasks()
+	{
+		return count($this->tasks);
+	}
 
 	/**
 	 * Creates and returns identification string for given object.
@@ -151,7 +156,8 @@ final class Processor extends Object {
 	 * @param \stekycz\Cronner\ITasksContainer $tasks
 	 * @return string
 	 */
-	private function createIdFromObject(ITasksContainer $tasks) {
+	private function createIdFromObject(ITasksContainer $tasks)
+	{
 		return sha1(get_class($tasks));
 	}
 

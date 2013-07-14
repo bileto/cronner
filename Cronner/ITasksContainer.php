@@ -8,5 +8,7 @@ namespace stekycz\Cronner;
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-02
  */
-interface ITasksContainer {
+interface ITasksContainer
+{
+
 }

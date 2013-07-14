@@ -2,30 +2,33 @@
 
 namespace stekycz\Cronner\tests\TimestampStorage;
 
-use PHPUnit_Framework_TestCase;
-use Nette\Utils\Finder;
-use stdClass;
 use DateTime;
-use stekycz\Cronner\TimestampStorage\FileStorage;
+use Nette\Utils\Finder;
 use Nette;
+use PHPUnit_Framework_TestCase;
+use stdClass;
+use stekycz\Cronner\TimestampStorage\FileStorage;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-21
  */
-class FileStorage_Test extends PHPUnit_Framework_TestCase {
+class FileStorage_Test extends PHPUnit_Framework_TestCase
+{
 
 	/**
 	 * @var \stekycz\Cronner\TimestampStorage\FileStorage
 	 */
 	private $storage;
 
-	protected function setUp() {
+	protected function setUp()
+	{
 		parent::setUp();
 		$this->storage = new FileStorage(static::getTempDirPath());
 	}
 
-	protected function tearDown() {
+	protected function tearDown()
+	{
 		parent::tearDown();
 		/** @var \SplFileInfo $file */
 		foreach (Finder::find('*')->from(static::getTempDirPath()) as $file) {
@@ -33,21 +36,24 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass()
+	{
 		parent::setUpBeforeClass();
-        if (!file_exists(static::getTempDirPath())) {
-            mkdir(static::getTempDirPath(), 777);
-        }
+		if (!file_exists(static::getTempDirPath())) {
+			mkdir(static::getTempDirPath(), 777);
+		}
 	}
 
-	private static function getTempDirPath() {
+	private static function getTempDirPath()
+	{
 		return TEST_DIR . '/temp/cronner';
 	}
 
 	/**
 	 * @test
 	 */
-	public function isAbleToSetTaskName() {
+	public function isAbleToSetTaskName()
+	{
 		$this->storage->setTaskName('Test task 1');
 		$this->storage->setTaskName(null);
 		$this->storage->setTaskName();
@@ -58,11 +64,13 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	 * @dataProvider dataProviderSetTaskName
 	 * @expectedException \stekycz\Cronner\InvalidTaskNameException
 	 */
-	public function throwsExceptionOnInvalidTaskName($taskName) {
+	public function throwsExceptionOnInvalidTaskName($taskName)
+	{
 		$this->storage->setTaskName($taskName);
 	}
 
-	public function dataProviderSetTaskName() {
+	public function dataProviderSetTaskName()
+	{
 		return array(
 			array(''),
 			array(0),
@@ -84,7 +92,8 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	 * @dataProvider dataProviderSaveRunTime
 	 * @param \DateTime $date
 	 */
-	public function loadsAndSavesLastRunTimeWithoutErrors(DateTime $date) {
+	public function loadsAndSavesLastRunTimeWithoutErrors(DateTime $date)
+	{
 		$this->storage->setTaskName('Test task 1');
 
 		$lastRunTime = $this->storage->loadLastRunTime();
@@ -98,7 +107,8 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($date, $lastRunTime);
 	}
 
-	public function dataProviderSaveRunTime() {
+	public function dataProviderSaveRunTime()
+	{
 		return array(
 			array(new Nette\DateTime('2013-01-30 17:30:00')),
 			array(new Nette\DateTime('2013-01-30 18:30:01')),
@@ -109,7 +119,8 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @test
 	 */
-	public function savesLastRunTimeByTaskName() {
+	public function savesLastRunTimeByTaskName()
+	{
 		$date = new Nette\DateTime('2013-01-30 17:30:00');
 
 		$this->storage->setTaskName('Test task 1');

@@ -2,21 +2,22 @@
 
 namespace stekycz\Cronner\tests;
 
+use Exception;
+use Nette\DateTime;
+use PHPUnit_Framework_TestCase;
+use stekycz\Cronner\Processor;
+use stekycz\Cronner\tests\objects\TestExceptionObject;
+use stekycz\Cronner\tests\objects\TestObject;
+
 require_once(TEST_DIR . '/objects/TestObject.php');
 require_once(TEST_DIR . '/objects/TestExceptionObject.php');
-
-use PHPUnit_Framework_TestCase;
-use stekycz\Cronner\tests\objects\TestExceptionObject;
-use Exception;
-use stekycz\Cronner\tests\objects\TestObject;
-use Nette\DateTime;
-use stekycz\Cronner\Processor;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-21
  */
-class Processor_Test extends PHPUnit_Framework_TestCase {
+class Processor_Test extends PHPUnit_Framework_TestCase
+{
 
 	/**
 	 * @var \stekycz\Cronner\Processor
@@ -28,11 +29,12 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 	 */
 	private $timestampStorage;
 
-	protected function setUp() {
+	protected function setUp()
+	{
 		parent::setUp();
 		$this->timestampStorage = $this->getMock(
 			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime', )
+			array('setTaskName', 'saveRunTime', 'loadLastRunTime',)
 		);
 		$this->timestampStorage->expects($this->any())
 			->method('loadLastRunTime')
@@ -43,7 +45,8 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @test
 	 */
-	public function acceptsTasksObjectWithTaskMethods() {
+	public function acceptsTasksObjectWithTaskMethods()
+	{
 		$tasks = $this->getMock('\stekycz\Cronner\ITasksContainer');
 		$this->timestampStorage->expects($this->any())
 			->method('setTaskName')
@@ -57,7 +60,8 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 	 * @test
 	 * @expectedException \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function throwsExceptionOnDuplicateTasksObjectAddition() {
+	public function throwsExceptionOnDuplicateTasksObjectAddition()
+	{
 		$tasks = $this->getMock('\stekycz\Cronner\ITasksContainer');
 		$this->timestampStorage->expects($this->any())
 			->method('setTaskName')
@@ -70,19 +74,21 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @test
 	 */
-	public function processesAllAddedTasks() {
+	public function processesAllAddedTasks()
+	{
 		$now = new DateTime('2013-02-04 09:30:00');
 		$tasks = new TestObject();
 
 		$this->processor->addTasks($tasks);
-        $this->assertEquals(4, $this->processor->countTasks());
+		$this->assertEquals(4, $this->processor->countTasks());
 		$this->processor->process($now);
 	}
 
 	/**
 	 * @test
 	 */
-	public function canSetLogCallback() {
+	public function canSetLogCallback()
+	{
 		$this->processor->setLogCallback(function (Exception $e) {
 			// This method is dummy
 		});
@@ -91,7 +97,8 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @test
 	 */
-	public function isAbleToContinueWithNextTaskWhenOneTaskThrowException() {
+	public function isAbleToContinueWithNextTaskWhenOneTaskThrowException()
+	{
 		$logCallback = $this->getMock('\Nette\Object', array('log'));
 		$logCallback->expects($this->once())
 			->method('log')

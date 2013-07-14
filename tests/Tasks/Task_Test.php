@@ -2,26 +2,28 @@
 
 namespace stekycz\Cronner\tests\Tasks;
 
-require_once(TEST_DIR . '/objects/TestObject.php');
-
 use Nette\Reflection\Method;
-use PHPUnit_Framework_TestCase;
 use Nette;
+use PHPUnit_Framework_TestCase;
 use stekycz\Cronner\Tasks\Task;
 use stekycz\Cronner\tests\objects\TestObject;
+
+require_once(TEST_DIR . '/objects/TestObject.php');
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-21
  */
-class Task_Test extends PHPUnit_Framework_TestCase {
+class Task_Test extends PHPUnit_Framework_TestCase
+{
 
 	/**
 	 * @var \stekycz\Cronner\ITasksContainer
 	 */
 	private $object;
 
-	protected function setUp() {
+	protected function setUp()
+	{
 		parent::setUp();
 		$this->object = new TestObject();
 	}
@@ -29,7 +31,8 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @test
 	 */
-	public function invokesTaskWithSavingLastRunTime() {
+	public function invokesTaskWithSavingLastRunTime()
+	{
 		$timestampStorage = $this->getMock('\stekycz\Cronner\ITimestampStorage');
 		$timestampStorage->expects($this->once())
 			->method('saveRunTime');
@@ -48,7 +51,8 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 	 * @param string $now
 	 * @param string $lastRunTime
 	 */
-	public function checksIfCanBeRun($expected, $loads, $methodName, $now, $lastRunTime) {
+	public function checksIfCanBeRun($expected, $loads, $methodName, $now, $lastRunTime)
+	{
 		$now = new Nette\DateTime($now);
 		$lastRunTime = $lastRunTime ? new Nette\DateTime($lastRunTime) : null;
 
@@ -56,7 +60,7 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 
 		$timestampStorage = $this->getMock(
 			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime', )
+			array('setTaskName', 'saveRunTime', 'loadLastRunTime',)
 		);
 		$timestampStorage->expects($this->exactly($loads))
 			->method('loadLastRunTime')
@@ -69,7 +73,8 @@ class Task_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, $task->shouldBeRun($now));
 	}
 
-	public function dataProviderShouldBeRun() {
+	public function dataProviderShouldBeRun()
+	{
 		return array(
 			// Test 01
 			array(true, 1, 'test01', '2013-02-01 12:00:00', null),

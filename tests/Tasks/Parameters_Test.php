@@ -2,16 +2,17 @@
 
 namespace stekycz\Cronner\tests\Tasks;
 
-use PHPUnit_Framework_TestCase;
 use DateTime;
-use stekycz\Cronner\Tasks\Parameters;
 use Nette;
+use PHPUnit_Framework_TestCase;
+use stekycz\Cronner\Tasks\Parameters;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-class Parameters_Test extends PHPUnit_Framework_TestCase {
+class Parameters_Test extends PHPUnit_Framework_TestCase
+{
 
 	/**
 	 * @test
@@ -19,12 +20,14 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 	 * @param bool $expected
 	 * @param array $parameters
 	 */
-	public function returnsTaskName($expected, array $parameters) {
+	public function returnsTaskName($expected, array $parameters)
+	{
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->getName());
 	}
 
-	public function dataProviderGetName() {
+	public function dataProviderGetName()
+	{
 		return array(
 			array('Name of task', array(Parameters::TASK => 'Name of task',)),
 			array('0', array(Parameters::TASK => '0',)),
@@ -44,12 +47,14 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 	 * @param bool $expected
 	 * @param array $parameters
 	 */
-	public function detectsTask($expected, array $parameters) {
+	public function detectsTask($expected, array $parameters)
+	{
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isTask());
 	}
 
-	public function dataProviderIsTask() {
+	public function dataProviderIsTask()
+	{
 		return array(
 			array(true, array(Parameters::TASK => 'Name of task',)),
 			array(true, array(Parameters::TASK => '0',)),
@@ -71,12 +76,14 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 	 * @param \DateTime|null $lastRunTime
 	 * @param array $parameters
 	 */
-	public function detectsIfNowIsInNextPeriod($expected, DateTime $now, DateTime $lastRunTime = null, array $parameters) {
+	public function detectsIfNowIsInNextPeriod($expected, DateTime $now, DateTime $lastRunTime = null, array $parameters)
+	{
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isNextPeriod($now, $lastRunTime));
 	}
 
-	public function dataProviderIsNextPeriod() {
+	public function dataProviderIsNextPeriod()
+	{
 		return array(
 			array(
 				true,
@@ -136,12 +143,14 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 	 * @param array $parameters
 	 * @param \DateTime $now
 	 */
-	public function detectsAllowedDaysOfWeek($expected, array $parameters, DateTime $now) {
+	public function detectsAllowedDaysOfWeek($expected, array $parameters, DateTime $now)
+	{
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isInDay($now));
 	}
 
-	public function dataProviderIsInDay() {
+	public function dataProviderIsInDay()
+	{
 		return array(
 			// One day
 			array(true, array(Parameters::DAYS => array('Mon',),), new Nette\DateTime('2013-02-11 12:34:56')),
@@ -184,13 +193,15 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 	 * @param array $parameters
 	 * @param string $now
 	 */
-	public function detectsAllowedTimeRange($expected, array $parameters, $now) {
+	public function detectsAllowedTimeRange($expected, array $parameters, $now)
+	{
 		$now = new Nette\DateTime($now);
 		$params = new Parameters($parameters);
 		$this->assertEquals($expected, $params->isInTime($now));
 	}
 
-	public function dataProviderIsInTime() {
+	public function dataProviderIsInTime()
+	{
 		return array(
 			// One minute
 			array(
@@ -263,33 +274,24 @@ class Parameters_Test extends PHPUnit_Framework_TestCase {
 			array(
 				true,
 				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => '12:00',
+						array('from' => '11:00', 'to' => '12:00', ),
 					),
-				),
 				),
 				'2013-02-11 12:00:59'
 			),
 			array(
 				false,
 				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => '12:00',
+						array('from' => '11:00', 'to' => '12:00', ),
 					),
-				),
 				),
 				'2013-02-11 10:59:59'
 			),
 			array(
 				false,
 				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => '12:00',
+						array('from' => '11:00', 'to' => '12:00', ),
 					),
-				),
 				),
 				'2013-02-11 12:01:00'
 			),

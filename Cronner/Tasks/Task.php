@@ -2,18 +2,19 @@
 
 namespace stekycz\Cronner\Tasks;
 
-use Nette;
-use stekycz\Cronner\ITasksContainer;
-use stekycz\Cronner\ITimestampStorage;
 use DateTime;
+use Nette;
 use Nette\Object;
 use Nette\Reflection\Method;
+use stekycz\Cronner\ITasksContainer;
+use stekycz\Cronner\ITimestampStorage;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-final class Task extends Object {
+final class Task extends Object
+{
 
 	/**
 	 * @var \stekycz\Cronner\ITasksContainer
@@ -42,7 +43,8 @@ final class Task extends Object {
 	 * @param \Nette\Reflection\Method $method
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
 	 */
-	public function __construct(ITasksContainer $object, Method $method, ITimestampStorage $timestampStorage) {
+	public function __construct(ITasksContainer $object, Method $method, ITimestampStorage $timestampStorage)
+	{
 		$this->object = $object;
 		$this->method = $method;
 		$this->timestampStorage = $timestampStorage;
@@ -54,7 +56,8 @@ final class Task extends Object {
 	 * @param \DateTime $now
 	 * @return bool
 	 */
-	public function shouldBeRun(DateTime $now = null) {
+	public function shouldBeRun(DateTime $now = null)
+	{
 		if ($now === null) {
 			$now = new Nette\DateTime();
 		}
@@ -67,7 +70,8 @@ final class Task extends Object {
 			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
 	}
 
-	public function __invoke() {
+	public function __invoke()
+	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getParameters()->getName());
 		$this->timestampStorage->saveRunTime(new Nette\DateTime());
@@ -79,7 +83,8 @@ final class Task extends Object {
 	 *
 	 * @return \stekycz\Cronner\Tasks\Parameters
 	 */
-	private function getParameters() {
+	private function getParameters()
+	{
 		if ($this->parameters === null) {
 			$this->parameters = new Parameters(Parameters::parseParameters($this->method));
 		}

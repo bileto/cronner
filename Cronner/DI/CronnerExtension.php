@@ -11,7 +11,8 @@ use Nette\Utils\Validators;
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-18
  */
-class CronnerExtension extends CompilerExtension {
+class CronnerExtension extends CompilerExtension
+{
 
 	/**
 	 * @var array
@@ -37,10 +38,10 @@ class CronnerExtension extends CompilerExtension {
 
 		$container->addDefinition($this->prefix('client'))
 			->setClass('stekycz\Cronner\Cronner', array(
-                $storage,
-                $config['maxExecutionTime'],
-                !$config['debugMode'],
-            ));
+				$storage,
+				$config['maxExecutionTime'],
+				!$config['debugMode'],
+			));
 	}
 
 	/**

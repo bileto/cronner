@@ -10,7 +10,8 @@ use stekycz\Cronner\ITimestampStorage;
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-18
  */
-class DummyStorage extends Object implements ITimestampStorage {
+class DummyStorage extends Object implements ITimestampStorage
+{
 
 	/**
 	 * Sets name of current task.

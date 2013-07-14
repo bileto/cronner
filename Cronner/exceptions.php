@@ -6,35 +6,45 @@ namespace stekycz\Cronner;
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-03
  */
-class InvalidArgumentException extends \InvalidArgumentException {
+class InvalidArgumentException extends \InvalidArgumentException
+{
+
 }
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-04
  */
-class InvalidParameter extends InvalidArgumentException {
+class InvalidParameter extends InvalidArgumentException
+{
+
 }
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-02
  */
-class InvalidTaskNameException extends InvalidArgumentException {
+class InvalidTaskNameException extends InvalidArgumentException
+{
+
 }
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-02
  */
-class EmptyTaskNameException extends InvalidArgumentException {
+class EmptyTaskNameException extends InvalidArgumentException
+{
+
 }
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-21
  */
-class RuntimeException extends \RuntimeException {
+class RuntimeException extends \RuntimeException
+{
+
 }
 
 /**
@@ -43,6 +53,7 @@ class RuntimeException extends \RuntimeException {
  */
 class IOException extends RuntimeException
 {
+
 }
 
 /**
@@ -51,6 +62,7 @@ class IOException extends RuntimeException
  */
 class FileNotFoundException extends IOException
 {
+
 }
 
 /**
@@ -59,6 +71,7 @@ class FileNotFoundException extends IOException
  */
 class FileCannotBeOpenedException extends IOException
 {
+
 }
 
 /**
@@ -67,11 +80,14 @@ class FileCannotBeOpenedException extends IOException
  */
 class FileCannotBeClosedException extends IOException
 {
+
 }
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-02-21
  */
-class DirectoryNotFoundException extends IOException {
+class DirectoryNotFoundException extends IOException
+{
+
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace stekycz\Cronner\tests;
+
 use PHPUnit_Framework_TestCase;
 use stdClass;
 use stekycz\Cronner\Cronner;
@@ -9,7 +10,8 @@ use stekycz\Cronner\Cronner;
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-03
  */
-class Cronner_Test extends PHPUnit_Framework_TestCase {
+class Cronner_Test extends PHPUnit_Framework_TestCase
+{
 
 	/**
 	 * @var \stekycz\Cronner\Cronner
@@ -21,11 +23,12 @@ class Cronner_Test extends PHPUnit_Framework_TestCase {
 	 */
 	private $timestampStorage;
 
-	protected function setUp() {
+	protected function setUp()
+	{
 		parent::setUp();
 		$this->timestampStorage = $this->getMock(
 			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime', )
+			array('setTaskName', 'saveRunTime', 'loadLastRunTime',)
 		);
 		$this->cronner = new Cronner($this->timestampStorage);
 	}
@@ -34,12 +37,14 @@ class Cronner_Test extends PHPUnit_Framework_TestCase {
 	 * @test
 	 * @dataProvider dataProviderSetMaxExecutionTime
 	 */
-	public function canSetMaxExecutionTime($expected, $value) {
+	public function canSetMaxExecutionTime($expected, $value)
+	{
 		$this->cronner->setMaxExecutionTime($value);
 		$this->assertEquals($expected, $this->cronner->getMaxExecutionTime());
 	}
 
-	public function dataProviderSetMaxExecutionTime() {
+	public function dataProviderSetMaxExecutionTime()
+	{
 		return array(
 			array(1234, 1234),
 			array(1234, '1234'),
@@ -54,11 +59,13 @@ class Cronner_Test extends PHPUnit_Framework_TestCase {
 	 * @dataProvider dataProviderSetMaxExecutionTimeError
 	 * @expectedException \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function throwsExceptionOnWrongTypeOfMaxExecutionTime($value) {
+	public function throwsExceptionOnWrongTypeOfMaxExecutionTime($value)
+	{
 		$this->cronner->setMaxExecutionTime($value);
 	}
 
-	public function dataProviderSetMaxExecutionTimeError() {
+	public function dataProviderSetMaxExecutionTimeError()
+	{
 		return array(
 			array(-1234),
 			array('-1234'),
