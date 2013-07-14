@@ -6,6 +6,8 @@ use Nette;
 use Nette\Diagnostics\Debugger;
 use Exception;
 use Nette\Reflection\ClassType;
+use Nette\Utils\Strings;
+use stekycz\Cronner\Tasks\Parameters;
 use stekycz\Cronner\Tasks\Task;
 use Nette\Object;
 use DateTime;
@@ -89,7 +91,9 @@ final class Processor extends Object {
 		$reflection = new ClassType($tasks);
 		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-			$this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
+            if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
+                $this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
+            }
 		}
 		$this->registeredTaskObjects[] = $tasksId;
 
@@ -130,6 +134,16 @@ final class Processor extends Object {
 	public function countTaskObjects() {
 		return count($this->registeredTaskObjects);
 	}
+
+    /**
+     * Returns count of added tasks.
+     *
+     * @return int
+     */
+    public function countTasks()
+    {
+        return count($this->tasks);
+    }
 
 	/**
 	 * Creates and returns identification string for given object.

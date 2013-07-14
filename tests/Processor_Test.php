@@ -75,6 +75,7 @@ class Processor_Test extends PHPUnit_Framework_TestCase {
 		$tasks = new TestObject();
 
 		$this->processor->addTasks($tasks);
+        $this->assertEquals(4, $this->processor->countTasks());
 		$this->processor->process($now);
 	}
 

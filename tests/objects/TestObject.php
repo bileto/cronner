@@ -11,7 +11,14 @@ use Nette\Object;
  */
 class TestObject extends Object implements ITasksContainer {
 
-	/**
+    /**
+     * @cronner-task
+     * @cronner-period 1 day
+     */
+    public function __construct() {
+    }
+
+    /**
 	 * @cronner-task E-mail notifications
 	 * @cronner-period 5 minutes
 	 */
