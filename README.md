@@ -17,7 +17,7 @@ It requires **PHP >= 5.3.0** and **Nette Framework >= 2.0.***.
 It is very simple to use it because configuration is only in method annotations. Example class follows:
 
 ```php
-class CronTasks implements \stekycz\Cronner\ITasksContainer {
+class CronTasks {
     /**
      * @cronner-task E-mail sending
      * @cronner-period 1 day

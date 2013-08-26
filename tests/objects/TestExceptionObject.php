@@ -4,13 +4,12 @@ namespace stekycz\Cronner\tests\objects;
 
 use Nette\Object;
 use Exception;
-use stekycz\Cronner\ITasksContainer;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  * @since 2013-03-03
  */
-class TestExceptionObject extends Object implements ITasksContainer {
+class TestExceptionObject extends Object {
 
 	/**
 	 * @cronner-task

@@ -6,7 +6,6 @@ use DateTime;
 use Nette;
 use Nette\Object;
 use Nette\Reflection\Method;
-use stekycz\Cronner\ITasksContainer;
 use stekycz\Cronner\ITimestampStorage;
 
 /**
@@ -17,7 +16,7 @@ final class Task extends Object
 {
 
 	/**
-	 * @var \stekycz\Cronner\ITasksContainer
+	 * @var object
 	 */
 	private $object;
 
@@ -39,11 +38,11 @@ final class Task extends Object
 	/**
 	 * Creates instance of one task.
 	 *
-	 * @param \stekycz\Cronner\ITasksContainer $object
+	 * @param object $object
 	 * @param \Nette\Reflection\Method $method
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
 	 */
-	public function __construct(ITasksContainer $object, Method $method, ITimestampStorage $timestampStorage)
+	public function __construct($object, Method $method, ITimestampStorage $timestampStorage)
 	{
 		$this->object = $object;
 		$this->method = $method;

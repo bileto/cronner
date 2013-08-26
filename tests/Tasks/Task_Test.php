@@ -18,7 +18,7 @@ class Task_Test extends PHPUnit_Framework_TestCase
 {
 
 	/**
-	 * @var \stekycz\Cronner\ITasksContainer
+	 * @var object
 	 */
 	private $object;
 

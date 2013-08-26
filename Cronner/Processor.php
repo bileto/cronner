@@ -80,11 +80,11 @@ final class Processor extends Object
 	 * with name which is already added are given then throws
 	 * an exception.
 	 *
-	 * @param \stekycz\Cronner\ITasksContainer $tasks
+	 * @param object $tasks
 	 * @return \stekycz\Cronner\Cronner
 	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function addTasks(ITasksContainer $tasks)
+	public function addTasks($tasks)
 	{
 		$tasksId = $this->createIdFromObject($tasks);
 		if (in_array($tasksId, $this->registeredTaskObjects)) {
@@ -153,10 +153,10 @@ final class Processor extends Object
 	/**
 	 * Creates and returns identification string for given object.
 	 *
-	 * @param \stekycz\Cronner\ITasksContainer $tasks
+	 * @param object $tasks
 	 * @return string
 	 */
-	private function createIdFromObject(ITasksContainer $tasks)
+	private function createIdFromObject($tasks)
 	{
 		return sha1(get_class($tasks));
 	}

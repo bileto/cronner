@@ -47,7 +47,7 @@ class Processor_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function acceptsTasksObjectWithTaskMethods()
 	{
-		$tasks = $this->getMock('\stekycz\Cronner\ITasksContainer');
+		$tasks = $this->getMock('\stdClass');
 		$this->timestampStorage->expects($this->any())
 			->method('setTaskName')
 			->with('Test task');
@@ -62,7 +62,7 @@ class Processor_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function throwsExceptionOnDuplicateTasksObjectAddition()
 	{
-		$tasks = $this->getMock('\stekycz\Cronner\ITasksContainer');
+		$tasks = $this->getMock('\stdClass');
 		$this->timestampStorage->expects($this->any())
 			->method('setTaskName')
 			->with('Test task');
