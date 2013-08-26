@@ -3,3 +3,4 @@
 /tests/coverage.xml
 /tests/log/*
 /tests/temp/*
+/.idea
