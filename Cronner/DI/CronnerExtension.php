@@ -2,10 +2,16 @@
 
 namespace stekycz\Cronner\DI;
 
-use Nette\Config\Compiler;
-use Nette\Config\CompilerExtension;
-use Nette\Config\Configurator;
+use Nette\Configurator;
+use Nette\DI\Compiler;
+use Nette\DI\CompilerExtension;
 use Nette\Utils\Validators;
+
+if (!class_exists('Nette\DI\CompilerExtension')) {
+	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
+	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
+	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
+}
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
@@ -45,11 +51,11 @@ class CronnerExtension extends CompilerExtension
 	}
 
 	/**
-	 * @param \Nette\Config\Configurator $configurator
+	 * @param Configurator $configurator
 	 */
 	public static function register(Configurator $configurator)
 	{
-		$configurator->onCompile[] = function ($config, Compiler $compiler) {
+		$configurator->onCompile[] = function (Configurator $config, Compiler $compiler) {
 			$compiler->addExtension('cronner', new CronnerExtension());
 		};
 	}
