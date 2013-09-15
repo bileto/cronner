@@ -92,7 +92,7 @@ class FileStorage extends Object implements ITimestampStorage
 	private function checkDirectoryExists()
 	{
 		if (!is_dir($this->directory)) {
-			throw new DirectoryNotFoundException();
+			throw new DirectoryNotFoundException("Directory '" . $this->directory . "' not found.");
 		}
 	}
 
