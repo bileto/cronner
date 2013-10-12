@@ -1,12 +1,11 @@
 language: php
 php:
-    - 5.3
+    - 5.3.3
     - 5.4
     - 5.5
 
-script: VERBOSE=true ./vendor/phpunit/phpunit/phpunit.php --bootstrap tests/bootstrap.php --no-configuration tests/
-
 before_script:
-    - composer install --no-interaction --dev
-    - mkdir -m 777 tests/log
-    - mkdir -m 777 -p tests/temp/cronner
+    - composer self-update
+    - composer install --no-interaction --dev --prefer-source
+
+script: chmod +x ./tests/run.sh && VERBOSE=true ./tests/run.sh -s ./tests/

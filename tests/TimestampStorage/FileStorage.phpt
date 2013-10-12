@@ -5,15 +5,18 @@ namespace stekycz\Cronner\tests\TimestampStorage;
 use DateTime;
 use Nette\Utils\Finder;
 use Nette;
-use PHPUnit_Framework_TestCase;
 use stdClass;
 use stekycz\Cronner\TimestampStorage\FileStorage;
+use Tester\Assert;
+
+
+
+require_once(__DIR__ . "/../bootstrap.php");
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-21
  */
-class FileStorage_Test extends PHPUnit_Framework_TestCase
+class FileStorageTest extends \TestCase
 {
 
 	/**
@@ -21,11 +24,18 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase
 	 */
 	private $storage;
 
+
+
 	protected function setUp()
 	{
 		parent::setUp();
+		if (!file_exists(static::getTempDirPath())) {
+			mkdir(static::getTempDirPath(), 0777, TRUE);
+		}
 		$this->storage = new FileStorage(static::getTempDirPath());
 	}
+
+
 
 	protected function tearDown()
 	{
@@ -36,38 +46,34 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase
 		}
 	}
 
-	public static function setUpBeforeClass()
-	{
-		parent::setUpBeforeClass();
-		if (!file_exists(static::getTempDirPath())) {
-			mkdir(static::getTempDirPath(), 777);
-		}
-	}
+
 
 	private static function getTempDirPath()
 	{
 		return TEST_DIR . '/temp/cronner';
 	}
 
-	/**
-	 * @test
-	 */
-	public function isAbleToSetTaskName()
+
+
+	public function testIsAbleToSetTaskName()
 	{
 		$this->storage->setTaskName('Test task 1');
-		$this->storage->setTaskName(null);
+		$this->storage->setTaskName(NULL);
 		$this->storage->setTaskName();
 	}
 
+
+
 	/**
-	 * @test
 	 * @dataProvider dataProviderSetTaskName
-	 * @expectedException \stekycz\Cronner\InvalidTaskNameException
+	 * @throws \stekycz\Cronner\InvalidTaskNameException
 	 */
-	public function throwsExceptionOnInvalidTaskName($taskName)
+	public function testThrowsExceptionOnInvalidTaskName($taskName)
 	{
 		$this->storage->setTaskName($taskName);
 	}
+
+
 
 	public function dataProviderSetTaskName()
 	{
@@ -77,35 +83,38 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase
 			array(1),
 			array(0.0),
 			array(1.0),
-			array(false),
-			array(true),
+			array(FALSE),
+			array(TRUE),
 			array(new stdClass()),
 			array(array()),
 			array(array('Test task 1')),
 		);
 	}
 
+
+
 	/**
 	 * Tests that saving do not throws any exception.
 	 *
-	 * @test
 	 * @dataProvider dataProviderSaveRunTime
 	 * @param \DateTime $date
 	 */
-	public function loadsAndSavesLastRunTimeWithoutErrors(DateTime $date)
+	public function testLoadsAndSavesLastRunTimeWithoutErrors(DateTime $date)
 	{
 		$this->storage->setTaskName('Test task 1');
 
 		$lastRunTime = $this->storage->loadLastRunTime();
-		$this->assertNull($lastRunTime);
+		Assert::null($lastRunTime);
 		$this->storage->saveRunTime($date);
 		$lastRunTime = $this->storage->loadLastRunTime();
 
 		$this->storage->setTaskName();
 
-		$this->assertNotNull($lastRunTime);
-		$this->assertEquals($date, $lastRunTime);
+		Assert::true($lastRunTime !== NULL);
+		Assert::equal($date, $lastRunTime);
 	}
+
+
 
 	public function dataProviderSaveRunTime()
 	{
@@ -116,34 +125,35 @@ class FileStorage_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	/**
-	 * @test
-	 */
-	public function savesLastRunTimeByTaskName()
+
+
+	public function testSavesLastRunTimeByTaskName()
 	{
 		$date = new Nette\DateTime('2013-01-30 17:30:00');
 
 		$this->storage->setTaskName('Test task 1');
 		$lastRunTime = $this->storage->loadLastRunTime();
-		$this->assertNull($lastRunTime);
+		Assert::null($lastRunTime);
 		$this->storage->saveRunTime($date);
 		$lastRunTime = $this->storage->loadLastRunTime();
 
 		$this->storage->setTaskName();
 
-		$this->assertNotNull($lastRunTime);
-		$this->assertEquals($date, $lastRunTime);
+		Assert::true($lastRunTime !== NULL);
+		Assert::equal($date, $lastRunTime);
 
 		$this->storage->setTaskName('Test task 2');
 		$lastRunTime = $this->storage->loadLastRunTime();
-		$this->assertNull($lastRunTime);
+		Assert::null($lastRunTime);
 		$this->storage->saveRunTime($date);
 		$lastRunTime = $this->storage->loadLastRunTime();
 
 		$this->storage->setTaskName();
 
-		$this->assertNotNull($lastRunTime);
-		$this->assertEquals($date, $lastRunTime);
+		Assert::true($lastRunTime !== NULL);
+		Assert::equal($date, $lastRunTime);
 	}
 
 }
+
+run(new FileStorageTest());
