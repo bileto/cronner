@@ -1,0 +1,11 @@
+[PHP]
+date.timezone=Europe/Prague
+memory_limit = 256M
+extension_dir = "./ext"
+extension=php_curl.dll
+extension=php_mbstring.dll
+extension=php_gd2.dll
+extension=php_openssl.dll
+extension=php_pdo_mysql.dll
+extension=php_pdo_sqlite.dll
+extension=php_soap.dll

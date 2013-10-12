@@ -1,28 +1,43 @@
 <?php
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-03
- */
+use Mockista\Registry;
+use Nette\Diagnostics\Debugger;
 
-use Nette\Config\Configurator;
+$autoloader = require_once __DIR__ . '/../vendor/autoload.php';
 
-define('TEST_DIR', __DIR__);
-define('LIBS_DIR', TEST_DIR . '/../vendor');
+define("TEST_DIR", __DIR__);
+Debugger::$logDirectory = TEST_DIR;
 
-// Composer autoloading
-require LIBS_DIR . '/autoload.php';
+function run(Tester\TestCase $testCase)
+{
+	$testCase->run(isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : NULL);
+}
 
-// Configure application
-$configurator = new Configurator();
 
-// Enable Nette Debugger for error visualisation & logging
-$configurator->setDebugMode();
-$configurator->enableDebugger(TEST_DIR . '/log', 'martin.stekl@gmail.com');
 
-// Enable RobotLoader - this will load all classes automatically
-$configurator->setTempDirectory(TEST_DIR . '/temp');
+class TestCase extends Tester\TestCase
+{
 
-$configurator->createRobotLoader()
-	->addDirectory(TEST_DIR)
-	->register();
+	/**
+	 * @var \Mockista\Registry
+	 */
+	protected $mockista;
+
+
+
+	protected function setUp()
+	{
+		$this->mockista = new Registry();
+		usleep(1); // Hack for Mockista
+	}
+
+
+
+	protected function tearDown()
+	{
+		$this->mockista->assertExpectations();
+	}
+
+}
+
+return $autoloader;

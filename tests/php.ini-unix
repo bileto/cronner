@@ -1,0 +1,2 @@
+date.timezone=Europe/Prague
+memory_limit = 256M

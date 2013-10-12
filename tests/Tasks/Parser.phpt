@@ -2,27 +2,31 @@
 
 namespace stekycz\Cronner\tests\Tasks;
 
-use PHPUnit_Framework_TestCase;
 use stdClass;
 use stekycz\Cronner\Tasks\Parser;
+use Tester\Assert;
+
+
+
+require_once(__DIR__ . "/../bootstrap.php");
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-05
  */
-class Parser_Test extends PHPUnit_Framework_TestCase
+class ParserTest extends \TestCase
 {
 
 	/**
-	 * @test
 	 * @dataProvider dataProviderParseName
 	 * @param string $expected
 	 * @param string $annotation
 	 */
 	public function parsesName($expected, $annotation)
 	{
-		$this->assertEquals($expected, Parser::parseName($annotation));
+		Assert::equal($expected, Parser::parseName($annotation));
 	}
+
+
 
 	public function dataProviderParseName()
 	{
@@ -33,24 +37,27 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 			array('false', 'false'),
 			array('0', '0'),
 			array('1', '1'),
-			array(null, true),
-			array(null, false),
-			array(null, 0),
-			array(null, 1),
-			array(null, new stdClass()),
+			array(NULL, TRUE),
+			array(NULL, FALSE),
+			array(NULL, 0),
+			array(NULL, 1),
+			array(NULL, new stdClass()),
 		);
 	}
 
+
+
 	/**
-	 * @test
 	 * @dataProvider dataProviderParsePeriod
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function parsesPeriod($expected, $annotation)
+	public function testParsesPeriod($expected, $annotation)
 	{
-		$this->assertEquals($expected, Parser::parsePeriod($annotation));
+		Assert::equal($expected, Parser::parsePeriod($annotation));
 	}
+
+
 
 	public function dataProviderParsePeriod()
 	{
@@ -63,16 +70,19 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+
+
 	/**
-	 * @test
-	 * @expectedException \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameter
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
 	 */
-	public function throwsExceptionOnWrongPeriodDefinition($annotation)
+	public function testThrowsExceptionOnWrongPeriodDefinition($annotation)
 	{
 		Parser::parsePeriod($annotation);
 	}
+
+
 
 	public function dataProviderParsePeriodError()
 	{
@@ -82,24 +92,27 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 			array('false'),
 			array('0'),
 			array('1'),
-			array(true),
-			array(false),
+			array(TRUE),
+			array(FALSE),
 			array(0),
 			array(1),
 			array(new stdClass()),
 		);
 	}
 
+
+
 	/**
-	 * @test
 	 * @dataProvider dataProviderParseDays
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function parsesDays($expected, $annotation)
+	public function testParsesDays($expected, $annotation)
 	{
-		$this->assertEquals($expected, Parser::parseDays($annotation));
+		Assert::equal($expected, Parser::parseDays($annotation));
 	}
+
+
 
 	public function dataProviderParseDays()
 	{
@@ -134,16 +147,19 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+
+
 	/**
-	 * @test
-	 * @expectedException \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameter
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
 	 */
-	public function throwsExceptionOnWrongDaysDefinition($annotation)
+	public function testThrowsExceptionOnWrongDaysDefinition($annotation)
 	{
 		Parser::parseDays($annotation);
 	}
+
+
 
 	public function dataProviderParseDaysError()
 	{
@@ -153,24 +169,27 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 			array('false'),
 			array('0'),
 			array('1'),
-			array(true),
-			array(false),
+			array(TRUE),
+			array(FALSE),
 			array(0),
 			array(1),
 			array(new stdClass()),
 		);
 	}
 
+
+
 	/**
-	 * @test
 	 * @dataProvider dataProviderParseTimes
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function parsesTimes($expected, $annotation)
+	public function testParsesTimes($expected, $annotation)
 	{
-		$this->assertEquals($expected, Parser::parseTimes($annotation));
+		Assert::equal($expected, Parser::parseTimes($annotation));
 	}
+
+
 
 	public function dataProviderParseTimes()
 	{
@@ -180,7 +199,7 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 				array(
 					array(
 						'from' => '11:00',
-						'to' => null,
+						'to' => NULL,
 					),
 				), '11:00',
 			),
@@ -197,11 +216,11 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 				array(
 					array(
 						'from' => '11:00',
-						'to' => null,
+						'to' => NULL,
 					),
 					array(
 						'from' => '17:00',
-						'to' => null,
+						'to' => NULL,
 					),
 				), '11:00, 17:00',
 			),
@@ -353,16 +372,19 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+
+
 	/**
-	 * @test
-	 * @expectedException \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameter
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
 	 */
-	public function throwsExceptionOnWrongTimesDefinition($annotation)
+	public function testThrowsExceptionOnWrongTimesDefinition($annotation)
 	{
 		Parser::parseTimes($annotation);
 	}
+
+
 
 	public function dataProviderParseTimesError()
 	{
@@ -372,8 +394,8 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 			array('false'),
 			array('0'),
 			array('1'),
-			array(true),
-			array(false),
+			array(TRUE),
+			array(FALSE),
 			array(0),
 			array(1),
 			array(new stdClass()),
@@ -381,3 +403,5 @@ class Parser_Test extends PHPUnit_Framework_TestCase
 	}
 
 }
+
+run(new ParserTest());
