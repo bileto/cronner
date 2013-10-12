@@ -1,6 +1,8 @@
 /vendor
 /composer.lock
+/tests/*.log
 /tests/coverage.xml
 /tests/log/*
 /tests/temp/*
 /.idea
+.DS_Store

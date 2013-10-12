@@ -2,15 +2,18 @@
 
 namespace stekycz\Cronner\tests;
 
-use PHPUnit_Framework_TestCase;
 use stdClass;
 use stekycz\Cronner\Cronner;
+use Tester\Assert;
+
+
+
+require_once(__DIR__ . "/bootstrap.php");
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-03-03
  */
-class Cronner_Test extends PHPUnit_Framework_TestCase
+class CronnerTest extends \TestCase
 {
 
 	/**
@@ -23,25 +26,30 @@ class Cronner_Test extends PHPUnit_Framework_TestCase
 	 */
 	private $timestampStorage;
 
+
+
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->timestampStorage = $this->getMock(
+		$this->timestampStorage = $this->mockista->create(
 			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime',)
+			array('setTaskName', 'saveRunTime', 'loadLastRunTime')
 		);
 		$this->cronner = new Cronner($this->timestampStorage);
 	}
 
+
+
 	/**
-	 * @test
 	 * @dataProvider dataProviderSetMaxExecutionTime
 	 */
-	public function canSetMaxExecutionTime($expected, $value)
+	public function testCanSetMaxExecutionTime($expected, $value)
 	{
 		$this->cronner->setMaxExecutionTime($value);
-		$this->assertEquals($expected, $this->cronner->getMaxExecutionTime());
+		Assert::same($expected, $this->cronner->getMaxExecutionTime());
 	}
+
+
 
 	public function dataProviderSetMaxExecutionTime()
 	{
@@ -50,19 +58,22 @@ class Cronner_Test extends PHPUnit_Framework_TestCase
 			array(1234, '1234'),
 			array(1234, 1234.5),
 			array(1234, '1234.5'),
-			array(null, null),
+			array(NULL, NULL),
 		);
 	}
 
+
+
 	/**
-	 * @test
 	 * @dataProvider dataProviderSetMaxExecutionTimeError
-	 * @expectedException \stekycz\Cronner\InvalidArgumentException
+	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function throwsExceptionOnWrongTypeOfMaxExecutionTime($value)
+	public function testThrowsExceptionOnWrongTypeOfMaxExecutionTime($value)
 	{
 		$this->cronner->setMaxExecutionTime($value);
 	}
+
+
 
 	public function dataProviderSetMaxExecutionTimeError()
 	{
@@ -76,10 +87,12 @@ class Cronner_Test extends PHPUnit_Framework_TestCase
 			array(0.0),
 			array('0.0'),
 			array('nejaky blabol'),
-			array(true),
-			array(false),
+			array(TRUE),
+			array(FALSE),
 			array(new stdClass()),
 		);
 	}
 
 }
+
+run(new CronnerTest());
