@@ -6,9 +6,10 @@ use DateTime;
 use Nette\Object;
 use stekycz\Cronner\ITimestampStorage;
 
+
+
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-03-18
  */
 class DummyStorage extends Object implements ITimestampStorage
 {
@@ -18,10 +19,12 @@ class DummyStorage extends Object implements ITimestampStorage
 	 *
 	 * @param string|null $taskName
 	 */
-	public function setTaskName($taskName = null)
+	public function setTaskName($taskName = NULL)
 	{
 		// Dummy
 	}
+
+
 
 	/**
 	 * Saves current date and time as last invocation time.
@@ -33,6 +36,8 @@ class DummyStorage extends Object implements ITimestampStorage
 		// Dummy
 	}
 
+
+
 	/**
 	 * Returns date and time of last cron task invocation.
 	 *
@@ -40,7 +45,7 @@ class DummyStorage extends Object implements ITimestampStorage
 	 */
 	public function loadLastRunTime()
 	{
-		return null; // Dummy
+		return NULL; // Dummy
 	}
 
 }

@@ -8,9 +8,10 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
 
+
+
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-03
  */
 final class Parameters extends Object
 {
@@ -25,6 +26,8 @@ final class Parameters extends Object
 	 */
 	private $values;
 
+
+
 	/**
 	 * @param array $values
 	 */
@@ -36,6 +39,8 @@ final class Parameters extends Object
 		$this->values = $values;
 	}
 
+
+
 	/**
 	 * Returns name of task.
 	 *
@@ -45,6 +50,8 @@ final class Parameters extends Object
 	{
 		return $this->values[static::TASK];
 	}
+
+
 
 	/**
 	 * Returns true if task is really a task.
@@ -56,6 +63,8 @@ final class Parameters extends Object
 		return Strings::length($this->values[static::TASK]) > 0;
 	}
 
+
+
 	/**
 	 * Returns true if today is allowed day of week.
 	 *
@@ -64,11 +73,14 @@ final class Parameters extends Object
 	 */
 	public function isInDay(DateTime $now)
 	{
-		if (($days = $this->values[static::DAYS]) !== null) {
+		if (($days = $this->values[static::DAYS]) !== NULL) {
 			return in_array($now->format('D'), $days);
 		}
-		return true;
+
+		return TRUE;
 	}
+
+
 
 	/**
 	 * Returns true if current time is in allowed range.
@@ -82,16 +94,20 @@ final class Parameters extends Object
 			foreach ($times as $time) {
 				if ($time['to'] && $time['to'] >= $now->format('H:i') && $time['from'] <= $now->format('H:i')) {
 					// Is in range with precision to minutes
-					return true;
+					return TRUE;
 				} elseif ($time['from'] == $now->format('H:i')) {
 					// Is in specific minute
-					return true;
+					return TRUE;
 				}
 			}
-			return false;
+
+			return FALSE;
 		}
-		return true;
+
+		return TRUE;
 	}
+
+
 
 	/**
 	 * Returns true if current time is next period of invocation.
@@ -100,13 +116,16 @@ final class Parameters extends Object
 	 * @param \DateTime|null $lastRunTime
 	 * @return bool
 	 */
-	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = null)
+	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL)
 	{
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
-			return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
+			return $lastRunTime === NULL || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
-		return true;
+
+		return TRUE;
 	}
+
+
 
 	/**
 	 * Parse cronner values from annotations.
@@ -116,7 +135,7 @@ final class Parameters extends Object
 	 */
 	public static function parseParameters(Method $method)
 	{
-		$taskName = null;
+		$taskName = NULL;
 		if ($method->hasAnnotation(Parameters::TASK)) {
 			$className = $method->getDeclaringClass()->getName();
 			$methodName = $method->getName();
@@ -125,16 +144,16 @@ final class Parameters extends Object
 
 		$parameters = array(
 			static::TASK => Parser::parseName($method->getAnnotation(Parameters::TASK))
-				?: $taskName,
+					? : $taskName,
 			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
-				? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
-				: null,
+					? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
+					: NULL,
 			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
-				? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
-				: null,
+					? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
+					: NULL,
 			static::TIME => $method->hasAnnotation(Parameters::TIME)
-				? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
-				: null,
+					? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
+					: NULL,
 		);
 
 		return $parameters;

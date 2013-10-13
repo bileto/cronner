@@ -8,9 +8,10 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use stekycz\Cronner\ITimestampStorage;
 
+
+
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-03
  */
 final class Task extends Object
 {
@@ -33,7 +34,9 @@ final class Task extends Object
 	/**
 	 * @var \stekycz\Cronner\Tasks\Parameters|null
 	 */
-	private $parameters = null;
+	private $parameters = NULL;
+
+
 
 	/**
 	 * Creates instance of one task.
@@ -49,25 +52,30 @@ final class Task extends Object
 		$this->timestampStorage = $timestampStorage;
 	}
 
+
+
 	/**
 	 * Returns True if given parameters should be run.
 	 *
 	 * @param \DateTime $now
 	 * @return bool
 	 */
-	public function shouldBeRun(DateTime $now = null)
+	public function shouldBeRun(DateTime $now = NULL)
 	{
-		if ($now === null) {
+		if ($now === NULL) {
 			$now = new Nette\DateTime();
 		}
 
 		$parameters = $this->getParameters();
 		$this->timestampStorage->setTaskName($parameters->getName());
+
 		return $parameters->isTask()
-			&& $parameters->isInDay($now)
-			&& $parameters->isInTime($now)
-			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
+		&& $parameters->isInDay($now)
+		&& $parameters->isInTime($now)
+		&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
 	}
+
+
 
 	public function __invoke()
 	{
@@ -77,6 +85,8 @@ final class Task extends Object
 		$this->timestampStorage->setTaskName();
 	}
 
+
+
 	/**
 	 * Returns instance of parsed parameters.
 	 *
@@ -84,9 +94,10 @@ final class Task extends Object
 	 */
 	private function getParameters()
 	{
-		if ($this->parameters === null) {
+		if ($this->parameters === NULL) {
 			$this->parameters = new Parameters(Parameters::parseParameters($this->method));
 		}
+
 		return $this->parameters;
 	}
 

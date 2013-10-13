@@ -4,9 +4,10 @@ namespace stekycz\Cronner;
 
 use DateTime;
 
+
+
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-04
  */
 interface ITimestampStorage
 {
@@ -16,7 +17,9 @@ interface ITimestampStorage
 	 *
 	 * @param string|null $taskName
 	 */
-	public function setTaskName($taskName = null);
+	public function setTaskName($taskName = NULL);
+
+
 
 	/**
 	 * Saves current date and time as last invocation time.
@@ -24,6 +27,8 @@ interface ITimestampStorage
 	 * @param \DateTime $now
 	 */
 	public function saveRunTime(DateTime $now);
+
+
 
 	/**
 	 * Returns date and time of last cron task invocation.

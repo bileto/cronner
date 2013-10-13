@@ -73,7 +73,7 @@ class ParserTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
 	 */
@@ -150,7 +150,7 @@ class ParserTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
 	 */
@@ -375,7 +375,7 @@ class ParserTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
 	 */

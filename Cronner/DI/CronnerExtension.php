@@ -13,9 +13,10 @@ if (!class_exists('Nette\DI\CompilerExtension')) {
 	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
 }
 
+
+
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-03-18
  */
 class CronnerExtension extends CompilerExtension
 {
@@ -24,9 +25,11 @@ class CronnerExtension extends CompilerExtension
 	 * @var array
 	 */
 	public $defaults = array(
-		'timestampStorage' => null,
-		'maxExecutionTime' => null,
+		'timestampStorage' => NULL,
+		'maxExecutionTime' => NULL,
 	);
+
+
 
 	public function loadConfiguration()
 	{
@@ -50,8 +53,10 @@ class CronnerExtension extends CompilerExtension
 			));
 	}
 
+
+
 	/**
-	 * @param Configurator $configurator
+	 * @param \Nette\Configurator $configurator
 	 */
 	public static function register(Configurator $configurator)
 	{

@@ -6,9 +6,10 @@ use DateTime;
 use Nette;
 use Nette\Object;
 
+
+
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-03
  */
 class Cronner extends Object
 {
@@ -31,7 +32,9 @@ class Cronner extends Object
 	/**
 	 * @var bool
 	 */
-	private $skipFailedTask = true;
+	private $skipFailedTask = TRUE;
+
+
 
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
@@ -40,13 +43,16 @@ class Cronner extends Object
 	 */
 	public function __construct(
 		ITimestampStorage $timestampStorage,
-		$maxExecutionTime = null,
-		$skipFailedTask = true
-	) {
+		$maxExecutionTime = NULL,
+		$skipFailedTask = TRUE
+	)
+	{
 		$this->setTimestampStorage($timestampStorage);
 		$this->setMaxExecutionTime($maxExecutionTime);
 		$this->setSkipFailedTask($skipFailedTask);
 	}
+
+
 
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
@@ -56,15 +62,17 @@ class Cronner extends Object
 		$this->timestampStorage = $timestampStorage;
 	}
 
+
+
 	/**
 	 * Sets max execution time for Cronner. It is used only when Cronner runs.
 	 *
 	 * @param int|null $maxExecutionTime
 	 * @throws \stekycz\Cronner\InvalidArgumentException
 	 */
-	public function setMaxExecutionTime($maxExecutionTime = null)
+	public function setMaxExecutionTime($maxExecutionTime = NULL)
 	{
-		if ($maxExecutionTime !== null && (!is_numeric($maxExecutionTime) || ((int) $maxExecutionTime) <= 0)) {
+		if ($maxExecutionTime !== NULL && (!is_numeric($maxExecutionTime) || ((int) $maxExecutionTime) <= 0)) {
 			throw new InvalidArgumentException(
 				"Max execution time must be NULL or numeric value. Type '" . gettype($maxExecutionTime) . "' was given."
 			);
@@ -72,15 +80,19 @@ class Cronner extends Object
 		$this->maxExecutionTime = $maxExecutionTime;
 	}
 
+
+
 	/**
 	 * Sets flag that thrown exceptions will not be thrown but cached and logged.
 	 *
 	 * @param bool $skipFailedTask
 	 */
-	public function setSkipFailedTask($skipFailedTask = true)
+	public function setSkipFailedTask($skipFailedTask = TRUE)
 	{
 		$this->skipFailedTask = (bool) $skipFailedTask;
 	}
+
+
 
 	/**
 	 * Returns max execution time for Cronner. It does not load INI value.
@@ -89,8 +101,10 @@ class Cronner extends Object
 	 */
 	public function getMaxExecutionTime()
 	{
-		return !is_null($this->maxExecutionTime) ? (int) $this->maxExecutionTime : null;
+		return !is_null($this->maxExecutionTime) ? (int) $this->maxExecutionTime : NULL;
 	}
+
+
 
 	/**
 	 * Adds callback which creates an instance of tasks.
@@ -101,17 +115,20 @@ class Cronner extends Object
 	public function addTasksCallback($callback)
 	{
 		$this->callbacks[] = callback($callback);
+
 		return $this;
 	}
+
+
 
 	/**
 	 * Runs all cron tasks.
 	 *
 	 * @param \DateTime $now
 	 */
-	public function run(DateTime $now = null)
+	public function run(DateTime $now = NULL)
 	{
-		if ($now === null) {
+		if ($now === NULL) {
 			$now = new Nette\DateTime();
 		}
 		$processor = new Processor($this->timestampStorage, $this->skipFailedTask);
@@ -121,7 +138,7 @@ class Cronner extends Object
 			$processor->addTasks($tasks);
 		}
 
-		if ($this->maxExecutionTime !== null) {
+		if ($this->maxExecutionTime !== NULL) {
 			set_time_limit((int) $this->maxExecutionTime);
 		}
 		$processor->process($now);

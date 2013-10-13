@@ -2,14 +2,14 @@
 
 namespace stekycz\Cronner\Tasks;
 
-use Nette\DateTime;
 use Nette\Object;
 use Nette\Utils\Strings;
-use stekycz\Cronner\InvalidParameter;
+use stekycz\Cronner\InvalidParameterException;
+
+
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
- * @since 2013-02-04
  */
 class Parser extends Object
 {
@@ -22,34 +22,40 @@ class Parser extends Object
 	 */
 	public static function parseName($annotation)
 	{
-		$name = null;
+		$name = NULL;
 		if (is_string($annotation) && Strings::length($annotation)) {
 			$name = Strings::trim($annotation);
-			$name = Strings::length($name) ? $name : null;
+			$name = Strings::length($name) ? $name : NULL;
 		}
+
 		return $name;
 	}
+
+
 
 	/**
 	 * Parses period of cron task. If annotation is invalid throws exception.
 	 *
 	 * @param string $annotation
 	 * @return string|null
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 */
 	public static function parsePeriod($annotation)
 	{
-		$period = null;
+		$period = NULL;
 		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
-			if (strtotime('+ ' . $annotation) === false) {
-				throw new InvalidParameter("Given period parameter '" . $annotation . "' must be valid for strtotime().");
+			if (strtotime('+ ' . $annotation) === FALSE) {
+				throw new InvalidParameterException("Given period parameter '" . $annotation . "' must be valid for strtotime().");
 			}
 			$period = $annotation;
 		}
-		return $period ?: null;
+
+		return $period ? : NULL;
 	}
+
+
 
 	/**
 	 * Parses allowed days for cron task. If annotation is invalid
@@ -57,13 +63,13 @@ class Parser extends Object
 	 *
 	 * @param string $annotation
 	 * @return string[]|null
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 */
 	public static function parseDays($annotation)
 	{
 		static $validValues = array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',);
 
-		$days = null;
+		$days = NULL;
 		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
@@ -71,15 +77,18 @@ class Parser extends Object
 			$days = static::expandDaysRange($days);
 			foreach ($days as $day) {
 				if (!in_array($day, $validValues)) {
-					throw new InvalidParameter(
+					throw new InvalidParameterException(
 						"Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . "."
 					);
 				}
 			}
 			$days = array_values(array_intersect($validValues, $days));
 		}
-		return $days ?: null;
+
+		return $days ? : NULL;
 	}
+
+
 
 	/**
 	 * Parses allowed time ranges for cron task. If annotation is invalid
@@ -87,11 +96,11 @@ class Parser extends Object
 	 *
 	 * @param string $annotation
 	 * @return string[][]|null
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 */
 	public static function parseTimes($annotation)
 	{
-		$times = null;
+		$times = NULL;
 		static::checkAnnotation($annotation);
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
@@ -105,8 +114,11 @@ class Parser extends Object
 				});
 			}
 		}
-		return $times ?: null;
+
+		return $times ? : NULL;
 	}
+
+
 
 	/**
 	 * Translates given annotation to day names.
@@ -133,8 +145,11 @@ class Parser extends Object
 					break;
 			}
 		}
+
 		return array_unique($days);
 	}
+
+
 
 	/**
 	 * Expands given day names and day ranges to day names only. The day range must be
@@ -151,16 +166,16 @@ class Parser extends Object
 		foreach ($days as $day) {
 			if (Strings::match($day, '~^\w{3}\s*-\s*\w{3}$~u')) {
 				list($begin, $end) = Strings::split($day, '~\s*-\s*~');
-				$started = false;
+				$started = FALSE;
 				foreach ($dayNames as $dayName) {
 					if ($dayName === $begin) {
-						$started = true;
+						$started = TRUE;
 					}
 					if ($started) {
 						$expandedValues[] = $dayName;
 					}
 					if ($dayName === $end) {
-						$started = false;
+						$started = FALSE;
 					}
 				}
 			} else {
@@ -170,6 +185,8 @@ class Parser extends Object
 
 		return array_unique($expandedValues);
 	}
+
+
 
 	/**
 	 * Splits given annotation by comma into array.
@@ -182,6 +199,8 @@ class Parser extends Object
 		return Strings::split($annotation, '/\s*,\s*/');
 	}
 
+
+
 	/**
 	 * Returns True if time in valid format is given, False otherwise.
 	 *
@@ -193,31 +212,36 @@ class Parser extends Object
 		return (bool) Strings::match($time, '/^\d{2}:\d{2}$/u');
 	}
 
+
+
 	/**
 	 * Parses one time annotation. If it is invalid throws exception.
 	 *
 	 * @param string $time
 	 * @return string[][]
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 */
 	private static function parseOneTime($time)
 	{
 		$time = static::translateToTimes($time);
 		$parts = Strings::split($time, '/\s*-\s*/');
 		if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
-			throw new InvalidParameter(
+			throw new InvalidParameterException(
 				"Times annotation is not in valid format. It must looks like 'hh:mm[ - hh:mm]' but '" . $time . "' was given."
 			);
 		}
 		$times = array();
-		if (static::isTimeOverMidnight($parts[0], isset($parts[1]) ? $parts[1] : null)) {
+		if (static::isTimeOverMidnight($parts[0], isset($parts[1]) ? $parts[1] : NULL)) {
 			$times[] = static::timePartsToArray('00:00', $parts[1]);
 			$times[] = static::timePartsToArray($parts[0], '23:59');
 		} else {
-			$times[] = static::timePartsToArray($parts[0], isset($parts[1]) ? $parts[1] : null);
+			$times[] = static::timePartsToArray($parts[0], isset($parts[1]) ? $parts[1] : NULL);
 		}
+
 		return $times;
 	}
+
+
 
 	/**
 	 * Translates given annotation to day names.
@@ -239,6 +263,8 @@ class Parser extends Object
 		return array_key_exists($time, $translationMap) ? $translationMap[$time] : $time;
 	}
 
+
+
 	/**
 	 * Returns True if given times includes midnight, False otherwise.
 	 *
@@ -248,8 +274,10 @@ class Parser extends Object
 	 */
 	private static function isTimeOverMidnight($from, $to)
 	{
-		return $to !== null && $to < $from;
+		return $to !== NULL && $to < $from;
 	}
+
+
 
 	/**
 	 * Returns array structure with given times.
@@ -266,16 +294,18 @@ class Parser extends Object
 		);
 	}
 
+
+
 	/**
 	 * Checks if given annotation is valid. Throws exception if not.
 	 *
 	 * @param string $annotation
-	 * @throws \stekycz\Cronner\InvalidParameter
+	 * @throws \stekycz\Cronner\InvalidParameterException
 	 */
 	private static function checkAnnotation($annotation)
 	{
 		if (!is_string($annotation)) {
-			throw new InvalidParameter(
+			throw new InvalidParameterException(
 				"Cron task annotation must be string but '" .
 				!is_bool($annotation) && is_object($annotation) ? get_class($annotation) : gettype($annotation) . "' given."
 			);
