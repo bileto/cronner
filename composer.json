@@ -12,8 +12,10 @@
 			"role": "Developer"
 		}
 	],
-	"autoload": {
-		"classmap": ["Cronner/"]
+	"support": {
+		"email": "martin.stekl@gmail.com",
+		"issues": "https://github.com/stekycz/Cronner/issues",
+		"source": "https://github.com/stekycz/Cronner"
 	},
 	"require": {
 		"php": ">=5.3.3",
@@ -22,5 +24,11 @@
 	"require-dev": {
 		"nette/tester": "0.9.*",
 		"janmarek/mockista": "1.0.*"
+	},
+	"suggest": {
+		"kdyby/events": "Events for Nette Framework"
+	},
+	"autoload": {
+		"classmap": ["Cronner/"]
 	}
 }
