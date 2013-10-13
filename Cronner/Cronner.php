@@ -16,9 +16,27 @@ use stekycz\Cronner\Tasks\Task;
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
+ * @method onTaskBegin(\stekycz\Cronner\Cronner $cronner, \stekycz\Cronner\Tasks\Task $task)
+ * @method onTaskFinished(\stekycz\Cronner\Cronner $cronner, \stekycz\Cronner\Tasks\Task $task)
+ * @method onTaskError(\stekycz\Cronner\Cronner $cronner, \Exception $exception, \stekycz\Cronner\Tasks\Task $task)
  */
 class Cronner extends Object
 {
+
+	/**
+	 * @var callable
+	 */
+	public $onTaskBegin = array();
+
+	/**
+	 * @var callable
+	 */
+	public $onTaskFinished = array();
+
+	/**
+	 * @var callable
+	 */
+	public $onTaskError = array();
 
 	/**
 	 * @var \stekycz\Cronner\Tasks\Task[]
@@ -45,30 +63,25 @@ class Cronner extends Object
 	 */
 	private $skipFailedTask = TRUE;
 
-	/**
-	 * @var \Nette\Callback
-	 */
-	private $logCallback;
-
 
 
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
 	 * @param int|null $maxExecutionTime It is used only when Cronner runs
 	 * @param bool $skipFailedTask
-	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
 	 */
 	public function __construct(
 		ITimestampStorage $timestampStorage,
 		$maxExecutionTime = NULL,
-		$skipFailedTask = TRUE,
-		$logCallback = NULL
+		$skipFailedTask = TRUE
 	)
 	{
 		$this->setTimestampStorage($timestampStorage);
 		$this->setMaxExecutionTime($maxExecutionTime);
 		$this->setSkipFailedTask($skipFailedTask);
-		$this->setLogCallback($logCallback);
+		$this->onTaskError[] = function (Cronner $cronner, Exception $exception) {
+			Debugger::log($exception, Debugger::ERROR);
+		};
 	}
 
 
@@ -116,26 +129,6 @@ class Cronner extends Object
 	public function setSkipFailedTask($skipFailedTask = TRUE)
 	{
 		$this->skipFailedTask = (bool) $skipFailedTask;
-
-		return $this;
-	}
-
-
-
-	/**
-	 * Sets log callback.
-	 *
-	 * @param callable|null $logCallback Callback should accept one argument (an exception object)
-	 * @return \stekycz\Cronner\Cronner
-	 */
-	public function setLogCallback($logCallback = NULL)
-	{
-		if ($logCallback === NULL) {
-			$logCallback = function (Exception $exception) {
-				Debugger::log($exception, Debugger::ERROR);
-			};
-		}
-		$this->logCallback = callback($logCallback);
 
 		return $this;
 	}
@@ -201,15 +194,17 @@ class Cronner extends Object
 		foreach ($this->tasks as $task) {
 			try {
 				if ($task->shouldBeRun($now)) {
+					$this->onTaskBegin($this, $task);
 					$task();
+					$this->onTaskFinished($this, $task);
 				}
 			} catch (Exception $e) {
+				$this->onTaskError($this, $e, $task);
 				if ($e instanceof RuntimeException) {
 					throw $e; // Throw exception if it is Cronner Runtime exception
 				} elseif ($this->skipFailedTask === FALSE) {
 					throw $e; // Throw exception if failed task should not be skipped
 				}
-				$this->logCallback->invoke($e);
 			}
 		}
 	}

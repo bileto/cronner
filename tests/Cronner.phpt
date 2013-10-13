@@ -6,6 +6,7 @@ use Exception;
 use Nette\DateTime;
 use stdClass;
 use stekycz\Cronner\Cronner;
+use stekycz\Cronner\Tasks\Task;
 use stekycz\Cronner\tests\objects\TestExceptionObject;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
@@ -143,11 +144,29 @@ class CronnerTest extends \TestCase
 
 
 
-	public function testCanSetLogCallback()
+	public function testCanSetOnTaskBeginCallback()
 	{
-		$this->cronner->setLogCallback(function (Exception $e) {
+		$this->cronner->onTaskBegin[] = function (Cronner $cronner, Task $task) {
 			// This method is dummy
-		});
+		};
+	}
+
+
+
+	public function testCanSetOnTaskFinishedCallback()
+	{
+		$this->cronner->onTaskFinished[] = function (Cronner $cronner, Task $task) {
+			// This method is dummy
+		};
+	}
+
+
+
+	public function testCanSetOnTaskErrorCallback()
+	{
+		$this->cronner->onTaskError[] = function (Cronner $cronner, Exception $e, Task $task) {
+			// This method is dummy
+		};
 	}
 
 
@@ -156,20 +175,29 @@ class CronnerTest extends \TestCase
 	{
 		$now = new DateTime('2013-02-04 09:30:00');
 
-		$logCallback = $this->mockista->create('\Nette\Object', array('log'));
-		$logCallback->expects('log')
+		$logCallback = $this->mockista->create('\Nette\Object', array('logBegin', 'logFinished', 'logError'));
+		$logCallback->expects('logError')
 			->once()
-			->andCallback(function (Exception $e) {
-				Assert::true($e instanceof Exception);
+			->andCallback(function (Exception $e, Task $task) {
 				Assert::equal('Test 01', $e->getMessage());
 			});
+		$logCallback->expects('logBegin')
+			->twice();
+		$logCallback->expects('logFinished')
+			->once();
 
 		$this->timestampStorage->expects('setTaskName');
 		$this->timestampStorage->expects('saveRunTime');
 
-		$this->cronner->setLogCallback(function (Exception $e) use ($logCallback) {
-			$logCallback->log($e);
-		});
+		$this->cronner->onTaskBegin[] = function (Cronner $cronner, Task $task) use ($logCallback) {
+			$logCallback->logBegin($task);
+		};
+		$this->cronner->onTaskFinished[] = function (Cronner $cronner, Task $task) use ($logCallback) {
+			$logCallback->logFinished($task);
+		};
+		$this->cronner->onTaskError[] = function (Cronner $cronner, Exception $e, Task $task) use ($logCallback) {
+			$logCallback->logError($e, $task);
+		};
 		$this->cronner->addTasks(new TestExceptionObject());
 		$this->cronner->run($now);
 	}
