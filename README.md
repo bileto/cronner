@@ -10,7 +10,7 @@
 
 Simple tool which helps with maintenance of cron tasks.
 
-It requires **PHP >= 5.3.0** and **Nette Framework >= 2.0.***.
+It requires **PHP >= 5.3.3** and **Nette Framework >= 2.0.0**.
 
 ## Usage
 
@@ -49,10 +49,7 @@ class CronPresenter extends \Nette\Application\UI\Presenter {
     }
 
     public function actionCron() {
-        $this->cronner->addTasksCallback(function () {
-            // Some magic code can be here :-)
-            return new CronTasks();
-        });
+        $this->cronner->addTasks(new CronTasks());
         $this->cronner->run();
     }
 }
@@ -63,6 +60,8 @@ using service configuration
 ```neon
 services:
     cronner: stekycz\Cronner\Cronner(stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
+    setup:
+    	- addTasks(new CronTasks())
 ```
 
 or using compiler extension
@@ -118,7 +117,7 @@ anything what is acceptable for `strtotime()` method.
 Allows run the task only on specified days. Possible values are abbreviations of week day names.
 It means `Mon`, `Tue`, `Wed`, `Thu`, `Fri`, `Sat` and `Sun`. For simplier usage there are two shortcuts:
 `working days` (`Mon`, `Tue`, `Wed`, `Thu`, `Fri`) and `weekend` (`Sat` and `Sun`) which are internaly
-expanded to specific days. Multiple values must be separated by comma.
+expanded to specific days. Multiple values must be separated by comma or can be specified by range `Mon-Thu`.
 
 #### Example
 
