@@ -25,8 +25,9 @@ class CronnerExtension extends CompilerExtension
 	 * @var array
 	 */
 	public $defaults = array(
-		'timestampStorage' => NULL,
+		'timestampStorage' => "stekycz\Cronner\TimestampStorage\FileStorage",
 		'maxExecutionTime' => NULL,
+		'criticalSectionTempDir' => "%tempDir%/critical-section",
 	);
 
 
@@ -37,17 +38,28 @@ class CronnerExtension extends CompilerExtension
 
 		$config = $this->getConfig($this->defaults);
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
+		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
-		$storage = $container->addDefinition($this->prefix('storage'));
+		$storage = $container->addDefinition($this->prefix('timestampStorage'))
+			->setShared(FALSE)
+			->setInject(FALSE);
 		if (is_string($config['timestampStorage'])) {
 			$storage->setClass($config['timestampStorage']);
 		} else {
 			$storage->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
 		}
 
-		$container->addDefinition($this->prefix('client'))
+		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
+			->setClass("stekycz\Cronner\CriticalSection", array(
+				$config['criticalSectionTempDir']
+			))
+			->setShared(FALSE)
+			->setInject(FALSE);
+
+		$container->addDefinition($this->prefix('runner'))
 			->setClass('stekycz\Cronner\Cronner', array(
 				$storage,
+				$criticalSection,
 				$config['maxExecutionTime'],
 				!$config['debugMode'],
 			));

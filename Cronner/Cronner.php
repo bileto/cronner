@@ -54,6 +54,11 @@ class Cronner extends Object
 	private $timestampStorage;
 
 	/**
+	 * @var \stekycz\Cronner\CriticalSection
+	 */
+	private $criticalSection;
+
+	/**
 	 * @var int Max execution time of PHP script in seconds
 	 */
 	private $maxExecutionTime;
@@ -67,16 +72,19 @@ class Cronner extends Object
 
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 * @param \stekycz\Cronner\CriticalSection $criticalSection
 	 * @param int|null $maxExecutionTime It is used only when Cronner runs
 	 * @param bool $skipFailedTask
 	 */
 	public function __construct(
 		ITimestampStorage $timestampStorage,
+		CriticalSection $criticalSection,
 		$maxExecutionTime = NULL,
 		$skipFailedTask = TRUE
 	)
 	{
 		$this->setTimestampStorage($timestampStorage);
+		$this->criticalSection = $criticalSection;
 		$this->setMaxExecutionTime($maxExecutionTime);
 		$this->setSkipFailedTask($skipFailedTask);
 		$this->onTaskError[] = function (Cronner $cronner, Exception $exception) {
@@ -194,12 +202,18 @@ class Cronner extends Object
 		foreach ($this->tasks as $task) {
 			try {
 				if ($task->shouldBeRun($now)) {
-					$this->onTaskBegin($this, $task);
-					$task();
-					$this->onTaskFinished($this, $task);
+					if ($this->criticalSection->enter($task->getName())) {
+						$this->onTaskBegin($this, $task);
+						$task();
+						$this->onTaskFinished($this, $task);
+						$this->criticalSection->leave($task->getName());
+					}
 				}
 			} catch (Exception $e) {
 				$this->onTaskError($this, $e, $task);
+				if ($this->criticalSection->isEntered($task->getName())) {
+					$this->criticalSection->leave($task->getName());
+				}
 				if ($e instanceof RuntimeException) {
 					throw $e; // Throw exception if it is Cronner Runtime exception
 				} elseif ($this->skipFailedTask === FALSE) {

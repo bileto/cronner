@@ -48,7 +48,19 @@ class CronnerTest extends \TestCase
 		);
 		$this->timestampStorage->expects('loadLastRunTime')
 			->andReturn(new DateTime('2013-02-04 08:00:00'));
-		$this->cronner = new Cronner($this->timestampStorage);
+
+		$criticalSection = $this->mockista->create(
+			"\stekycz\Cronner\CriticalSection",
+			array("enter", "leave", "isEntered")
+		);
+		$criticalSection->expects("enter")
+			->andReturn(TRUE);
+		$criticalSection->expects("leave")
+			->andReturn(TRUE);
+		$criticalSection->expects("isEntered")
+			->andReturn(FALSE);
+
+		$this->cronner = new Cronner($this->timestampStorage, $criticalSection);
 		$this->cronner->onTaskBegin = array();
 		$this->cronner->onTaskFinished = array();
 		$this->cronner->onTaskError = array();
@@ -156,6 +168,7 @@ class CronnerTest extends \TestCase
 		$this->cronner->onTaskBegin[] = function (Cronner $cronner, Task $task) {
 			// This method is dummy
 		};
+		Assert::equal(1, count($this->cronner->onTaskBegin));
 	}
 
 
@@ -165,6 +178,7 @@ class CronnerTest extends \TestCase
 		$this->cronner->onTaskFinished[] = function (Cronner $cronner, Task $task) {
 			// This method is dummy
 		};
+		Assert::equal(1, count($this->cronner->onTaskFinished));
 	}
 
 
@@ -174,6 +188,7 @@ class CronnerTest extends \TestCase
 		$this->cronner->onTaskError[] = function (Cronner $cronner, Exception $e, Task $task) {
 			// This method is dummy
 		};
+		Assert::equal(1, count($this->cronner->onTaskError));
 	}
 
 
