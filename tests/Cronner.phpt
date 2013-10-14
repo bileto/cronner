@@ -45,6 +45,9 @@ class CronnerTest extends \TestCase
 		$this->timestampStorage->expects('loadLastRunTime')
 			->andReturn(new DateTime('2013-02-04 08:00:00'));
 		$this->cronner = new Cronner($this->timestampStorage);
+		$this->cronner->onTaskBegin = array();
+		$this->cronner->onTaskFinished = array();
+		$this->cronner->onTaskError = array();
 	}
 
 
