@@ -5,8 +5,8 @@ namespace stekycz\Cronner\TimestampStorage;
 use DateTime;
 use Nette;
 use Nette\Object;
+use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
-use stekycz\Cronner\DirectoryNotFoundException;
 use stekycz\Cronner\EmptyTaskNameException;
 use stekycz\Cronner\FileCannotBeClosedException;
 use stekycz\Cronner\FileCannotBeOpenedException;
@@ -38,6 +38,7 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function __construct($directory)
 	{
+		FileSystem::createDir($directory);
 		$this->directory = $directory;
 	}
 
@@ -67,7 +68,6 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function saveRunTime(DateTime $now)
 	{
-		$this->checkDirectoryExists();
 		$fileHandle = $this->openFile();
 		fwrite($fileHandle, $now);
 		$this->closeFile($fileHandle);
@@ -82,7 +82,6 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function loadLastRunTime()
 	{
-		$this->checkDirectoryExists();
 		$date = NULL;
 		$filepath = $this->buildFilePath();
 		if (file_exists($filepath)) {
@@ -94,18 +93,6 @@ class FileStorage extends Object implements ITimestampStorage
 		}
 
 		return $date;
-	}
-
-
-
-	/**
-	 * Checks if directory exist.
-	 */
-	private function checkDirectoryExists()
-	{
-		if (!is_dir($this->directory)) {
-			throw new DirectoryNotFoundException("Directory '" . $this->directory . "' not found.");
-		}
 	}
 
 

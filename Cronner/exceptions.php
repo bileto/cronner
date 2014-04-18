@@ -91,13 +91,3 @@ class FileCannotBeClosedException extends IOException
 {
 
 }
-
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
-class DirectoryNotFoundException extends IOException
-{
-
-}
