@@ -54,7 +54,7 @@ class CriticalSection extends Object
 			return FALSE;
 		}
 
-		$locked = flock($handle, LOCK_EX);
+		$locked = flock($handle, LOCK_EX | LOCK_NB);
 		if ($locked === FALSE) {
 			fclose($handle);
 			return FALSE;
