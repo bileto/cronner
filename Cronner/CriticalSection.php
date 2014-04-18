@@ -3,6 +3,7 @@
 namespace stekycz\Cronner;
 
 use Nette\Object;
+use Nette\Utils\FileSystem;
 
 
 
@@ -29,7 +30,9 @@ class CriticalSection extends Object
 	 */
 	public function __construct($lockFilesDir)
 	{
-		$this->lockFilesDir = rtrim($lockFilesDir, DIRECTORY_SEPARATOR);
+		$lockFilesDir = rtrim($lockFilesDir, DIRECTORY_SEPARATOR);
+		FileSystem::createDir($lockFilesDir);
+		$this->lockFilesDir = $lockFilesDir;
 	}
 
 
