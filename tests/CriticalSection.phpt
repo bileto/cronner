@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * @testCase
+ */
+
 namespace stekycz\Cronner\tests;
 
-use Mockista\Registry;
+use Nette\Utils\FileSystem;
 use stekycz\Cronner\CriticalSection;
 use Tester\Assert;
 
@@ -28,10 +32,8 @@ class CriticalSectionTest extends \TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		$filesDir = TEST_DIR . "/temp/critical-section";
-		if (!file_exists($filesDir)) {
-			mkdir($filesDir, 0777, TRUE);
-		}
+		$filesDir = TEMP_DIR . "/cronner/critical-section";
+		FileSystem::createDir($filesDir);
 		$this->criticalSection = new CriticalSection($filesDir);
 	}
 
