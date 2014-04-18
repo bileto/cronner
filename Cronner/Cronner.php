@@ -201,18 +201,20 @@ class Cronner extends Object
 
 		foreach ($this->tasks as $task) {
 			try {
+				$name = $task->getName();
 				if ($task->shouldBeRun($now)) {
-					if ($this->criticalSection->enter($task->getName())) {
+					if ($this->criticalSection->enter($name)) {
 						$this->onTaskBegin($this, $task);
 						$task();
 						$this->onTaskFinished($this, $task);
-						$this->criticalSection->leave($task->getName());
+						$this->criticalSection->leave($name);
 					}
 				}
 			} catch (Exception $e) {
 				$this->onTaskError($this, $e, $task);
-				if ($this->criticalSection->isEntered($task->getName())) {
-					$this->criticalSection->leave($task->getName());
+				$name = $task->getName();
+				if ($this->criticalSection->isEntered($name)) {
+					$this->criticalSection->leave($name);
 				}
 				if ($e instanceof RuntimeException) {
 					throw $e; // Throw exception if it is Cronner Runtime exception
