@@ -49,7 +49,7 @@ class FileStorageTest extends \TestCase
 
 	private static function getTempDirPath()
 	{
-		return TEST_DIR . '/temp/cronner';
+		return TEMP_DIR . '/cronner';
 	}
 
 
