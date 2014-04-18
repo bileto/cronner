@@ -1,10 +1,14 @@
 <?php
 
+/**
+ * @testCase
+ */
+
 namespace stekycz\Cronner\tests\TimestampStorage;
 
 use DateTime;
-use Nette\Utils\Finder;
 use Nette;
+use Nette\Utils\FileSystem;
 use stdClass;
 use stekycz\Cronner\TimestampStorage\FileStorage;
 use Tester\Assert;
@@ -29,9 +33,7 @@ class FileStorageTest extends \TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		if (!file_exists(static::getTempDirPath())) {
-			mkdir(static::getTempDirPath(), 0777, TRUE);
-		}
+		FileSystem::createDir(static::getTempDirPath());
 		$this->storage = new FileStorage(static::getTempDirPath());
 	}
 
@@ -40,10 +42,7 @@ class FileStorageTest extends \TestCase
 	protected function tearDown()
 	{
 		parent::tearDown();
-		/** @var \SplFileInfo $file */
-		foreach (Finder::find('*')->from(static::getTempDirPath()) as $file) {
-			unlink($file->getPathname());
-		}
+		FileSystem::delete(static::getTempDirPath());
 	}
 
 

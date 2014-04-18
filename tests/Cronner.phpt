@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @testCase
+ */
+
 namespace stekycz\Cronner\tests;
 
 use Exception;
