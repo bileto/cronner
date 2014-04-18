@@ -25,7 +25,7 @@ class CronnerExtension extends CompilerExtension
 	 * @var array
 	 */
 	public $defaults = array(
-		'timestampStorage' => "stekycz\Cronner\TimestampStorage\FileStorage",
+		'timestampStorage' => 'stekycz\Cronner\TimestampStorage\FileStorage',
 		'maxExecutionTime' => NULL,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
 	);
@@ -50,7 +50,7 @@ class CronnerExtension extends CompilerExtension
 		}
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
-			->setClass("stekycz\Cronner\CriticalSection", array(
+			->setClass('stekycz\Cronner\CriticalSection', array(
 				$config['criticalSectionTempDir']
 			))
 			->setShared(FALSE)
