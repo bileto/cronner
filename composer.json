@@ -22,8 +22,8 @@
 		"nette/nette": ">=2.0.0"
 	},
 	"require-dev": {
-		"nette/tester": "0.9.*",
-		"janmarek/mockista": "1.0.*"
+		"nette/tester": "~1.1",
+		"janmarek/mockista": "~1.0"
 	},
 	"suggest": {
 		"kdyby/events": "Events for Nette Framework"
