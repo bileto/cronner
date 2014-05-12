@@ -118,9 +118,9 @@ class FileStorageTest extends \TestCase
 	public function dataProviderSaveRunTime()
 	{
 		return array(
-			array(new Nette\DateTime('2013-01-30 17:30:00')),
-			array(new Nette\DateTime('2013-01-30 18:30:01')),
-			array(new Nette\DateTime('2013-01-30 18:31:01')),
+			array(new Nette\Utils\DateTime('2013-01-30 17:30:00')),
+			array(new Nette\Utils\DateTime('2013-01-30 18:30:01')),
+			array(new Nette\Utils\DateTime('2013-01-30 18:31:01')),
 		);
 	}
 
@@ -128,7 +128,7 @@ class FileStorageTest extends \TestCase
 
 	public function testSavesLastRunTimeByTaskName()
 	{
-		$date = new Nette\DateTime('2013-01-30 17:30:00');
+		$date = new Nette\Utils\DateTime('2013-01-30 17:30:00');
 
 		$this->storage->setTaskName('Test task 1');
 		$lastRunTime = $this->storage->loadLastRunTime();
