@@ -1,11 +1,26 @@
 language: php
+
+env:
+  - NETTE=default
+  - NETTE=nette-2.0
+  - NETTE=nette-2.1
+  - NETTE=nette-dev
+
 php:
-    - 5.3.3
-    - 5.4
-    - 5.5
+  - 5.3.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+
+matrix:
+  allow_failures:
+    - php: hhvm
 
 before_script:
-    - composer self-update
-    - composer install --no-interaction --dev --prefer-source
+  - php ./tests/prepare-composer.php
+  - composer self-update
+  - composer install --no-interaction --dev --prefer-source
+  - chmod +x ./tests/run.sh
 
-script: chmod +x ./tests/run.sh && VERBOSE=true ./tests/run.sh -s ./tests/
+script: VERBOSE=true ./tests/run.sh -s ./tests/
