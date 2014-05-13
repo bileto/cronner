@@ -63,7 +63,7 @@ final class Task extends Object
 	public function shouldBeRun(DateTime $now = NULL)
 	{
 		if ($now === NULL) {
-			$now = new Nette\DateTime();
+			$now = new Nette\Utils\DateTime();
 		}
 
 		$parameters = $this->getParameters();
@@ -81,7 +81,7 @@ final class Task extends Object
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getParameters()->getName());
-		$this->timestampStorage->saveRunTime(new Nette\DateTime());
+		$this->timestampStorage->saveRunTime(new Nette\Utils\DateTime());
 		$this->timestampStorage->setTaskName();
 	}
 

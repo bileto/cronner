@@ -66,8 +66,8 @@ class TaskTest extends \TestCase
 	 */
 	public function testChecksIfCanBeRun($expected, $loads, $methodName, $now, $lastRunTime)
 	{
-		$now = new Nette\DateTime($now);
-		$lastRunTime = $lastRunTime ? new Nette\DateTime($lastRunTime) : NULL;
+		$now = new Nette\Utils\DateTime($now);
+		$lastRunTime = $lastRunTime ? new Nette\Utils\DateTime($lastRunTime) : NULL;
 
 		$method = $this->object->getReflection()->getMethod($methodName);
 

@@ -7,7 +7,7 @@
 namespace stekycz\Cronner\tests;
 
 use Exception;
-use Nette\DateTime;
+use Nette\Utils\DateTime;
 use stdClass;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\Tasks\Task;

@@ -89,7 +89,7 @@ class FileStorage extends Object implements ITimestampStorage
 			$size = filesize($filepath);
 			$date = fread($fileHandle, $size);
 			$this->closeFile($fileHandle);
-			$date = new Nette\DateTime($date);
+			$date = new Nette\Utils\DateTime($date);
 		}
 
 		return $date;

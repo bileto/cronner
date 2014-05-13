@@ -1,7 +1,6 @@
 <?php
 
 use Mockista\Registry;
-use Nette\Diagnostics\Debugger;
 use Nette\Utils\FileSystem;
 
 $autoloader = require_once __DIR__ . '/../vendor/autoload.php';
@@ -9,7 +8,6 @@ $autoloader = require_once __DIR__ . '/../vendor/autoload.php';
 define("TEST_DIR", __DIR__);
 define("TEMP_DIR", TEST_DIR . '/tmp/' . getmypid());
 FileSystem::createDir(TEMP_DIR);
-Debugger::$logDirectory = TEMP_DIR;
 
 function run(Tester\TestCase $testCase)
 {
