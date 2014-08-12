@@ -21,7 +21,7 @@
 		"nette/nette": "~2.0"
 	},
 	"require-dev": {
-		"nette/tester": "~1.1",
+		"nette/tester": "~1.2",
 		"janmarek/mockista": "~1.0"
 	},
 	"suggest": {
