@@ -20,7 +20,7 @@ matrix:
 before_script:
   - php ./tests/prepare-composer.php
   - composer self-update
-  - composer install --no-interaction --dev --prefer-source
+  - composer install --dev --prefer-source --no-interaction
   - chmod +x ./tests/run.sh
 
 script: VERBOSE=true ./tests/run.sh -s ./tests/

@@ -3,7 +3,6 @@
 	"type": "nette-addon",
 	"description": "Simple tool which helps with maintenance of cron tasks.",
 	"keywords": ["nette", "cron", "manager", "task"],
-	"version": "0.8.0",
 	"license": "MIT",
 	"authors": [
 		{
@@ -23,7 +22,7 @@
 		"nette/reflection": "~2.2"
 	},
 	"require-dev": {
-		"nette/tester": "~1.1",
+		"nette/tester": "~1.2",
 		"janmarek/mockista": "~1.0"
 	},
 	"suggest": {
