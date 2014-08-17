@@ -84,7 +84,7 @@ class TaskTest extends \TestCase
 			->atLeastOnce();
 
 		$task = new Task($this->object, $method, $timestampStorage);
-		Assert::equal($expected, $task->shouldBeRun($now));
+		Assert::same($expected, $task->shouldBeRun($now));
 	}
 
 
@@ -103,6 +103,25 @@ class TaskTest extends \TestCase
 			array(TRUE, 1, 'test02', '2013-02-04 09:30:00', NULL),
 			array(TRUE, 1, 'test02', '2013-02-04 09:30:00', '2013-02-03 15:30:00'),
 		);
+	}
+
+
+
+	public function testShouldBeRunOnShortLaterRun()
+	{
+		$timestampStorage = $this->mockista->create(
+			'\stekycz\Cronner\ITimestampStorage',
+			array("setTaskName", "saveRunTime", "loadLastRunTime")
+		);
+		$timestampStorage->expects("loadLastRunTime")
+			->andReturn(new Nette\Utils\DateTime('2014-08-15 09:00:01'))
+			->once();
+		$timestampStorage->expects("setTaskName")
+			->atLeastOnce();
+
+		$method = new Method($this->object, 'test03');
+		$task = new Task($this->object, $method, $timestampStorage);
+		Assert::true($task->shouldBeRun(new Nette\Utils\DateTime('2014-08-15 09:17:00')));
 	}
 
 }
