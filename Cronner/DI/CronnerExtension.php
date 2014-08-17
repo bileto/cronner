@@ -40,13 +40,22 @@ class CronnerExtension extends CompilerExtension
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
-		$storage = $container->addDefinition($this->prefix('timestampStorage'))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
-		if (is_string($config['timestampStorage'])) {
-			$storage->setClass($config['timestampStorage']);
+		$storageServiceName = $container->getByType('stekycz\Cronner\ITimestampStorage');
+		if ($storageServiceName) {
+			$storage = $container->getDefinition($storageServiceName);
 		} else {
-			$storage->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
+			$storage = $container->addDefinition($this->prefix('timestampStorage'))
+				->setAutowired(FALSE)
+				->setInject(FALSE);
+			if (is_string($config['timestampStorage'])) {
+				if ($container->getServiceName($config['timestampStorage'])) {
+					$storage->setFactory($config['timestampStorage']);
+				} else {
+					$storage->setClass($config['timestampStorage']);
+				}
+			} else {
+				$storage->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
+			}
 		}
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
