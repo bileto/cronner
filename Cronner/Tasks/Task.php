@@ -67,12 +67,26 @@ final class Task extends Object
 		}
 
 		$parameters = $this->getParameters();
+		if (!$parameters->isTask()) {
+			return FALSE;
+		}
 		$this->timestampStorage->setTaskName($parameters->getName());
 
-		return $parameters->isTask()
-		&& $parameters->isInDay($now)
-		&& $parameters->isInTime($now)
-		&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
+		return $parameters->isInDay($now)
+			&& $parameters->isInTime($now)
+			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
+	}
+
+
+
+	/**
+	 * Returns task name.
+	 *
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->getParameters()->getName();
 	}
 
 
@@ -80,7 +94,7 @@ final class Task extends Object
 	public function __invoke()
 	{
 		$this->method->invoke($this->object);
-		$this->timestampStorage->setTaskName($this->getParameters()->getName());
+		$this->timestampStorage->setTaskName($this->getName());
 		$this->timestampStorage->saveRunTime(new Nette\Utils\DateTime());
 		$this->timestampStorage->setTaskName();
 	}
