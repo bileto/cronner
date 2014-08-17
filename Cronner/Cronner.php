@@ -205,7 +205,7 @@ class Cronner extends Object
 				if ($task->shouldBeRun($now)) {
 					if ($this->criticalSection->enter($name)) {
 						$this->onTaskBegin($this, $task);
-						$task();
+						$task($now);
 						$this->onTaskFinished($this, $task);
 						$this->criticalSection->leave($name);
 					}

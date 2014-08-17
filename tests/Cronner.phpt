@@ -50,7 +50,7 @@ class CronnerTest extends \TestCase
 			->andReturn(new DateTime('2013-02-04 08:00:00'));
 
 		$criticalSection = $this->mockista->create(
-			"\stekycz\Cronner\CriticalSection",
+			'\stekycz\Cronner\CriticalSection',
 			array("enter", "leave", "isEntered")
 		);
 		$criticalSection->expects("enter")
@@ -154,6 +154,7 @@ class CronnerTest extends \TestCase
 		$this->timestampStorage->expects('setTaskName')
 			->atLeast(8);
 		$this->timestampStorage->expects('saveRunTime')
+			->with($now)
 			->atLeastOnce();
 
 		$this->cronner->addTasks($tasks);

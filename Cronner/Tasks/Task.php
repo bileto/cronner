@@ -91,11 +91,11 @@ final class Task extends Object
 
 
 
-	public function __invoke()
+	public function __invoke(\DateTime $now)
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getName());
-		$this->timestampStorage->saveRunTime(new Nette\Utils\DateTime());
+		$this->timestampStorage->saveRunTime($now);
 		$this->timestampStorage->setTaskName();
 	}
 

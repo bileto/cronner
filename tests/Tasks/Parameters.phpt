@@ -91,7 +91,7 @@ class ParametersTest extends \TestCase
 	public function testDetectsIfNowIsInNextPeriod($expected, DateTime $now, DateTime $lastRunTime = NULL, array $parameters)
 	{
 		$params = new Parameters($parameters);
-		Assert::equal($expected, $params->isNextPeriod($now, $lastRunTime));
+		Assert::same($expected, $params->isNextPeriod($now, $lastRunTime));
 	}
 
 
@@ -112,9 +112,21 @@ class ParametersTest extends \TestCase
 				array(Parameters::PERIOD => '5 minutes',)
 			),
 			array(
-				FALSE,
+				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:01'),
+				array(Parameters::PERIOD => '5 minutes',)
+			),
+			array(
+				TRUE,
+				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
+				new Nette\Utils\DateTime('2013-02-03 16:55:05'),
+				array(Parameters::PERIOD => '5 minutes',)
+			),
+			array(
+				FALSE,
+				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
+				new Nette\Utils\DateTime('2013-02-03 16:55:06'),
 				array(Parameters::PERIOD => '5 minutes',)
 			),
 			array(
