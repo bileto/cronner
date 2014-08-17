@@ -40,18 +40,20 @@ class TaskTest extends \TestCase
 
 	public function testInvokesTaskWithSavingLastRunTime()
 	{
+		$now = new Nette\Utils\DateTime();
 		$timestampStorage = $this->mockista->create(
 			'\stekycz\Cronner\ITimestampStorage',
 			array("setTaskName", "saveRunTime", "loadLastRunTime")
 		);
 		$timestampStorage->expects("saveRunTime")
+			->with($now)
 			->once();
 		$timestampStorage->expects("setTaskName")
 			->exactly(2);
 
 		$method = new Method($this->object, 'test01');
 		$task = new Task($this->object, $method, $timestampStorage);
-		$task();
+		$task($now);
 	}
 
 
