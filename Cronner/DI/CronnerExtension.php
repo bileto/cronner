@@ -21,6 +21,8 @@ if (!class_exists('Nette\DI\CompilerExtension')) {
 class CronnerExtension extends CompilerExtension
 {
 
+	const TASKS_TAG = 'cronner.tasks';
+
 	/**
 	 * @var array
 	 */
@@ -56,13 +58,17 @@ class CronnerExtension extends CompilerExtension
 			->setAutowired(FALSE)
 			->setInject(FALSE);
 
-		$container->addDefinition($this->prefix('runner'))
+		$runner = $container->addDefinition($this->prefix('runner'))
 			->setClass('stekycz\Cronner\Cronner', array(
 				$storage,
 				$criticalSection,
 				$config['maxExecutionTime'],
 				!$config['debugMode'],
 			));
+
+		foreach (array_keys($container->findByTag(self::TASKS_TAG)) as $serviceName) {
+			$runner->addSetup('addTasks', array('@' . $serviceName));
+		}
 	}
 
 
