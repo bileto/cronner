@@ -23,11 +23,14 @@ class CronnerExtension extends CompilerExtension
 
 	const TASKS_TAG = 'cronner.tasks';
 
+	const DEFAULT_STORAGE_CLASS = 'stekycz\Cronner\TimestampStorage\FileStorage';
+	const DEFAULT_STORAGE_DIRECTORY = '%wwwDir%/../temp/cronner';
+
 	/**
 	 * @var array
 	 */
 	public $defaults = array(
-		'timestampStorage' => 'stekycz\Cronner\TimestampStorage\FileStorage',
+		'timestampStorage' => NULL,
 		'maxExecutionTime' => NULL,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
 	);
@@ -39,22 +42,23 @@ class CronnerExtension extends CompilerExtension
 		$container = $this->getContainerBuilder();
 
 		$config = $this->getConfig($this->defaults);
+		Validators::assert($config['timestampStorage'], 'string|null', 'Timestamp storage definition');
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
-		$storageServiceName = $container->getByType('stekycz\Cronner\ITimestampStorage');
-		if ($storageServiceName) {
-			$storage = $container->getDefinition($storageServiceName);
+		$storage = $container->addDefinition($this->prefix('timestampStorage'))
+			->setAutowired(FALSE)
+			->setInject(FALSE);
+		if ($config['timestampStorage'] === NULL) {
+			$storageServiceName = $container->getByType('stekycz\Cronner\ITimestampStorage');
+			if ($storageServiceName) {
+				$storage->setFactory('@' . $storageServiceName);
+			} else {
+				$storage->setClass(self::DEFAULT_STORAGE_CLASS, array(self::DEFAULT_STORAGE_DIRECTORY));
+			}
 		} else {
-			$storage = $container->addDefinition($this->prefix('timestampStorage'))
-				->setAutowired(FALSE)
-				->setInject(FALSE);
-			if (is_string($config['timestampStorage'])) {
-				if ($container->getServiceName($config['timestampStorage'])) {
-					$storage->setFactory($config['timestampStorage']);
-				} else {
-					$storage->setClass($config['timestampStorage']);
-				}
+			if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
+				$storage->setFactory($config['timestampStorage']);
 			} else {
 				$storage->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
 			}
