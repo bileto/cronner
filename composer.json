@@ -18,6 +18,9 @@
 	},
 	"require": {
 		"php": ">=5.3.3",
+		"tracy/tracy": "~2.2",
+		"nette/di": "~2.2",
+		"nette/bootstrap": "~2.2",
 		"nette/utils": "~2.2",
 		"nette/reflection": "~2.2"
 	},
