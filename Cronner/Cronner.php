@@ -3,14 +3,14 @@
 namespace stekycz\Cronner;
 
 use Exception;
-use Nette\DateTime;
-use Nette\Diagnostics\Debugger;
+use Nette\Utils\DateTime;
 use Nette\Object;
 use Nette\Reflection\ClassType;
 use Nette\Utils\Strings;
 use ReflectionMethod;
 use stekycz\Cronner\Tasks\Parameters;
 use stekycz\Cronner\Tasks\Task;
+use Tracy\Debugger;
 
 
 
