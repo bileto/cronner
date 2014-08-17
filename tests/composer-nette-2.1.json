@@ -25,7 +25,8 @@
 		"janmarek/mockista": "~1.0"
 	},
 	"suggest": {
-		"kdyby/events": "Events for Nette Framework"
+		"kdyby/events": "Events for Nette Framework",
+		"kdyby/console": "Symfony Console integration for Kdyby components"
 	},
 	"autoload": {
 		"classmap": ["Cronner/"]
