@@ -76,7 +76,7 @@ class CronnerExtension extends CompilerExtension
 				$storage,
 				$criticalSection,
 				$config['maxExecutionTime'],
-				!$config['debugMode'],
+				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
 			));
 
 		foreach (array_keys($container->findByTag(self::TASKS_TAG)) as $serviceName) {
