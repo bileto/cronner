@@ -1,13 +1,12 @@
 <?php
 
 use Mockista\Registry;
-use Nette\Utils\FileSystem;
 
-$autoloader = require_once __DIR__ . '/../vendor/autoload.php';
+$autoloader = require_once __DIR__ . '/../../vendor/autoload.php';
 
 define("TEST_DIR", __DIR__);
-define("TEMP_DIR", TEST_DIR . '/tmp/' . getmypid());
-FileSystem::createDir(TEMP_DIR);
+define("TEMP_DIR", TEST_DIR . '/../tmp/' . (isset($_SERVER['argv']) ? md5(serialize($_SERVER['argv'])) : getmypid()));
+Tester\Helpers::purge(TEMP_DIR);
 
 function run(Tester\TestCase $testCase)
 {
