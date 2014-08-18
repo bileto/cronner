@@ -54,6 +54,7 @@ class TaskTest extends \TestCase
 		$method = new Method($this->object, 'test01');
 		$task = new Task($this->object, $method, $timestampStorage);
 		$task($now);
+		Assert::$counter++; // Hack for nette tester
 	}
 
 
