@@ -81,20 +81,20 @@ class CompilerMock extends Nette\DI\Compiler
 	/**
 	 * @var array
 	 */
-	public $config = [];
+	public $config = array();
 
 
 
 	public function __construct()
 	{
 		$this->containerBuilder = new Nette\DI\ContainerBuilder();
-		$this->containerBuilder->parameters = [
+		$this->containerBuilder->parameters = array(
 			'appDir' => __DIR__ . '/../..',
 			'wwwDir' => __DIR__ . '/../..',
 			'tempDir' => TEMP_DIR,
 			'debugMode' => FALSE,
 			'productionMode' => TRUE,
-		];
+		);
 	}
 
 
