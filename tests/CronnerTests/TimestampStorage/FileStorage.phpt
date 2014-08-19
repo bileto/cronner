@@ -59,6 +59,7 @@ class FileStorageTest extends \TestCase
 		$this->storage->setTaskName('Test task 1');
 		$this->storage->setTaskName(NULL);
 		$this->storage->setTaskName();
+		Assert::$counter++; // Hack for nette tester
 	}
 
 

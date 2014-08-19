@@ -83,7 +83,6 @@ class CriticalSection extends Object
 			return FALSE;
 		}
 
-		$this->locks[$label] = NULL;
 		fclose($this->locks[$label]);
 		unset($this->locks[$label]);
 

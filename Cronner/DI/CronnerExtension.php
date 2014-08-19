@@ -42,7 +42,7 @@ class CronnerExtension extends CompilerExtension
 		$container = $this->getContainerBuilder();
 
 		$config = $this->getConfig($this->defaults);
-		Validators::assert($config['timestampStorage'], 'string|null', 'Timestamp storage definition');
+		Validators::assert($config['timestampStorage'], 'string|object|null', 'Timestamp storage definition');
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
@@ -60,7 +60,7 @@ class CronnerExtension extends CompilerExtension
 			if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
 				$storage->setFactory($config['timestampStorage']);
 			} else {
-				$storage->setClass($config['timestampStorage']->value, $config['timestampStorage']->attributes);
+				$storage->setClass($config['timestampStorage']->entity, $config['timestampStorage']->arguments);
 			}
 		}
 
@@ -76,7 +76,7 @@ class CronnerExtension extends CompilerExtension
 				$storage,
 				$criticalSection,
 				$config['maxExecutionTime'],
-				!$config['debugMode'],
+				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
 			));
 
 		foreach (array_keys($container->findByTag(self::TASKS_TAG)) as $serviceName) {
