@@ -41,7 +41,7 @@ class CronnerExtension extends CompilerExtension
 	{
 		$container = $this->getContainerBuilder();
 
-		$config = $this->getConfig($this->defaults);
+		$config = Compiler::filterArguments($this->getConfig($this->defaults));
 		Validators::assert($config['timestampStorage'], 'string|object|null', 'Timestamp storage definition');
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
