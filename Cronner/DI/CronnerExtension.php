@@ -99,7 +99,7 @@ class CronnerExtension extends CompilerExtension
 
 
 	/**
-	 * @param \Nette\Configurator $configurator
+	 * @param \Nette\Config\Configurator $configurator
 	 */
 	public static function register(Configurator $configurator)
 	{
