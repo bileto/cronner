@@ -54,7 +54,9 @@ class CronnerExtension extends CompilerExtension
 			if ($storageServiceName) {
 				$storage->setFactory('@' . $storageServiceName);
 			} else {
-				$storage->setClass(self::DEFAULT_STORAGE_CLASS, array(self::DEFAULT_STORAGE_DIRECTORY));
+				$storage->setClass(self::DEFAULT_STORAGE_CLASS, array(
+					$container->expand(self::DEFAULT_STORAGE_DIRECTORY),
+				));
 			}
 		} else {
 			if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
