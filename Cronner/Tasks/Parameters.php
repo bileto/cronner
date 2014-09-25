@@ -120,7 +120,7 @@ final class Parameters extends Object
 	{
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			// Prevent run task on next cronner run because of a few seconds shift
-			$now = Nette\Utils\DateTime::from($now)->modifyClone('+5 seconds');
+			$now = Nette\DateTime::from($now)->modifyClone('+5 seconds');
 			return $lastRunTime === NULL || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
 
