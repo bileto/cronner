@@ -44,8 +44,7 @@ class CronnerExtension extends CompilerExtension
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
 		$storage = $container->addDefinition($this->prefix('timestampStorage'))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+			->setAutowired(FALSE);
 		if ($config['timestampStorage'] === NULL) {
 			$storageServiceName = $container->getByType('stekycz\Cronner\ITimestampStorage');
 			if ($storageServiceName) {
@@ -67,8 +66,7 @@ class CronnerExtension extends CompilerExtension
 			->setClass('stekycz\Cronner\CriticalSection', array(
 				$config['criticalSectionTempDir']
 			))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+			->setAutowired(FALSE);
 
 		$runner = $container->addDefinition($this->prefix('runner'))
 			->setClass('stekycz\Cronner\Cronner', array(
@@ -90,7 +88,6 @@ class CronnerExtension extends CompilerExtension
 			}
 
 			$def->setAutowired(FALSE);
-			$def->setInject(FALSE);
 			$def->addTag(self::TASKS_TAG);
 		}
 
