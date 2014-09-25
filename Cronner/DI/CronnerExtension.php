@@ -5,6 +5,8 @@ namespace stekycz\Cronner\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
+use Nette\DI\Statement;
+use Nette\Utils\Json;
 use Nette\Utils\Validators;
 
 if (!class_exists('Nette\DI\CompilerExtension')) {
@@ -33,6 +35,7 @@ class CronnerExtension extends CompilerExtension
 		'timestampStorage' => NULL,
 		'maxExecutionTime' => NULL,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
+		'tasks' => array(),
 	);
 
 
@@ -80,6 +83,22 @@ class CronnerExtension extends CompilerExtension
 				$config['maxExecutionTime'],
 				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
 			));
+
+		Validators::assert($config['tasks'], 'array');
+		foreach ($config['tasks'] as $task) {
+			$def = $container->addDefinition($this->prefix('task.' . md5(Json::encode($task))));
+			list($def->factory) = Compiler::filterArguments(array(
+				is_string($task) ? new Statement($task) : $task
+			));
+
+			if (class_exists($def->factory->entity)) {
+				$def->class = $def->factory->entity;
+			}
+
+			$def->setAutowired(FALSE);
+			$def->setInject(FALSE);
+			$def->addTag(self::TASKS_TAG);
+		}
 
 		foreach (array_keys($container->findByTag(self::TASKS_TAG)) as $serviceName) {
 			$runner->addSetup('addTasks', array('@' . $serviceName));
