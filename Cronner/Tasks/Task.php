@@ -63,7 +63,7 @@ final class Task extends Object
 	public function shouldBeRun(DateTime $now = NULL)
 	{
 		if ($now === NULL) {
-			$now = new Nette\Utils\DateTime();
+			$now = new Nette\DateTime();
 		}
 
 		$parameters = $this->getParameters();
