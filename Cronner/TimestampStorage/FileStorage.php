@@ -38,6 +38,7 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function __construct($directory)
 	{
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
 		FileSystem::createDir($directory);
 		$this->directory = $directory;
 	}
