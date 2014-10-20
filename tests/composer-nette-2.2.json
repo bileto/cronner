@@ -18,11 +18,12 @@
 	},
 	"require": {
 		"php": ">=5.3.3",
-		"tracy/tracy": "@dev",
-		"nette/di": "@dev",
-		"nette/bootstrap": "@dev",
-		"nette/utils": "@dev",
-		"nette/reflection": "@dev"
+		"tracy/tracy": "~2.2.0",
+		"nette/di": "~2.2.0",
+		"nette/bootstrap": "~2.2.0",
+		"nette/utils": "~2.2.0",
+		"nette/reflection": "~2.2.0",
+		"nette/safe-stream": "~2.2.0"
 	},
 	"require-dev": {
 		"nette/tester": "~1.2",
