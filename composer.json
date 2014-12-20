@@ -22,7 +22,8 @@
 		"nette/di": "@dev",
 		"nette/bootstrap": "@dev",
 		"nette/utils": "@dev",
-		"nette/reflection": "@dev"
+		"nette/reflection": "@dev",
+		"nette/safe-stream": "@dev"
 	},
 	"require-dev": {
 		"nette/tester": "~1.2",
