@@ -35,9 +35,9 @@ class CronnerExtensionTest extends \TestCase
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
 		$runner = $compiler->getContainerBuilder()->getDefinition('cronner.runner');
 
-		Assert::same('stekycz\Cronner\TimestampStorage\FileStorage', $timestampStorage->getClass());
-		Assert::same('stekycz\Cronner\CriticalSection', $criticalSection->getClass());
-		Assert::same('stekycz\Cronner\Cronner', $runner->getClass());
+		Assert::same('stekycz\Cronner\TimestampStorage\FileStorage', $timestampStorage->class);
+		Assert::same('stekycz\Cronner\CriticalSection', $criticalSection->class);
+		Assert::same('stekycz\Cronner\Cronner', $runner->class);
 	}
 
 
@@ -61,9 +61,9 @@ class CronnerExtensionTest extends \TestCase
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
 		$runner = $compiler->getContainerBuilder()->getDefinition('cronner.runner');
 
-		Assert::same('stekycz\Cronner\TimestampStorage\DummyStorage', $timestampStorage->getClass());
-		Assert::same('stekycz\Cronner\CriticalSection', $criticalSection->getClass());
-		Assert::same('stekycz\Cronner\Cronner', $runner->getClass());
+		Assert::same('stekycz\Cronner\TimestampStorage\DummyStorage', $timestampStorage->class);
+		Assert::same('stekycz\Cronner\CriticalSection', $criticalSection->class);
+		Assert::same('stekycz\Cronner\Cronner', $runner->class);
 	}
 
 }

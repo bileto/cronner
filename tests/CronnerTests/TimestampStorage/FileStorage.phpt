@@ -110,8 +110,8 @@ class FileStorageTest extends \TestCase
 
 		$this->storage->setTaskName();
 
-		Assert::true($lastRunTime !== NULL);
-		Assert::equal($date, $lastRunTime);
+		Assert::type('\DateTime', $lastRunTime);
+		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
 
@@ -119,9 +119,9 @@ class FileStorageTest extends \TestCase
 	public function dataProviderSaveRunTime()
 	{
 		return array(
-			array(new Nette\Utils\DateTime('2013-01-30 17:30:00')),
-			array(new Nette\Utils\DateTime('2013-01-30 18:30:01')),
-			array(new Nette\Utils\DateTime('2013-01-30 18:31:01')),
+			array(new Nette\DateTime('2013-01-30 17:30:00')),
+			array(new Nette\DateTime('2013-01-30 18:30:01')),
+			array(new Nette\DateTime('2013-01-30 18:31:01')),
 		);
 	}
 
@@ -129,7 +129,7 @@ class FileStorageTest extends \TestCase
 
 	public function testSavesLastRunTimeByTaskName()
 	{
-		$date = new Nette\Utils\DateTime('2013-01-30 17:30:00');
+		$date = new DateTime('2013-01-30 17:30:00');
 
 		$this->storage->setTaskName('Test task 1');
 		$lastRunTime = $this->storage->loadLastRunTime();
@@ -139,8 +139,8 @@ class FileStorageTest extends \TestCase
 
 		$this->storage->setTaskName();
 
-		Assert::true($lastRunTime !== NULL);
-		Assert::equal($date, $lastRunTime);
+		Assert::type('\DateTime', $lastRunTime);
+		Assert::same($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 
 		$this->storage->setTaskName('Test task 2');
 		$lastRunTime = $this->storage->loadLastRunTime();
@@ -150,8 +150,8 @@ class FileStorageTest extends \TestCase
 
 		$this->storage->setTaskName();
 
-		Assert::true($lastRunTime !== NULL);
-		Assert::equal($date, $lastRunTime);
+		Assert::type('\DateTime', $lastRunTime);
+		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
 }

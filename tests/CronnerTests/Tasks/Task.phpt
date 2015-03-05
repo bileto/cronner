@@ -40,7 +40,7 @@ class TaskTest extends \TestCase
 
 	public function testInvokesTaskWithSavingLastRunTime()
 	{
-		$now = new Nette\Utils\DateTime();
+		$now = new Nette\DateTime();
 		$timestampStorage = $this->mockista->create(
 			'\stekycz\Cronner\ITimestampStorage',
 			array("setTaskName", "saveRunTime", "loadLastRunTime")
@@ -69,8 +69,8 @@ class TaskTest extends \TestCase
 	 */
 	public function testChecksIfCanBeRun($expected, $loads, $methodName, $now, $lastRunTime)
 	{
-		$now = new Nette\Utils\DateTime($now);
-		$lastRunTime = $lastRunTime ? new Nette\Utils\DateTime($lastRunTime) : NULL;
+		$now = new Nette\DateTime($now);
+		$lastRunTime = $lastRunTime ? new Nette\DateTime($lastRunTime) : NULL;
 
 		$method = $this->object->getReflection()->getMethod($methodName);
 
@@ -115,14 +115,14 @@ class TaskTest extends \TestCase
 			array("setTaskName", "saveRunTime", "loadLastRunTime")
 		);
 		$timestampStorage->expects("loadLastRunTime")
-			->andReturn(new Nette\Utils\DateTime('2014-08-15 09:00:01'))
+			->andReturn(new Nette\DateTime('2014-08-15 09:00:01'))
 			->once();
 		$timestampStorage->expects("setTaskName")
 			->atLeastOnce();
 
 		$method = new Method($this->object, 'test03');
 		$task = new Task($this->object, $method, $timestampStorage);
-		Assert::true($task->shouldBeRun(new Nette\Utils\DateTime('2014-08-15 09:17:00')));
+		Assert::true($task->shouldBeRun(new Nette\DateTime('2014-08-15 09:17:00')));
 	}
 
 }
