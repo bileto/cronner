@@ -22,14 +22,34 @@ require_once(__DIR__ . "/../bootstrap.php");
 class CronnerExtensionTest extends \TestCase
 {
 
+	/**
+	 * @var Nette\DI\Compiler
+	 */
+	private $compiler;
+
+
+
+	protected function setUp()
+	{
+		parent::setUp();
+		$builder = new Nette\DI\ContainerBuilder();
+		$builder->parameters = array(
+			'appDir' => __DIR__ . '/../..',
+			'wwwDir' => __DIR__ . '/../..',
+			'tempDir' => TEMP_DIR,
+			'debugMode' => FALSE,
+			'productionMode' => TRUE,
+		);
+		$this->compiler = new Nette\DI\Compiler($builder);
+		$this->compiler->addExtension('cronner', new CronnerExtension());
+	}
+
+
+
 	public function testDefaultConfiguration()
 	{
-		$compiler = new CompilerMock();
-		$compiler->addExtension('cronner', $cronner = new CronnerExtension());
-
-		$compiler->config = array();
-
-		$cronner->loadConfiguration();
+		$compiler = $this->compiler;
+		$compiler->compile(array());
 
 		$timestampStorage = $compiler->getContainerBuilder()->getDefinition('cronner.timestampStorage');
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
@@ -44,18 +64,14 @@ class CronnerExtensionTest extends \TestCase
 
 	public function testCompleteConfiguration()
 	{
-		$compiler = new CompilerMock();
-		$compiler->addExtension('cronner', $cronner = new CronnerExtension());
-
-		$compiler->config = array(
+		$compiler = $this->compiler;
+		$compiler->compile(array(
 			'cronner' => array(
-				'timestampStorage' => new Nette\DI\Statement('stekycz\Cronner\TimestampStorage\DummyStorage', array(TEMP_DIR . '/cronner')),
+				'timestampStorage' => new Nette\DI\Statement('stekycz\Cronner\TimestampStorage\DummyStorage'),
 				'maxExecutionTime' => 120,
 				'criticalSectionTempDir' => '%tempDir%/cronner',
 			)
-		);
-
-		$cronner->loadConfiguration();
+		));
 
 		$timestampStorage = $compiler->getContainerBuilder()->getDefinition('cronner.timestampStorage');
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
@@ -64,57 +80,6 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same('stekycz\Cronner\TimestampStorage\DummyStorage', $timestampStorage->getClass());
 		Assert::same('stekycz\Cronner\CriticalSection', $criticalSection->getClass());
 		Assert::same('stekycz\Cronner\Cronner', $runner->getClass());
-	}
-
-}
-
-
-
-class CompilerMock extends Nette\DI\Compiler
-{
-
-	/**
-	 * @var Nette\DI\ContainerBuilder
-	 */
-	public $containerBuilder;
-
-	/**
-	 * @var array
-	 */
-	public $config = array();
-
-
-
-	public function __construct()
-	{
-		$this->containerBuilder = new Nette\DI\ContainerBuilder();
-		$this->containerBuilder->parameters = array(
-			'appDir' => __DIR__ . '/../..',
-			'wwwDir' => __DIR__ . '/../..',
-			'tempDir' => TEMP_DIR,
-			'debugMode' => FALSE,
-			'productionMode' => TRUE,
-		);
-	}
-
-
-
-	/**
-	 * @return array
-	 */
-	public function getConfig()
-	{
-		return $this->config;
-	}
-
-
-
-	/**
-	 * @return Nette\DI\ContainerBuilder
-	 */
-	public function getContainerBuilder()
-	{
-		return $this->containerBuilder;
 	}
 
 }
