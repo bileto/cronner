@@ -8,8 +8,6 @@ use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Strings;
 use stekycz\Cronner\EmptyTaskNameException;
-use stekycz\Cronner\FileCannotBeClosedException;
-use stekycz\Cronner\FileCannotBeOpenedException;
 use stekycz\Cronner\InvalidTaskNameException;
 use stekycz\Cronner\ITimestampStorage;
 
@@ -21,13 +19,15 @@ use stekycz\Cronner\ITimestampStorage;
 class FileStorage extends Object implements ITimestampStorage
 {
 
+	const DATETIME_FORMAT = 'Y-m-d H:i:s O';
+
 	/**
 	 * @var string
 	 */
 	private $directory;
 
 	/**
-	 * @var string
+	 * @var string|NULL
 	 */
 	private $taskName = NULL;
 
@@ -52,9 +52,7 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function setTaskName($taskName = NULL)
 	{
-		if ($taskName !== NULL
-			&& (!$taskName || !is_string($taskName) || Strings::length($taskName) <= 0)
-		) {
+		if ($taskName !== NULL && (!$taskName || !is_string($taskName) || Strings::length($taskName) <= 0)) {
 			throw new InvalidTaskNameException('Given task name is not valid.');
 		}
 		$this->taskName = $taskName;
@@ -69,9 +67,8 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function saveRunTime(DateTime $now)
 	{
-		$fileHandle = $this->openFile();
-		fwrite($fileHandle, $now);
-		$this->closeFile($fileHandle);
+		$filepath = $this->buildFilePath();
+		file_put_contents($filepath, $now->format(self::DATETIME_FORMAT));
 	}
 
 
@@ -86,14 +83,11 @@ class FileStorage extends Object implements ITimestampStorage
 		$date = NULL;
 		$filepath = $this->buildFilePath();
 		if (file_exists($filepath)) {
-			$fileHandle = $this->openFile(TRUE);
-			$size = filesize($filepath);
-			$date = fread($fileHandle, $size);
-			$this->closeFile($fileHandle);
-			$date = new Nette\DateTime($date);
+			$date = file_get_contents($filepath);
+			$date = Nette\DateTime::createFromFormat(self::DATETIME_FORMAT, $date);
 		}
 
-		return $date;
+		return $date ? $date : NULL;
 	}
 
 
@@ -109,39 +103,7 @@ class FileStorage extends Object implements ITimestampStorage
 			throw new EmptyTaskNameException('Task name was not set.');
 		}
 
-		return $this->directory . '/' . sha1($this->taskName);
-	}
-
-
-
-	/**
-	 * Opens file.
-	 *
-	 * @param bool $read
-	 * @return resource
-	 */
-	private function openFile($read = FALSE)
-	{
-		$fileHandle = fopen($this->buildFilePath(), $read ? 'rb' : 'w+b');
-		if ($fileHandle === FALSE) {
-			throw new FileCannotBeOpenedException();
-		}
-
-		return $fileHandle;
-	}
-
-
-
-	/**
-	 * Closes file which is opened by given handle.
-	 *
-	 * @param resource $fileHandle
-	 */
-	private function closeFile($fileHandle)
-	{
-		if (fclose($fileHandle) === FALSE) {
-			throw new FileCannotBeClosedException();
-		}
+		return 'safe://' . $this->directory . '/' . sha1($this->taskName);
 	}
 
 }
