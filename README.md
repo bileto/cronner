@@ -121,7 +121,9 @@ every time when Cronner runs.
 
 Not required but recommended annotation which specifies period of task execution.
 The period is minimal time between two executions of the task. It's value can be
-anything what is acceptable for `strtotime()` function.
+anything what is acceptable for `strtotime()` function. The only restriction is usability
+with "+" sign before which is added by Cronner automatically. So `first day of this month`
+ia not acceptable however `1 month` is acceptable.
 
 **Attention!** The value of this annotation must not contain any sign (+ or -).
 

@@ -47,7 +47,7 @@ class Parser extends Object
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
 			if (strtotime('+ ' . $annotation) === FALSE) {
-				throw new InvalidParameterException("Given period parameter '" . $annotation . "' must be valid for strtotime().");
+				throw new InvalidParameterException("Given period parameter '" . $annotation . "' must be valid for strtotime() with '+' sign as its prefix (added by Cronner automatically).");
 			}
 			$period = $annotation;
 		}
