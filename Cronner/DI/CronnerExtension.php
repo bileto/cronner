@@ -93,8 +93,16 @@ class CronnerExtension extends CompilerExtension
 			$def->setInject(FALSE);
 			$def->addTag(self::TASKS_TAG);
 		}
+	}
 
-		foreach (array_keys($container->findByTag(self::TASKS_TAG)) as $serviceName) {
+
+
+	public function beforeCompile()
+	{
+		$builder = $this->getContainerBuilder();
+
+		$runner = $builder->getDefinition($this->prefix('runner'));
+		foreach (array_keys($builder->findByTag(self::TASKS_TAG)) as $serviceName) {
 			$runner->addSetup('addTasks', array('@' . $serviceName));
 		}
 	}
