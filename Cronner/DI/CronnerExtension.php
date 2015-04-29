@@ -20,7 +20,7 @@ class CronnerExtension extends CompilerExtension
 	const TASKS_TAG = 'cronner.tasks';
 
 	const DEFAULT_STORAGE_CLASS = 'stekycz\Cronner\TimestampStorage\FileStorage';
-	const DEFAULT_STORAGE_DIRECTORY = '%wwwDir%/../temp/cronner';
+	const DEFAULT_STORAGE_DIRECTORY = '%tempDir%/cronner';
 
 	/**
 	 * @var array
