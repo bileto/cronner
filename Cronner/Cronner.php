@@ -92,7 +92,13 @@ class Cronner extends Object
 		};
 	}
 
-
+	/**
+	 * @return \stekycz\Cronner\Tasks\Task[]
+	 */
+	public function getTasks()
+	{
+		return $this->tasks;
+	}
 
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage

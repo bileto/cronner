@@ -30,6 +30,7 @@ class CronnerExtension extends CompilerExtension
 		'maxExecutionTime' => NULL,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
 		'tasks' => array(),
+		'bar' => '%debugMode%'
 	);
 
 
@@ -93,9 +94,12 @@ class CronnerExtension extends CompilerExtension
 			$def->setInject(FALSE);
 			$def->addTag(self::TASKS_TAG);
 		}
+
+		if ($config['bar'] && class_exists('Tracy\Bar')) {
+			$container->addDefinition($this->prefix('bar'))
+				->setClass('stekycz\Cronner\Bar\Tasks', [$this->prefix('@runner'), $this->prefix('@timestampStorage')]);
+		}
 	}
-
-
 
 	public function beforeCompile()
 	{
@@ -105,9 +109,12 @@ class CronnerExtension extends CompilerExtension
 		foreach (array_keys($builder->findByTag(self::TASKS_TAG)) as $serviceName) {
 			$runner->addSetup('addTasks', array('@' . $serviceName));
 		}
+
+		if ($builder->hasDefinition($this->prefix('bar'))) {
+			$builder->getDefinition('tracy.bar')
+				->addSetup('addPanel', [$this->prefix('@bar')]);
+		}
 	}
-
-
 
 	/**
 	 * @param \Nette\Configurator $configurator

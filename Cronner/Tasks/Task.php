@@ -55,6 +55,38 @@ final class Task extends Object
 
 
 	/**
+	 * @return string
+	 */
+	public function getObjectName()
+	{
+		return get_class($this->object);
+	}
+
+
+
+	/**
+	 * @return \Nette\Reflection\Method
+	 */
+	public function getMethodReflection()
+	{
+		return $this->method;
+	}
+
+
+
+	/**
+	 * @return string
+	 */
+	public function getObjectPath()
+	{
+		$reflection = new \ReflectionClass($this->object);
+
+		return $reflection->getFileName();
+	}
+
+
+
+	/**
 	 * Returns True if given parameters should be run.
 	 *
 	 * @param \DateTime $now

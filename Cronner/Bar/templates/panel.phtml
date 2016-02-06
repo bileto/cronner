@@ -1,0 +1,34 @@
+<?php use stekycz\Cronner\Tasks\Parameters; ?>
+<style class="tracy-debug">
+	#nette-cronner-table { width: 100%; }
+	#nette-cronner-table th { font-size: 15px !important; }
+	#nette-cronner-overflow { overflow-y: auto; max-height: 500px; min-width: 500px; }
+</style>
+<div class="nette-cronner">
+	<h1>Cronner</h1>
+
+	<div id="nette-cronner-overflow">
+		<table class="nette-inner tracy-inner" id="nette-cronner-table">
+			<tbody>
+				<?php foreach ($tasks as $name => $task): ?>
+				<tr>
+					<th colspan="99"><?php echo count($task) ?>x <?php echo $name ?></th>
+				</tr>
+				<?php foreach ($task as $row): ?>
+				<?php $method = $row->getMethodReflection(); ?>
+				<tr>
+					<td><?php echo $method->getAnnotation(Parameters::TASK) ?></td>
+					<td><a class="tracy-toggle tracy-collapsed" data-tracy-ref="#nette-cronner-task-<?php echo Nette\Utils\Strings::webalize($name) . Nette\Utils\Strings::webalize($method->name); ?>">Show more</a></td>
+					<td><a href="<?php echo Tracy\Helpers::editorUri($row->getObjectPath(), $method->startLine); ?>">open in editor</a></td>
+				</tr>
+				<tr class="tracy-collapsed" id="nette-cronner-task-<?php echo Nette\Utils\Strings::webalize($name) . Nette\Utils\Strings::webalize($method->name); ?>">
+					<td><?php echo $method->name ?>()</td>
+					<td><?php echo $method->getAnnotation(Parameters::PERIOD) ?></td>
+					<td><?php echo $method->getAnnotation(Parameters::DAYS) ?></td>
+					<td><?php echo $method->getAnnotation(Parameters::TIME) ?></td>
+				</tr>
+				<?php endforeach; endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+</div>
