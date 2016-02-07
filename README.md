@@ -45,9 +45,9 @@ extension:
     cronner: stekycz\Cronner\DI\CronnerExtension
 ```
 
-It does not require any configuration however your own implementation of timestamp storage can be better
-then the default. Your storage must be defined as a service in `config.neon` and Cronner will find it. However
-you can specify service manually if it is not autowireable.
+It does not require any configuration however your own implementation of timestamp storage could be better
+then the default storage. Your storage must be defined as a service in `config.neon` and Cronner will find it.
+However you can specify service manually if it is not autowireable.
 
 ```neon
 cronner:
@@ -87,7 +87,9 @@ class CronPresenter extends \Nette\Application\UI\Presenter {
 
  or in `Command` from [Kdyby/Console](https://github.com/Kdyby/Console).
 
-Service configuration is also possible but it should not be used using new versions of Nette.
+Service configuration is also possible but it **should not** be used using new versions of Nette because extension
+usage is recommended and preferable way. However you will still need to call `run` method somewhere in your
+`Presenter` or console `Command`.
 
 ```neon
 services:
@@ -100,7 +102,7 @@ services:
 
 ### @cronner-task
 
-This annotations is **required for all** public methods which should be used as a task.
+This annotations is **highly recommended** for all public methods which should be used as a task.
 Its value is used as a name of task. If value is missing the name is build from class name
 and method name.
 
@@ -122,8 +124,8 @@ every time when Cronner runs.
 Not required but recommended annotation which specifies period of task execution.
 The period is minimal time between two executions of the task. It's value can be
 anything what is acceptable for `strtotime()` function. The only restriction is usability
-with "+" sign before which is added by Cronner automatically. So `first day of this month`
-ia not acceptable however `1 month` is acceptable.
+with "+" sign before the time because it is added by Cronner automatically. So `first day of this month`
+is not acceptable however `1 month` is acceptable.
 
 **Attention!** The value of this annotation must not contain any sign (+ or -).
 
