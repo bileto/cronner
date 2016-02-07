@@ -13,7 +13,6 @@ use Tester\Assert;
 
 
 require_once(__DIR__ . "/../bootstrap.php");
-require_once(__DIR__ . "/../objects/TestObject.php");
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>

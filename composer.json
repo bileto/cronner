@@ -36,5 +36,8 @@
 	},
 	"autoload": {
 		"classmap": ["Cronner/"]
+	},
+	"autoload-dev": {
+		"classmap": ["tests/CronnerTests/objects"]
 	}
 }

@@ -11,6 +11,9 @@ use Nette\Utils\DateTime;
 use stdClass;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\Tasks\Task;
+use stekycz\Cronner\tests\objects\AnotherSimpleTestObject;
+use stekycz\Cronner\tests\objects\NextSimpleTestObject;
+use stekycz\Cronner\tests\objects\SameTaskNameObject;
 use stekycz\Cronner\tests\objects\TestExceptionObject;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
@@ -18,8 +21,6 @@ use Tester\Assert;
 
 
 require_once(__DIR__ . "/bootstrap.php");
-require_once(__DIR__ . "/objects/TestObject.php");
-require_once(__DIR__ . "/objects/TestExceptionObject.php");
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
@@ -220,6 +221,27 @@ class CronnerTest extends \TestCase
 		};
 		$this->cronner->addTasks(new TestExceptionObject());
 		$this->cronner->run($now);
+	}
+
+
+
+	public function testAddingTwoTestsWithTheSameNameInOneObject()
+	{
+		$self = $this;
+		Assert::exception(function () use ($self) {
+			$self->cronner->addTasks(new SameTaskNameObject());
+		}, '\stekycz\Cronner\DuplicateTaskNameException');
+	}
+
+
+
+	public function testAddingTwoTestsWithTheSameNameInMoreObjects()
+	{
+		$self = $this;
+		Assert::exception(function () use ($self) {
+			$self->cronner->addTasks(new AnotherSimpleTestObject());
+			$self->cronner->addTasks(new NextSimpleTestObject());
+		}, '\stekycz\Cronner\DuplicateTaskNameException');
 	}
 
 }
