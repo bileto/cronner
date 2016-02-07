@@ -125,9 +125,7 @@ class CronnerTest extends \TestCase
 
 	public function testAcceptsTasksObjectWithTaskMethods()
 	{
-		$tasks = $this->mockista->create('\stdClass');
-
-		$this->cronner->addTasks($tasks);
+		$this->cronner->addTasks(new \stdClass());
 		Assert::equal(1, $this->cronner->countTaskObjects());
 	}
 
@@ -138,8 +136,7 @@ class CronnerTest extends \TestCase
 	 */
 	public function testThrowsExceptionOnDuplicateTasksObjectAddition()
 	{
-		$tasks = $this->mockista->create('\stdClass');
-
+		$tasks = new \stdClass();
 		$this->cronner->addTasks($tasks);
 		$this->cronner->addTasks($tasks);
 	}
