@@ -102,8 +102,8 @@ services:
 
 ### @cronner-task
 
-This annotations is **highly recommended** for all public methods which should be used as a task.
-Its value is used as a name of task. If value is missing the name is build from class name
+This annotations is **required** for all public methods which should be used as a task.
+Its value is used as a name of task. If the value is missing the name is build from class name
 and method name.
 
 If this annotation is single (for Cronner) in task method comment then the task is run
