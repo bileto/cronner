@@ -181,7 +181,11 @@ class Cronner extends Object
 		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
 			if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
-				$this->tasks[] = new Task($tasks, $method, $this->timestampStorage);
+				$task =  new Task($tasks, $method, $this->timestampStorage);
+				if (array_key_exists($task->getName(), $this->tasks)) {
+					throw new DuplicateTaskNameException('Cannot use more tasks with the same name "' . $task->getName() . '".');
+				}
+				$this->tasks[$task->getName()] = $task;
 			}
 		}
 		$this->registeredTaskObjects[] = $tasksId;

@@ -47,6 +47,16 @@ class EmptyTaskNameException extends InvalidArgumentException
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
+class DuplicateTaskNameException extends InvalidArgumentException
+{
+
+}
+
+
+
+/**
+ * @author Martin Štekl <martin.stekl@gmail.com>
+ */
 class RuntimeException extends \RuntimeException
 {
 
