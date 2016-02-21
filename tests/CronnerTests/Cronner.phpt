@@ -227,9 +227,9 @@ class CronnerTest extends \TestCase
 
 	public function testAddingTwoTestsWithTheSameNameInOneObject()
 	{
-		$self = $this;
-		Assert::exception(function () use ($self) {
-			$self->cronner->addTasks(new SameTaskNameObject());
+		$cronner = $this->cronner;
+		Assert::exception(function () use ($cronner) {
+			$cronner->addTasks(new SameTaskNameObject());
 		}, '\stekycz\Cronner\DuplicateTaskNameException');
 	}
 
@@ -237,10 +237,10 @@ class CronnerTest extends \TestCase
 
 	public function testAddingTwoTestsWithTheSameNameInMoreObjects()
 	{
-		$self = $this;
-		Assert::exception(function () use ($self) {
-			$self->cronner->addTasks(new AnotherSimpleTestObject());
-			$self->cronner->addTasks(new NextSimpleTestObject());
+		$cronner = $this->cronner;
+		Assert::exception(function () use ($cronner) {
+			$cronner->addTasks(new AnotherSimpleTestObject());
+			$cronner->addTasks(new NextSimpleTestObject());
 		}, '\stekycz\Cronner\DuplicateTaskNameException');
 	}
 
