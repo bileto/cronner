@@ -97,7 +97,7 @@ class CronnerExtension extends CompilerExtension
 
 		if ($config['bar'] && class_exists('Tracy\Bar')) {
 			$container->addDefinition($this->prefix('bar'))
-				->setClass('stekycz\Cronner\Bar\Tasks', [$this->prefix('@runner'), $this->prefix('@timestampStorage')]);
+				->setClass('stekycz\Cronner\Bar\Tasks', array($this->prefix('@runner'), $this->prefix('@timestampStorage')));
 		}
 	}
 
@@ -112,7 +112,7 @@ class CronnerExtension extends CompilerExtension
 
 		if ($builder->hasDefinition($this->prefix('bar'))) {
 			$builder->getDefinition('tracy.bar')
-				->addSetup('addPanel', [$this->prefix('@bar')]);
+				->addSetup('addPanel', array($this->prefix('@bar')));
 		}
 	}
 
