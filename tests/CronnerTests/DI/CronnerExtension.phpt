@@ -49,7 +49,7 @@ class CronnerExtensionTest extends \TestCase
 	public function testDefaultConfiguration()
 	{
 		$compiler = $this->compiler;
-		$compiler->compile(array());
+		$compiler->compile();
 
 		$timestampStorage = $compiler->getContainerBuilder()->getDefinition('cronner.timestampStorage');
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
@@ -65,13 +65,16 @@ class CronnerExtensionTest extends \TestCase
 	public function testCompleteConfiguration()
 	{
 		$compiler = $this->compiler;
-		$compiler->compile(array(
-			'cronner' => array(
-				'timestampStorage' => new Nette\DI\Statement('stekycz\Cronner\TimestampStorage\DummyStorage'),
-				'maxExecutionTime' => 120,
-				'criticalSectionTempDir' => '%tempDir%/cronner',
+		$compiler->addConfig(
+			array(
+				'cronner' => array(
+					'timestampStorage' => new Nette\DI\Statement('stekycz\Cronner\TimestampStorage\DummyStorage'),
+					'maxExecutionTime' => 120,
+					'criticalSectionTempDir' => '%tempDir%/cronner',
+				)
 			)
-		));
+		);
+		$compiler->compile();
 
 		$timestampStorage = $compiler->getContainerBuilder()->getDefinition('cronner.timestampStorage');
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
