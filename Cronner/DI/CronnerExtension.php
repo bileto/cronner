@@ -6,6 +6,7 @@ use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Statement;
+use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
 use Nette\Utils\Validators;
 
@@ -109,10 +110,14 @@ class CronnerExtension extends CompilerExtension
 		foreach (array_keys($builder->findByTag(self::TASKS_TAG)) as $serviceName) {
 			$runner->addSetup('addTasks', array('@' . $serviceName));
 		}
+	}
+
+	public function afterCompile(ClassType $class) {
+		$builder = $this->getContainerBuilder();
+		$init = $class->getMethod('initialize');
 
 		if ($builder->hasDefinition($this->prefix('bar'))) {
-			$builder->getDefinition('tracy.bar')
-				->addSetup('addPanel', array($this->prefix('@bar')));
+			$init->addBody('$this->getByType(?)->addPanel($this->getService(?));', array('Tracy\Bar', $this->prefix('bar')));
 		}
 	}
 
