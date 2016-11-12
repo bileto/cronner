@@ -39,8 +39,5 @@
 	},
 	"autoload-dev": {
 		"classmap": ["tests/CronnerTests/objects"]
-	},
-	"config": {
-		"disable-tls": true
 	}
 }

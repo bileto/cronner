@@ -5,6 +5,7 @@ namespace stekycz\Cronner\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
+use Nette\DI\ContainerBuilder;
 use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
@@ -34,7 +35,17 @@ class CronnerExtension extends CompilerExtension
 		'bar' => '%debugMode%'
 	);
 
-
+	/**
+	 * @param ContainerBuilder $containerBuilder
+	 *
+	 * @return \Nette\DI\ServiceDefinition
+	 */
+	protected function createTimestampStorage(ContainerBuilder $containerBuilder)
+	{
+		return $containerBuilder->addDefinition($this->prefix('timestampStorage'))
+			->setAutowired(FALSE)
+			->setInject(FALSE);
+	}
 
 	public function loadConfiguration()
 	{
@@ -45,11 +56,11 @@ class CronnerExtension extends CompilerExtension
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
-		$storage = $container->addDefinition($this->prefix('timestampStorage'))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+
 		if ($config['timestampStorage'] === NULL) {
 			$storageServiceName = $container->getByType('stekycz\Cronner\ITimestampStorage');
+
+			$storage = $this->createTimestampStorage($container);
 			if ($storageServiceName) {
 				$storage->setFactory('@' . $storageServiceName);
 			} else {
@@ -58,6 +69,7 @@ class CronnerExtension extends CompilerExtension
 				));
 			}
 		} else {
+			$storage = $this->createTimestampStorage($container);
 			if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
 				$storage->setFactory($config['timestampStorage']);
 			} else {

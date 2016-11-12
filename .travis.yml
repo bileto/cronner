@@ -7,7 +7,6 @@ php:
   - 5.6
   - 7.0
   - hhvm
-  - hhvm-nightly
 
 env:
   - PHP_BIN=php
@@ -15,18 +14,18 @@ env:
 
 matrix:
   allow_failures:
-    - php: 7.0
     - php: hhvm
-    - php: hhvm-nightly
 
   exclude:
     - php: hhvm
       env: PHP_BIN=php-cgi
 
-    - php: hhvm-nightly
-      env: PHP_BIN=php-cgi
+before_install:
+  - if [[ "$TRAVIS_PHP_VERSION" == "hhvm" ]]; then cat tests/php.ini-unix >> /etc/hhvm/php.ini; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then phpenv config-add tests/php.ini-unix; fi
 
 install:
+  - if [[ "$TRAVIS_PHP_VERSION" == "5.3.3" ]]; then composer config -g disable-tls true; composer config -g secure-http false; fi
   - composer self-update
   - composer install --prefer-source --no-interaction --optimize-autoloader
 
