@@ -39,5 +39,10 @@
 	},
 	"autoload-dev": {
 		"classmap": ["tests/CronnerTests/objects"]
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "v1.1.x-dev"
+		}
 	}
 }
