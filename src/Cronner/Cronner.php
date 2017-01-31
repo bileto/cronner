@@ -123,7 +123,7 @@ class Cronner extends Object
 				"Max execution time must be NULL or numeric value. Type '" . gettype($maxExecutionTime) . "' was given."
 			);
 		}
-		$this->maxExecutionTime = $maxExecutionTime;
+		$this->maxExecutionTime = (int) $maxExecutionTime;
 
 		return $this;
 	}
@@ -148,7 +148,7 @@ class Cronner extends Object
 	 */
 	public function getMaxExecutionTime()
 	{
-		return !is_null($this->maxExecutionTime) ? (int) $this->maxExecutionTime : NULL;
+		return !is_null($this->maxExecutionTime) ? $this->maxExecutionTime : NULL;
 	}
 
 	/**
@@ -194,7 +194,7 @@ class Cronner extends Object
 			$now = new DateTime();
 		}
 		if ($this->maxExecutionTime !== NULL) {
-			set_time_limit((int) $this->maxExecutionTime);
+			set_time_limit($this->maxExecutionTime);
 		}
 
 		foreach ($this->tasks as $task) {
