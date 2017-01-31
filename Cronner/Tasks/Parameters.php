@@ -55,7 +55,7 @@ final class Parameters extends Object
 	/**
 	 * Returns true if today is allowed day of week.
 	 *
-	 * @param \DateTime $now
+	 * @param DateTime $now
 	 * @return bool
 	 */
 	public function isInDay(DateTime $now)
@@ -70,7 +70,7 @@ final class Parameters extends Object
 	/**
 	 * Returns true if current time is in allowed range.
 	 *
-	 * @param \DateTime $now
+	 * @param DateTime $now
 	 * @return bool
 	 */
 	public function isInTime(DateTime $now)
@@ -95,8 +95,8 @@ final class Parameters extends Object
 	/**
 	 * Returns true if current time is next period of invocation.
 	 *
-	 * @param \DateTime $now
-	 * @param \DateTime|null $lastRunTime
+	 * @param DateTime $now
+	 * @param DateTime|null $lastRunTime
 	 * @return bool
 	 */
 	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL)
@@ -114,7 +114,7 @@ final class Parameters extends Object
 	/**
 	 * Parse cronner values from annotations.
 	 *
-	 * @param \Nette\Reflection\Method $method
+	 * @param Method $method
 	 * @return array
 	 */
 	public static function parseParameters(Method $method)

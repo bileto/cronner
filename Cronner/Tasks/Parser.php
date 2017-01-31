@@ -31,7 +31,7 @@ class Parser extends Object
 	 *
 	 * @param string $annotation
 	 * @return string|null
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws InvalidParameterException
 	 */
 	public static function parsePeriod($annotation)
 	{
@@ -54,7 +54,7 @@ class Parser extends Object
 	 *
 	 * @param string $annotation
 	 * @return string[]|null
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws InvalidParameterException
 	 */
 	public static function parseDays($annotation)
 	{
@@ -85,7 +85,7 @@ class Parser extends Object
 	 *
 	 * @param string $annotation
 	 * @return string[][]|null
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws InvalidParameterException
 	 */
 	public static function parseTimes($annotation)
 	{
@@ -198,7 +198,7 @@ class Parser extends Object
 	 *
 	 * @param string $time
 	 * @return string[][]
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws InvalidParameterException
 	 */
 	private static function parseOneTime($time)
 	{
@@ -271,7 +271,7 @@ class Parser extends Object
 	 * Checks if given annotation is valid. Throws exception if not.
 	 *
 	 * @param string $annotation
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws InvalidParameterException
 	 */
 	private static function checkAnnotation($annotation)
 	{

@@ -6,6 +6,7 @@ use DateTime;
 use Nette;
 use Nette\Object;
 use Nette\Utils\FileSystem;
+use Nette\Utils\SafeStream;
 use Nette\Utils\Strings;
 use stekycz\Cronner\EmptyTaskNameException;
 use stekycz\Cronner\InvalidTaskNameException;
@@ -31,7 +32,7 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	public function __construct($directory)
 	{
-		Nette\Utils\SafeStream::register();
+		SafeStream::register();
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
 		FileSystem::createDir($directory);
 		$this->directory = $directory;
@@ -53,7 +54,7 @@ class FileStorage extends Object implements ITimestampStorage
 	/**
 	 * Saves current date and time as last invocation time.
 	 *
-	 * @param \DateTime $now
+	 * @param DateTime $now
 	 */
 	public function saveRunTime(DateTime $now)
 	{
@@ -64,7 +65,7 @@ class FileStorage extends Object implements ITimestampStorage
 	/**
 	 * Returns date and time of last cron task invocation.
 	 *
-	 * @return \DateTime|null
+	 * @return DateTime|null
 	 */
 	public function loadLastRunTime()
 	{

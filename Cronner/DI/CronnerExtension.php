@@ -6,6 +6,7 @@ use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
+use Nette\DI\ServiceDefinition;
 use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
@@ -33,7 +34,7 @@ class CronnerExtension extends CompilerExtension
 	/**
 	 * @param ContainerBuilder $containerBuilder
 	 *
-	 * @return \Nette\DI\ServiceDefinition
+	 * @return ServiceDefinition
 	 */
 	protected function createTimestampStorage(ContainerBuilder $containerBuilder)
 	{
@@ -129,7 +130,7 @@ class CronnerExtension extends CompilerExtension
 	}
 
 	/**
-	 * @param \Nette\Configurator $configurator
+	 * @param Configurator $configurator
 	 */
 	public static function register(Configurator $configurator)
 	{

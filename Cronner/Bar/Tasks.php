@@ -10,7 +10,7 @@ class Tasks extends Object implements IBarPanel
 {
 
 	/**
-	 * @var \stekycz\Cronner\Cronner
+	 * @var Cronner
 	 */
 	protected $cronner;
 
@@ -19,6 +19,9 @@ class Tasks extends Object implements IBarPanel
 		$this->cronner = $cronner;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getPanel()
 	{
 		$tasks = array();
@@ -35,6 +38,9 @@ class Tasks extends Object implements IBarPanel
 		return ob_get_clean();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getTab()
 	{
 		ob_start();

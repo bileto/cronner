@@ -6,6 +6,7 @@ use DateTime;
 use Nette;
 use Nette\Object;
 use Nette\Reflection\Method;
+use ReflectionClass;
 use stekycz\Cronner\ITimestampStorage;
 
 final class Task extends Object
@@ -17,17 +18,17 @@ final class Task extends Object
 	private $object;
 
 	/**
-	 * @var \Nette\Reflection\Method
+	 * @var Method
 	 */
 	private $method;
 
 	/**
-	 * @var \stekycz\Cronner\ITimestampStorage
+	 * @var ITimestampStorage
 	 */
 	private $timestampStorage;
 
 	/**
-	 * @var \stekycz\Cronner\Tasks\Parameters|null
+	 * @var Parameters|null
 	 */
 	private $parameters = NULL;
 
@@ -35,8 +36,8 @@ final class Task extends Object
 	 * Creates instance of one task.
 	 *
 	 * @param object $object
-	 * @param \Nette\Reflection\Method $method
-	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
+	 * @param Method $method
+	 * @param ITimestampStorage $timestampStorage
 	 */
 	public function __construct($object, Method $method, ITimestampStorage $timestampStorage)
 	{
@@ -54,7 +55,7 @@ final class Task extends Object
 	}
 
 	/**
-	 * @return \Nette\Reflection\Method
+	 * @return Method
 	 */
 	public function getMethodReflection()
 	{
@@ -66,7 +67,7 @@ final class Task extends Object
 	 */
 	public function getObjectPath()
 	{
-		$reflection = new \ReflectionClass($this->object);
+		$reflection = new ReflectionClass($this->object);
 
 		return $reflection->getFileName();
 	}
@@ -74,7 +75,7 @@ final class Task extends Object
 	/**
 	 * Returns True if given parameters should be run.
 	 *
-	 * @param \DateTime $now
+	 * @param DateTime $now
 	 * @return bool
 	 */
 	public function shouldBeRun(DateTime $now = NULL)
@@ -104,7 +105,7 @@ final class Task extends Object
 		return $this->getParameters()->getName();
 	}
 
-	public function __invoke(\DateTime $now)
+	public function __invoke(DateTime $now)
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getName());
@@ -115,7 +116,7 @@ final class Task extends Object
 	/**
 	 * Returns instance of parsed parameters.
 	 *
-	 * @return \stekycz\Cronner\Tasks\Parameters
+	 * @return Parameters
 	 */
 	private function getParameters()
 	{

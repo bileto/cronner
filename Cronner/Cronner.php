@@ -13,9 +13,9 @@ use stekycz\Cronner\Tasks\Task;
 use Tracy\Debugger;
 
 /**
- * @method onTaskBegin(\stekycz\Cronner\Cronner $cronner, \stekycz\Cronner\Tasks\Task $task)
- * @method onTaskFinished(\stekycz\Cronner\Cronner $cronner, \stekycz\Cronner\Tasks\Task $task)
- * @method onTaskError(\stekycz\Cronner\Cronner $cronner, \Exception $exception, \stekycz\Cronner\Tasks\Task $task)
+ * @method onTaskBegin(Cronner $cronner, Task $task)
+ * @method onTaskFinished(Cronner $cronner, Task $task)
+ * @method onTaskError(Cronner $cronner, Exception $exception, Task $task)
  */
 class Cronner extends Object
 {
@@ -36,7 +36,7 @@ class Cronner extends Object
 	public $onTaskError = array();
 
 	/**
-	 * @var \stekycz\Cronner\Tasks\Task[]
+	 * @var Task[]
 	 */
 	private $tasks = array();
 
@@ -46,12 +46,12 @@ class Cronner extends Object
 	private $registeredTaskObjects = array();
 
 	/**
-	 * @var \stekycz\Cronner\ITimestampStorage
+	 * @var ITimestampStorage
 	 */
 	private $timestampStorage;
 
 	/**
-	 * @var \stekycz\Cronner\CriticalSection
+	 * @var CriticalSection
 	 */
 	private $criticalSection;
 
@@ -66,8 +66,8 @@ class Cronner extends Object
 	private $skipFailedTask = TRUE;
 
 	/**
-	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
-	 * @param \stekycz\Cronner\CriticalSection $criticalSection
+	 * @param ITimestampStorage $timestampStorage
+	 * @param CriticalSection $criticalSection
 	 * @param int|null $maxExecutionTime It is used only when Cronner runs
 	 * @param bool $skipFailedTask
 	 */
@@ -88,7 +88,7 @@ class Cronner extends Object
 	}
 
 	/**
-	 * @return \stekycz\Cronner\Tasks\Task[]
+	 * @return Task[]
 	 */
 	public function getTasks()
 	{
@@ -96,8 +96,8 @@ class Cronner extends Object
 	}
 
 	/**
-	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
-	 * @return \stekycz\Cronner\Cronner
+	 * @param ITimestampStorage $timestampStorage
+	 * @return Cronner
 	 */
 	public function setTimestampStorage(ITimestampStorage $timestampStorage)
 	{
@@ -110,8 +110,8 @@ class Cronner extends Object
 	 * Sets max execution time for Cronner. It is used only when Cronner runs.
 	 *
 	 * @param int|null $maxExecutionTime
-	 * @return \stekycz\Cronner\Cronner
-	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 * @return Cronner
+	 * @throws InvalidArgumentException
 	 */
 	public function setMaxExecutionTime($maxExecutionTime = NULL)
 	{
@@ -129,7 +129,7 @@ class Cronner extends Object
 	 * Sets flag that thrown exceptions will not be thrown but cached and logged.
 	 *
 	 * @param bool $skipFailedTask
-	 * @return \stekycz\Cronner\Cronner
+	 * @return Cronner
 	 */
 	public function setSkipFailedTask($skipFailedTask = TRUE)
 	{
@@ -154,8 +154,8 @@ class Cronner extends Object
 	 * an exception.
 	 *
 	 * @param object $tasks
-	 * @return \stekycz\Cronner\Cronner
-	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 * @return Cronner
+	 * @throws InvalidArgumentException
 	 */
 	public function addTasks($tasks)
 	{
@@ -183,7 +183,7 @@ class Cronner extends Object
 	/**
 	 * Runs all cron tasks.
 	 *
-	 * @param \DateTime $now
+	 * @param DateTime|null $now
 	 */
 	public function run(\DateTime $now = NULL)
 	{
