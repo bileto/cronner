@@ -224,7 +224,7 @@ class Parser extends Object
 	 * Translates given annotation to day names.
 	 *
 	 * @param string $time
-	 * @return string[]
+	 * @return string
 	 */
 	private static function translateToTimes($time)
 	{

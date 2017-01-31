@@ -24,17 +24,17 @@ class Cronner extends Object
 {
 
 	/**
-	 * @var callable
+	 * @var callable[]
 	 */
 	public $onTaskBegin = array();
 
 	/**
-	 * @var callable
+	 * @var callable[]
 	 */
 	public $onTaskFinished = array();
 
 	/**
-	 * @var callable
+	 * @var callable[]
 	 */
 	public $onTaskError = array();
 
