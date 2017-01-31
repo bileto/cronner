@@ -8,8 +8,6 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
@@ -26,8 +24,6 @@ final class Parameters extends Object
 	 */
 	private $values;
 
-
-
 	/**
 	 * @param array $values
 	 */
@@ -39,8 +35,6 @@ final class Parameters extends Object
 		$this->values = $values;
 	}
 
-
-
 	/**
 	 * Returns name of task.
 	 *
@@ -51,8 +45,6 @@ final class Parameters extends Object
 		return $this->values[static::TASK];
 	}
 
-
-
 	/**
 	 * Returns true if task is really a task.
 	 *
@@ -62,8 +54,6 @@ final class Parameters extends Object
 	{
 		return Strings::length($this->values[static::TASK]) > 0;
 	}
-
-
 
 	/**
 	 * Returns true if today is allowed day of week.
@@ -79,8 +69,6 @@ final class Parameters extends Object
 
 		return TRUE;
 	}
-
-
 
 	/**
 	 * Returns true if current time is in allowed range.
@@ -107,8 +95,6 @@ final class Parameters extends Object
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Returns true if current time is next period of invocation.
 	 *
@@ -121,13 +107,12 @@ final class Parameters extends Object
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			// Prevent run task on next cronner run because of a few seconds shift
 			$now = Nette\Utils\DateTime::from($now)->modifyClone('+5 seconds');
+
 			return $lastRunTime === NULL || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
 
 		return TRUE;
 	}
-
-
 
 	/**
 	 * Parse cronner values from annotations.
@@ -146,16 +131,16 @@ final class Parameters extends Object
 
 		$parameters = array(
 			static::TASK => Parser::parseName($method->getAnnotation(Parameters::TASK))
-					? : $taskName,
+				?: $taskName,
 			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
-					? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
-					: NULL,
+				? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
+				: NULL,
 			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
-					? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
-					: NULL,
+				? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
+				: NULL,
 			static::TIME => $method->hasAnnotation(Parameters::TIME)
-					? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
-					: NULL,
+				? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
+				: NULL,
 		);
 
 		return $parameters;

@@ -11,8 +11,6 @@ use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
 use Nette\Utils\Validators;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */

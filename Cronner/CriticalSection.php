@@ -5,8 +5,6 @@ namespace stekycz\Cronner;
 use Nette\Object;
 use Nette\Utils\FileSystem;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
@@ -23,8 +21,6 @@ class CriticalSection extends Object
 	 */
 	private $lockFilesDir;
 
-
-
 	/**
 	 * @param string $lockFilesDir
 	 */
@@ -34,8 +30,6 @@ class CriticalSection extends Object
 		FileSystem::createDir($lockFilesDir);
 		$this->lockFilesDir = $lockFilesDir;
 	}
-
-
 
 	/**
 	 * Enters critical section.
@@ -57,14 +51,13 @@ class CriticalSection extends Object
 		$locked = flock($handle, LOCK_EX | LOCK_NB);
 		if ($locked === FALSE) {
 			fclose($handle);
+
 			return FALSE;
 		}
 		$this->locks[$label] = $handle;
 
 		return TRUE;
 	}
-
-
 
 	/**
 	 * Leaves critical section.
@@ -89,8 +82,6 @@ class CriticalSection extends Object
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Returns TRUE if critical section is entered.
 	 *
@@ -101,8 +92,6 @@ class CriticalSection extends Object
 	{
 		return array_key_exists($label, $this->locks) && $this->locks[$label] !== NULL;
 	}
-
-
 
 	/**
 	 * @param string $label

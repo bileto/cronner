@@ -8,8 +8,6 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use stekycz\Cronner\ITimestampStorage;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
@@ -36,8 +34,6 @@ final class Task extends Object
 	 */
 	private $parameters = NULL;
 
-
-
 	/**
 	 * Creates instance of one task.
 	 *
@@ -52,8 +48,6 @@ final class Task extends Object
 		$this->timestampStorage = $timestampStorage;
 	}
 
-
-
 	/**
 	 * @return string
 	 */
@@ -62,8 +56,6 @@ final class Task extends Object
 		return get_class($this->object);
 	}
 
-
-
 	/**
 	 * @return \Nette\Reflection\Method
 	 */
@@ -71,8 +63,6 @@ final class Task extends Object
 	{
 		return $this->method;
 	}
-
-
 
 	/**
 	 * @return string
@@ -83,8 +73,6 @@ final class Task extends Object
 
 		return $reflection->getFileName();
 	}
-
-
 
 	/**
 	 * Returns True if given parameters should be run.
@@ -109,8 +97,6 @@ final class Task extends Object
 			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
 	}
 
-
-
 	/**
 	 * Returns task name.
 	 *
@@ -121,8 +107,6 @@ final class Task extends Object
 		return $this->getParameters()->getName();
 	}
 
-
-
 	public function __invoke(\DateTime $now)
 	{
 		$this->method->invoke($this->object);
@@ -130,8 +114,6 @@ final class Task extends Object
 		$this->timestampStorage->saveRunTime($now);
 		$this->timestampStorage->setTaskName();
 	}
-
-
 
 	/**
 	 * Returns instance of parsed parameters.

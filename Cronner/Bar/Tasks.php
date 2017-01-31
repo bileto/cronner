@@ -31,6 +31,7 @@ class Tasks extends Object implements IBarPanel
 		}
 		ob_start();
 		require __DIR__ . '/templates/panel.phtml';
+
 		return ob_get_clean();
 	}
 
@@ -39,6 +40,7 @@ class Tasks extends Object implements IBarPanel
 		ob_start();
 		$count = $this->cronner->countTasks();
 		require __DIR__ . '/templates/tab.phtml';
+
 		return ob_get_clean();
 	}
 

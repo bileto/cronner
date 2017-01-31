@@ -3,16 +3,14 @@
 namespace stekycz\Cronner;
 
 use Exception;
-use Nette\Utils\DateTime;
 use Nette\Object;
 use Nette\Reflection\ClassType;
+use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 use ReflectionMethod;
 use stekycz\Cronner\Tasks\Parameters;
 use stekycz\Cronner\Tasks\Task;
 use Tracy\Debugger;
-
-
 
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
@@ -68,8 +66,6 @@ class Cronner extends Object
 	 */
 	private $skipFailedTask = TRUE;
 
-
-
 	/**
 	 * @param \stekycz\Cronner\ITimestampStorage $timestampStorage
 	 * @param \stekycz\Cronner\CriticalSection $criticalSection
@@ -111,8 +107,6 @@ class Cronner extends Object
 		return $this;
 	}
 
-
-
 	/**
 	 * Sets max execution time for Cronner. It is used only when Cronner runs.
 	 *
@@ -132,8 +126,6 @@ class Cronner extends Object
 		return $this;
 	}
 
-
-
 	/**
 	 * Sets flag that thrown exceptions will not be thrown but cached and logged.
 	 *
@@ -147,8 +139,6 @@ class Cronner extends Object
 		return $this;
 	}
 
-
-
 	/**
 	 * Returns max execution time for Cronner. It does not load INI value.
 	 *
@@ -158,8 +148,6 @@ class Cronner extends Object
 	{
 		return !is_null($this->maxExecutionTime) ? (int) $this->maxExecutionTime : NULL;
 	}
-
-
 
 	/**
 	 * Adds task case to be processed when cronner runs. If tasks
@@ -181,7 +169,7 @@ class Cronner extends Object
 		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
 			if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
-				$task =  new Task($tasks, $method, $this->timestampStorage);
+				$task = new Task($tasks, $method, $this->timestampStorage);
 				if (array_key_exists($task->getName(), $this->tasks)) {
 					throw new DuplicateTaskNameException('Cannot use more tasks with the same name "' . $task->getName() . '".');
 				}
@@ -192,8 +180,6 @@ class Cronner extends Object
 
 		return $this;
 	}
-
-
 
 	/**
 	 * Runs all cron tasks.
@@ -235,8 +221,6 @@ class Cronner extends Object
 		}
 	}
 
-
-
 	/**
 	 * Returns count of added task objects.
 	 *
@@ -247,8 +231,6 @@ class Cronner extends Object
 		return count($this->registeredTaskObjects);
 	}
 
-
-
 	/**
 	 * Returns count of added tasks.
 	 *
@@ -258,8 +240,6 @@ class Cronner extends Object
 	{
 		return count($this->tasks);
 	}
-
-
 
 	/**
 	 * Creates and returns identification string for given object.

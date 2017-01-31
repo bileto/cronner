@@ -6,8 +6,6 @@ use DateTime;
 use Nette\Object;
 use stekycz\Cronner\ITimestampStorage;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
@@ -24,8 +22,6 @@ class DummyStorage extends Object implements ITimestampStorage
 		// Dummy
 	}
 
-
-
 	/**
 	 * Saves current date and time as last invocation time.
 	 *
@@ -35,8 +31,6 @@ class DummyStorage extends Object implements ITimestampStorage
 	{
 		// Dummy
 	}
-
-
 
 	/**
 	 * Returns date and time of last cron task invocation.

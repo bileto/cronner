@@ -11,8 +11,6 @@ use stekycz\Cronner\EmptyTaskNameException;
 use stekycz\Cronner\InvalidTaskNameException;
 use stekycz\Cronner\ITimestampStorage;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
@@ -31,8 +29,6 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	private $taskName = NULL;
 
-
-
 	/**
 	 * @param string $directory
 	 */
@@ -43,8 +39,6 @@ class FileStorage extends Object implements ITimestampStorage
 		FileSystem::createDir($directory);
 		$this->directory = $directory;
 	}
-
-
 
 	/**
 	 * Sets name of current task.
@@ -59,8 +53,6 @@ class FileStorage extends Object implements ITimestampStorage
 		$this->taskName = $taskName;
 	}
 
-
-
 	/**
 	 * Saves current date and time as last invocation time.
 	 *
@@ -71,8 +63,6 @@ class FileStorage extends Object implements ITimestampStorage
 		$filepath = $this->buildFilePath();
 		file_put_contents($filepath, $now->format(self::DATETIME_FORMAT));
 	}
-
-
 
 	/**
 	 * Returns date and time of last cron task invocation.
@@ -90,8 +80,6 @@ class FileStorage extends Object implements ITimestampStorage
 
 		return $date ? $date : NULL;
 	}
-
-
 
 	/**
 	 * Builds file path from directory and task name.

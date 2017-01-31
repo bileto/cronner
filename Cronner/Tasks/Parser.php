@@ -6,8 +6,6 @@ use Nette\Object;
 use Nette\Utils\Strings;
 use stekycz\Cronner\InvalidParameterException;
 
-
-
 /**
  * @author Martin Štekl <martin.stekl@gmail.com>
  */
@@ -31,8 +29,6 @@ class Parser extends Object
 		return $name;
 	}
 
-
-
 	/**
 	 * Parses period of cron task. If annotation is invalid throws exception.
 	 *
@@ -52,10 +48,8 @@ class Parser extends Object
 			$period = $annotation;
 		}
 
-		return $period ? : NULL;
+		return $period ?: NULL;
 	}
-
-
 
 	/**
 	 * Parses allowed days for cron task. If annotation is invalid
@@ -85,10 +79,8 @@ class Parser extends Object
 			$days = array_values(array_intersect($validValues, $days));
 		}
 
-		return $days ? : NULL;
+		return $days ?: NULL;
 	}
-
-
 
 	/**
 	 * Parses allowed time ranges for cron task. If annotation is invalid
@@ -115,10 +107,8 @@ class Parser extends Object
 			}
 		}
 
-		return $times ? : NULL;
+		return $times ?: NULL;
 	}
-
-
 
 	/**
 	 * Translates given annotation to day names.
@@ -148,8 +138,6 @@ class Parser extends Object
 
 		return array_unique($days);
 	}
-
-
 
 	/**
 	 * Expands given day names and day ranges to day names only. The day range must be
@@ -186,8 +174,6 @@ class Parser extends Object
 		return array_unique($expandedValues);
 	}
 
-
-
 	/**
 	 * Splits given annotation by comma into array.
 	 *
@@ -199,8 +185,6 @@ class Parser extends Object
 		return Strings::split($annotation, '/\s*,\s*/');
 	}
 
-
-
 	/**
 	 * Returns True if time in valid format is given, False otherwise.
 	 *
@@ -211,8 +195,6 @@ class Parser extends Object
 	{
 		return (bool) Strings::match($time, '/^\d{2}:\d{2}$/u');
 	}
-
-
 
 	/**
 	 * Parses one time annotation. If it is invalid throws exception.
@@ -241,8 +223,6 @@ class Parser extends Object
 		return $times;
 	}
 
-
-
 	/**
 	 * Translates given annotation to day names.
 	 *
@@ -263,8 +243,6 @@ class Parser extends Object
 		return array_key_exists($time, $translationMap) ? $translationMap[$time] : $time;
 	}
 
-
-
 	/**
 	 * Returns True if given times includes midnight, False otherwise.
 	 *
@@ -276,8 +254,6 @@ class Parser extends Object
 	{
 		return $to !== NULL && $to < $from;
 	}
-
-
 
 	/**
 	 * Returns array structure with given times.
@@ -293,8 +269,6 @@ class Parser extends Object
 			'to' => $to,
 		);
 	}
-
-
 
 	/**
 	 * Checks if given annotation is valid. Throws exception if not.
