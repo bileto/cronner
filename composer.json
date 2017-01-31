@@ -18,17 +18,17 @@
 	},
 	"require": {
 		"php": ">=5.3.3",
-		"tracy/tracy": "@dev",
-		"nette/di": "@dev",
-		"nette/bootstrap": "@dev",
-		"nette/utils": "@dev",
-		"nette/reflection": "@dev",
-		"nette/safe-stream": "@dev"
+		"tracy/tracy": "^2.4",
+		"nette/di": "^2.4",
+		"nette/bootstrap": "^2.4",
+		"nette/utils": "^2.4",
+		"nette/reflection": "^2.4",
+		"nette/safe-stream": "^2.3"
 	},
 	"require-dev": {
-		"nette/tester": "~1.3",
-		"janmarek/mockista": "~1.0",
-		"jakub-onderka/php-parallel-lint": "~0.8"
+		"nette/tester": "^1.7",
+		"janmarek/mockista": "^1.0",
+		"jakub-onderka/php-parallel-lint": "^0.9"
 	},
 	"suggest": {
 		"kdyby/events": "Events for Nette Framework",
