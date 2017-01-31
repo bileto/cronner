@@ -32,6 +32,7 @@ install:
 
 before_script:
   - ./vendor/bin/parallel-lint -e php,phpt --exclude vendor .
+  - ./vendor/bin/phpstan analyze --no-progress -l 5 -c ./phpstan.neon ./
 
 script:
   - ./vendor/bin/tester -s -p $PHP_BIN -j 32 -c ./tests/php.ini-unix ./tests/CronnerTests

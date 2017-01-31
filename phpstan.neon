@@ -1,0 +1,11 @@
+parameters:
+	projectDir: %rootDir%/../../..
+	autoload_files:
+		- %projectDir%/vendor/autoload.php
+	excludes_analyse:
+		- %projectDir%/tests/
+		- %projectDir%/vendor/
+	ignoreErrors:
+		- '#.*Cronner::onTaskBegin\(\).*#'
+		- '#.*Cronner::onTaskFinished\(\).*#'
+		- '#.*Cronner::onTaskError\(\).*#'
