@@ -95,7 +95,7 @@ class CronnerExtension extends CompilerExtension
 			));
 
 			if (class_exists($def->factory->entity)) {
-				$def->class = $def->factory->entity;
+				$def->setClass($def->factory->entity);
 			}
 
 			$def->setAutowired(FALSE);
