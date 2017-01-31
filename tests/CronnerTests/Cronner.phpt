@@ -19,8 +19,6 @@ use stekycz\Cronner\tests\objects\TestExceptionObject;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/bootstrap.php");
 
 /**
@@ -89,7 +87,7 @@ class CronnerTest extends \TestCase
 
 	/**
 	 * @dataProvider dataProviderSetMaxExecutionTimeError
-	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
 	 */
 	public function testThrowsExceptionOnWrongTypeOfMaxExecutionTime($value)
 	{
@@ -127,7 +125,7 @@ class CronnerTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
 	 */
 	public function testThrowsExceptionOnDuplicateTasksObjectAddition()
 	{
@@ -217,7 +215,7 @@ class CronnerTest extends \TestCase
 		$cronner = $this->cronner;
 		Assert::exception(function () use ($cronner) {
 			$cronner->addTasks(new SameTaskNameObject());
-		}, '\stekycz\Cronner\DuplicateTaskNameException');
+		}, '\stekycz\Cronner\Exceptions\DuplicateTaskNameException');
 	}
 
 
@@ -228,7 +226,7 @@ class CronnerTest extends \TestCase
 		Assert::exception(function () use ($cronner) {
 			$cronner->addTasks(new AnotherSimpleTestObject());
 			$cronner->addTasks(new NextSimpleTestObject());
-		}, '\stekycz\Cronner\DuplicateTaskNameException');
+		}, '\stekycz\Cronner\Exceptions\DuplicateTaskNameException');
 	}
 
 }

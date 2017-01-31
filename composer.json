@@ -35,7 +35,9 @@
 		"kdyby/console": "Symfony Console integration for Kdyby components"
 	},
 	"autoload": {
-		"classmap": ["Cronner/"]
+		"psr-4": {
+			"stekycz\\": "src"
+		}
 	},
 	"autoload-dev": {
 		"classmap": ["tests/CronnerTests/objects"]

@@ -10,8 +10,6 @@ use stdClass;
 use stekycz\Cronner\Tasks\Parser;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
 /**
@@ -77,7 +75,7 @@ class ParserTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
 	 */
@@ -154,7 +152,7 @@ class ParserTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
 	 */
@@ -379,7 +377,7 @@ class ParserTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameterException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
 	 */

@@ -4,7 +4,7 @@ namespace stekycz\Cronner\Tasks;
 
 use Nette\Object;
 use Nette\Utils\Strings;
-use stekycz\Cronner\InvalidParameterException;
+use stekycz\Cronner\Exceptions\InvalidParameterException;
 
 class Parser extends Object
 {

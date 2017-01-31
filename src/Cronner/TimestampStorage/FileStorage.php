@@ -3,13 +3,12 @@
 namespace stekycz\Cronner\TimestampStorage;
 
 use DateTime;
-use Nette;
 use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\SafeStream;
 use Nette\Utils\Strings;
-use stekycz\Cronner\EmptyTaskNameException;
-use stekycz\Cronner\InvalidTaskNameException;
+use stekycz\Cronner\Exceptions\EmptyTaskNameException;
+use stekycz\Cronner\Exceptions\InvalidTaskNameException;
 use stekycz\Cronner\ITimestampStorage;
 
 class FileStorage extends Object implements ITimestampStorage

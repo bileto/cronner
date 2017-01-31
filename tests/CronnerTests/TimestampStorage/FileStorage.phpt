@@ -13,8 +13,6 @@ use stdClass;
 use stekycz\Cronner\TimestampStorage\FileStorage;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
 /**
@@ -66,7 +64,7 @@ class FileStorageTest extends \TestCase
 
 	/**
 	 * @dataProvider dataProviderSetTaskName
-	 * @throws \stekycz\Cronner\InvalidTaskNameException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidTaskNameException
 	 */
 	public function testThrowsExceptionOnInvalidTaskName($taskName)
 	{

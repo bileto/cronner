@@ -28,7 +28,7 @@ class CronnerExtension extends CompilerExtension
 		'maxExecutionTime' => NULL,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
 		'tasks' => array(),
-		'bar' => '%debugMode%'
+		'bar' => '%debugMode%',
 	);
 
 	/**
@@ -39,8 +39,8 @@ class CronnerExtension extends CompilerExtension
 	protected function createTimestampStorage(ContainerBuilder $containerBuilder)
 	{
 		return $containerBuilder->addDefinition($this->prefix('timestampStorage'))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+            ->setAutowired(FALSE)
+            ->setInject(FALSE);
 	}
 
 	public function loadConfiguration()
@@ -51,7 +51,6 @@ class CronnerExtension extends CompilerExtension
 		Validators::assert($config['timestampStorage'], 'string|object|null', 'Timestamp storage definition');
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
-
 
 		if ($config['timestampStorage'] === NULL) {
 			$storageServiceName = $container->getByType('stekycz\Cronner\ITimestampStorage');
@@ -74,25 +73,25 @@ class CronnerExtension extends CompilerExtension
 		}
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
-			->setClass('stekycz\Cronner\CriticalSection', array(
-				$config['criticalSectionTempDir']
-			))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+             ->setClass('stekycz\Cronner\CriticalSection', array(
+                 $config['criticalSectionTempDir'],
+             ))
+             ->setAutowired(FALSE)
+             ->setInject(FALSE);
 
 		$runner = $container->addDefinition($this->prefix('runner'))
-			->setClass('stekycz\Cronner\Cronner', array(
-				$storage,
-				$criticalSection,
-				$config['maxExecutionTime'],
-				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
-			));
+            ->setClass('stekycz\Cronner\Cronner', array(
+                $storage,
+                $criticalSection,
+                $config['maxExecutionTime'],
+                array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
+            ));
 
 		Validators::assert($config['tasks'], 'array');
 		foreach ($config['tasks'] as $task) {
 			$def = $container->addDefinition($this->prefix('task.' . md5(Json::encode($task))));
 			list($def->factory) = Compiler::filterArguments(array(
-				is_string($task) ? new Statement($task) : $task
+				is_string($task) ? new Statement($task) : $task,
 			));
 
 			if (class_exists($def->factory->entity)) {
@@ -106,7 +105,7 @@ class CronnerExtension extends CompilerExtension
 
 		if ($config['bar'] && class_exists('Tracy\Bar')) {
 			$container->addDefinition($this->prefix('bar'))
-				->setClass('stekycz\Cronner\Bar\Tasks', array($this->prefix('@runner'), $this->prefix('@timestampStorage')));
+			          ->setClass('stekycz\Cronner\Bar\Tasks', array($this->prefix('@runner'), $this->prefix('@timestampStorage')));
 		}
 	}
 
@@ -120,7 +119,8 @@ class CronnerExtension extends CompilerExtension
 		}
 	}
 
-	public function afterCompile(ClassType $class) {
+	public function afterCompile(ClassType $class)
+	{
 		$builder = $this->getContainerBuilder();
 		$init = $class->getMethod('initialize');
 
