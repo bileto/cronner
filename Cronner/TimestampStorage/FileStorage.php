@@ -90,7 +90,7 @@ class FileStorage extends Object implements ITimestampStorage
 			throw new EmptyTaskNameException('Task name was not set.');
 		}
 
-		return 'safe://' . $this->directory . '/' . sha1($this->taskName);
+		return SafeStream::PROTOCOL . '://' . $this->directory . '/' . sha1($this->taskName);
 	}
 
 }
