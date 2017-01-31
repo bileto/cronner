@@ -6,9 +6,6 @@ use Nette\Object;
 use Nette\Utils\Strings;
 use stekycz\Cronner\InvalidParameterException;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class Parser extends Object
 {
 

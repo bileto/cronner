@@ -4,9 +4,6 @@ namespace stekycz\Cronner;
 
 use DateTime;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 interface ITimestampStorage
 {
 

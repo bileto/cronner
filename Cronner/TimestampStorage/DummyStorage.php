@@ -6,9 +6,6 @@ use DateTime;
 use Nette\Object;
 use stekycz\Cronner\ITimestampStorage;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class DummyStorage extends Object implements ITimestampStorage
 {
 

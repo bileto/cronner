@@ -13,7 +13,6 @@ use stekycz\Cronner\Tasks\Task;
 use Tracy\Debugger;
 
 /**
- * @author Martin Štekl <martin.stekl@gmail.com>
  * @method onTaskBegin(\stekycz\Cronner\Cronner $cronner, \stekycz\Cronner\Tasks\Task $task)
  * @method onTaskFinished(\stekycz\Cronner\Cronner $cronner, \stekycz\Cronner\Tasks\Task $task)
  * @method onTaskError(\stekycz\Cronner\Cronner $cronner, \Exception $exception, \stekycz\Cronner\Tasks\Task $task)

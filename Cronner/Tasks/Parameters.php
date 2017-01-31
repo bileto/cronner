@@ -8,9 +8,6 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 final class Parameters extends Object
 {
 

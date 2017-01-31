@@ -8,9 +8,6 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use stekycz\Cronner\ITimestampStorage;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 final class Task extends Object
 {
 

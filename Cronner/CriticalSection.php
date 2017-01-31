@@ -5,9 +5,6 @@ namespace stekycz\Cronner;
 use Nette\Object;
 use Nette\Utils\FileSystem;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class CriticalSection extends Object
 {
 

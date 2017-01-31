@@ -11,9 +11,6 @@ use stekycz\Cronner\EmptyTaskNameException;
 use stekycz\Cronner\InvalidTaskNameException;
 use stekycz\Cronner\ITimestampStorage;
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class FileStorage extends Object implements ITimestampStorage
 {
 
