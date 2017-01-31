@@ -6,6 +6,7 @@
 
 namespace stekycz\Cronner\tests\Tasks;
 
+use Mockery;
 use Nette\Reflection\Method;
 use Nette;
 use stekycz\Cronner\Tasks\Task;
@@ -40,15 +41,9 @@ class TaskTest extends \TestCase
 	public function testInvokesTaskWithSavingLastRunTime()
 	{
 		$now = new Nette\Utils\DateTime();
-		$timestampStorage = $this->mockista->create(
-			'\stekycz\Cronner\ITimestampStorage',
-			array("setTaskName", "saveRunTime", "loadLastRunTime")
-		);
-		$timestampStorage->expects("saveRunTime")
-			->with($now)
-			->once();
-		$timestampStorage->expects("setTaskName")
-			->exactly(2);
+		$timestampStorage = Mockery::mock('\stekycz\Cronner\ITimestampStorage');
+		$timestampStorage->shouldReceive("saveRunTime")->with($now)->once();
+		$timestampStorage->shouldReceive("setTaskName")->times(2);
 
 		$method = new Method($this->object, 'test01');
 		$task = new Task($this->object, $method, $timestampStorage);
@@ -73,15 +68,9 @@ class TaskTest extends \TestCase
 
 		$method = $this->object->getReflection()->getMethod($methodName);
 
-		$timestampStorage = $this->mockista->create(
-			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime',)
-		);
-		$timestampStorage->expects("loadLastRunTime")
-			->exactly($loads)
-			->andReturn($lastRunTime);
-		$timestampStorage->expects("setTaskName")
-			->atLeastOnce();
+		$timestampStorage = Mockery::mock('\stekycz\Cronner\ITimestampStorage');
+		$timestampStorage->shouldReceive("loadLastRunTime")->times($loads)->andReturn($lastRunTime);
+		$timestampStorage->shouldReceive("setTaskName")->atLeast(1);
 
 		$task = new Task($this->object, $method, $timestampStorage);
 		Assert::same($expected, $task->shouldBeRun($now));
@@ -109,15 +98,9 @@ class TaskTest extends \TestCase
 
 	public function testShouldBeRunOnShortLaterRun()
 	{
-		$timestampStorage = $this->mockista->create(
-			'\stekycz\Cronner\ITimestampStorage',
-			array("setTaskName", "saveRunTime", "loadLastRunTime")
-		);
-		$timestampStorage->expects("loadLastRunTime")
-			->andReturn(new Nette\Utils\DateTime('2014-08-15 09:00:01'))
-			->once();
-		$timestampStorage->expects("setTaskName")
-			->atLeastOnce();
+		$timestampStorage = Mockery::mock('\stekycz\Cronner\ITimestampStorage');
+		$timestampStorage->shouldReceive("loadLastRunTime")->once()->andReturn(new Nette\Utils\DateTime('2014-08-15 09:00:01'));
+		$timestampStorage->shouldReceive("setTaskName")->atLeast(1);
 
 		$method = new Method($this->object, 'test03');
 		$task = new Task($this->object, $method, $timestampStorage);

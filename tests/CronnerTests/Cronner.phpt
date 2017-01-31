@@ -7,6 +7,7 @@
 namespace stekycz\Cronner\tests;
 
 use Exception;
+use Mockery;
 use Nette\Utils\DateTime;
 use stdClass;
 use stekycz\Cronner\Cronner;
@@ -43,23 +44,16 @@ class CronnerTest extends \TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->timestampStorage = $this->mockista->create(
-			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime')
-		);
-		$this->timestampStorage->expects('loadLastRunTime')
-			->andReturn(new DateTime('2013-02-04 08:00:00'));
+		$timestampStorage = Mockery::mock('\stekycz\Cronner\ITimestampStorage');
+		$timestampStorage->shouldReceive('setTaskName');
+		$timestampStorage->shouldReceive('saveRunTime');
+		$timestampStorage->shouldReceive('loadLastRunTime')->andReturn(new DateTime('2013-02-04 08:00:00'));
+		$this->timestampStorage = $timestampStorage;
 
-		$criticalSection = $this->mockista->create(
-			'\stekycz\Cronner\CriticalSection',
-			array("enter", "leave", "isEntered")
-		);
-		$criticalSection->expects("enter")
-			->andReturn(TRUE);
-		$criticalSection->expects("leave")
-			->andReturn(TRUE);
-		$criticalSection->expects("isEntered")
-			->andReturn(FALSE);
+		$criticalSection = Mockery::mock('\stekycz\Cronner\CriticalSection');
+		$criticalSection->shouldReceive("enter")->andReturn(TRUE);
+		$criticalSection->shouldReceive("leave")->andReturn(TRUE);
+		$criticalSection->shouldReceive("isEntered")->andReturn(FALSE);
 
 		$this->cronner = new Cronner($this->timestampStorage, $criticalSection);
 		$this->cronner->onTaskBegin = array();
@@ -149,11 +143,8 @@ class CronnerTest extends \TestCase
 		$now = new DateTime('2013-02-04 09:30:00');
 		$tasks = new TestObject();
 
-		$this->timestampStorage->expects('setTaskName')
-			->atLeast(8);
-		$this->timestampStorage->expects('saveRunTime')
-			->with($now)
-			->atLeastOnce();
+		$this->timestampStorage->shouldReceive('setTaskName')->atLeast(8);
+		$this->timestampStorage->shouldReceive('saveRunTime')->with($now)->atLeast(1);
 
 		$this->cronner->addTasks($tasks);
 		Assert::equal(4, $this->cronner->countTasks());
@@ -196,19 +187,15 @@ class CronnerTest extends \TestCase
 	{
 		$now = new DateTime('2013-02-04 09:30:00');
 
-		$logCallback = $this->mockista->create('\Nette\Object', array('logBegin', 'logFinished', 'logError'));
-		$logCallback->expects('logError')
-			->once()
-			->andCallback(function (Exception $e, Task $task) {
-				Assert::equal('Test 01', $e->getMessage());
-			});
-		$logCallback->expects('logBegin')
-			->twice();
-		$logCallback->expects('logFinished')
-			->once();
+		$logCallback = Mockery::mock('\Nette\Object');
+		$logCallback->shouldReceive('logError')->once()->andReturnUsing(function (Exception $e, Task $task) {
+			Assert::equal('Test 01', $e->getMessage());
+		});
+		$logCallback->shouldReceive('logBegin')->twice();
+		$logCallback->shouldReceive('logFinished')->once();
 
-		$this->timestampStorage->expects('setTaskName');
-		$this->timestampStorage->expects('saveRunTime');
+		$this->timestampStorage->shouldReceive('setTaskName');
+		$this->timestampStorage->shouldReceive('saveRunTime');
 
 		$this->cronner->onTaskBegin[] = function (Cronner $cronner, Task $task) use ($logCallback) {
 			$logCallback->logBegin($task);

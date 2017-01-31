@@ -1,7 +1,5 @@
 <?php
 
-use Mockista\Registry;
-
 $autoloader = require_once __DIR__ . '/../../vendor/autoload.php';
 
 define("TEST_DIR", __DIR__);
@@ -18,24 +16,9 @@ function run(Tester\TestCase $testCase)
 class TestCase extends Tester\TestCase
 {
 
-	/**
-	 * @var \Mockista\Registry
-	 */
-	protected $mockista;
-
-
-
-	protected function setUp()
-	{
-		$this->mockista = new Registry();
-		usleep(1); // Hack for Mockista
-	}
-
-
-
 	protected function tearDown()
 	{
-		$this->mockista->assertExpectations();
+		Mockery::close();
 	}
 
 }

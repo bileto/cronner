@@ -27,8 +27,8 @@
 	},
 	"require-dev": {
 		"nette/tester": "^1.7",
-		"janmarek/mockista": "^1.0",
-		"jakub-onderka/php-parallel-lint": "^0.9"
+		"jakub-onderka/php-parallel-lint": "^0.9",
+		"mockery/mockery": "^0.9"
 	},
 	"suggest": {
 		"kdyby/events": "Events for Nette Framework",
