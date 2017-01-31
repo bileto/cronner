@@ -4,11 +4,6 @@ namespace stekycz\Cronner\tests\objects;
 
 use Nette\Object;
 
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class SameTaskNameObject extends Object
 {
 
@@ -18,8 +13,6 @@ class SameTaskNameObject extends Object
 	public function test01()
 	{
 	}
-
-
 
 	/**
 	 * @cronner-task Test

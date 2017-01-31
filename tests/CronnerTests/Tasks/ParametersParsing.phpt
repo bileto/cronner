@@ -10,13 +10,8 @@ use stekycz\Cronner\Tasks\Parameters;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class ParametersParsingTest extends \TestCase
 {
 
@@ -25,15 +20,11 @@ class ParametersParsingTest extends \TestCase
 	 */
 	private $object;
 
-
-
 	protected function setUp()
 	{
 		parent::setUp();
 		$this->object = new TestObject();
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderParse
@@ -51,8 +42,6 @@ class ParametersParsingTest extends \TestCase
 		Assert::same($expected, Parameters::parseParameters($this->object->getReflection()->getMethod($methodName)));
 	}
 
-
-
 	public function dataProviderParse()
 	{
 		return array(
@@ -61,7 +50,7 @@ class ParametersParsingTest extends \TestCase
 				Parameters::PERIOD => '5 minutes',
 				Parameters::DAYS => NULL,
 				Parameters::TIME => NULL,
-			), 'test01'
+			), 'test01',
 			),
 			array(array(
 				Parameters::TASK => 'stekycz\Cronner\tests\objects\TestObject - test02',
@@ -77,7 +66,7 @@ class ParametersParsingTest extends \TestCase
 						'to' => '16:00',
 					),
 				),
-			), 'test02'
+			), 'test02',
 			),
 			array(array(
 				Parameters::TASK => 'Test 3',
@@ -89,14 +78,14 @@ class ParametersParsingTest extends \TestCase
 						'to' => '10:45',
 					),
 				),
-			), 'test03'
+			), 'test03',
 			),
 			array(array(
 				Parameters::TASK => 'Test 4',
 				Parameters::PERIOD => '1 day',
 				Parameters::DAYS => array('Sat', 'Sun',),
-				Parameters::TIME => NULL
-			), 'test04'
+				Parameters::TIME => NULL,
+			), 'test04',
 			),
 		);
 	}

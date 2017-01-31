@@ -4,10 +4,6 @@ namespace stekycz\Cronner\tests\objects;
 
 use Nette\Object;
 
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class AnotherSimpleTestObject extends Object
 {
 

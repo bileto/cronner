@@ -7,14 +7,12 @@
 namespace stekycz\Cronner\tests\Tasks;
 
 use stdClass;
+use stekycz\Cronner\Exceptions\InvalidParameterException;
 use stekycz\Cronner\Tasks\Parser;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class ParserTest extends \TestCase
 {
 
@@ -27,8 +25,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parseName($annotation));
 	}
-
-
 
 	public function dataProviderParseName()
 	{
@@ -47,8 +43,6 @@ class ParserTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderParsePeriod
 	 * @param string $expected
@@ -58,8 +52,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parsePeriod($annotation));
 	}
-
-
 
 	public function dataProviderParsePeriod()
 	{
@@ -72,19 +64,15 @@ class ParserTest extends \TestCase
 		);
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
+	 * @throws InvalidParameterException
 	 */
 	public function testThrowsExceptionOnWrongPeriodDefinition($annotation)
 	{
 		Parser::parsePeriod($annotation);
 	}
-
-
 
 	public function dataProviderParsePeriodError()
 	{
@@ -102,8 +90,6 @@ class ParserTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderParseDays
 	 * @param string $expected
@@ -113,8 +99,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parseDays($annotation));
 	}
-
-
 
 	public function dataProviderParseDays()
 	{
@@ -149,19 +133,15 @@ class ParserTest extends \TestCase
 		);
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
+	 * @throws InvalidParameterException
 	 */
 	public function testThrowsExceptionOnWrongDaysDefinition($annotation)
 	{
 		Parser::parseDays($annotation);
 	}
-
-
 
 	public function dataProviderParseDaysError()
 	{
@@ -179,8 +159,6 @@ class ParserTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderParseTimes
 	 * @param string $expected
@@ -190,8 +168,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parseTimes($annotation));
 	}
-
-
 
 	public function dataProviderParseTimes()
 	{
@@ -374,19 +350,15 @@ class ParserTest extends \TestCase
 		);
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
+	 * @throws InvalidParameterException
 	 */
 	public function testThrowsExceptionOnWrongTimesDefinition($annotation)
 	{
 		Parser::parseTimes($annotation);
 	}
-
-
 
 	public function dataProviderParseTimesError()
 	{

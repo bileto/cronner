@@ -10,14 +10,12 @@ use DateTime;
 use Nette;
 use Nette\Utils\FileSystem;
 use stdClass;
+use stekycz\Cronner\Exceptions\InvalidTaskNameException;
 use stekycz\Cronner\TimestampStorage\FileStorage;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class FileStorageTest extends \TestCase
 {
 
@@ -26,8 +24,6 @@ class FileStorageTest extends \TestCase
 	 */
 	private $storage;
 
-
-
 	protected function setUp()
 	{
 		parent::setUp();
@@ -35,22 +31,16 @@ class FileStorageTest extends \TestCase
 		$this->storage = new FileStorage(static::getTempDirPath());
 	}
 
-
-
 	protected function tearDown()
 	{
 		parent::tearDown();
 		FileSystem::delete(static::getTempDirPath());
 	}
 
-
-
 	private static function getTempDirPath()
 	{
 		return TEMP_DIR . '/cronner';
 	}
-
-
 
 	public function testIsAbleToSetTaskName()
 	{
@@ -60,18 +50,14 @@ class FileStorageTest extends \TestCase
 		Assert::$counter++; // Hack for nette tester
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderSetTaskName
-	 * @throws \stekycz\Cronner\Exceptions\InvalidTaskNameException
+	 * @throws InvalidTaskNameException
 	 */
 	public function testThrowsExceptionOnInvalidTaskName($taskName)
 	{
 		$this->storage->setTaskName($taskName);
 	}
-
-
 
 	public function dataProviderSetTaskName()
 	{
@@ -89,13 +75,11 @@ class FileStorageTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * Tests that saving do not throws any exception.
 	 *
 	 * @dataProvider dataProviderSaveRunTime
-	 * @param \DateTime $date
+	 * @param DateTime $date
 	 */
 	public function testLoadsAndSavesLastRunTimeWithoutErrors(DateTime $date)
 	{
@@ -112,8 +96,6 @@ class FileStorageTest extends \TestCase
 		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
-
-
 	public function dataProviderSaveRunTime()
 	{
 		return array(
@@ -122,8 +104,6 @@ class FileStorageTest extends \TestCase
 			array(new Nette\Utils\DateTime('2013-01-30 18:31:01')),
 		);
 	}
-
-
 
 	public function testSavesLastRunTimeByTaskName()
 	{

@@ -1,38 +1,31 @@
 <?php
 
 /**
- * Test: stekycz\Cronner\DI\CronnerExtension
- *
- * @testCase stekycz\Cronner\tests\DI\CronnerExtensionTest
+ * @testCase
  */
 
 namespace stekycz\Cronner\tests\DI;
 
-use Nette;
+use Nette\DI\Compiler;
+use Nette\DI\ContainerBuilder;
+use Nette\DI\Statement;
 use stekycz\Cronner\DI\CronnerExtension;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class CronnerExtensionTest extends \TestCase
 {
 
 	/**
-	 * @var Nette\DI\Compiler
+	 * @var Compiler
 	 */
 	private $compiler;
-
-
 
 	protected function setUp()
 	{
 		parent::setUp();
-		$builder = new Nette\DI\ContainerBuilder();
+		$builder = new ContainerBuilder();
 		$builder->parameters = array(
 			'appDir' => __DIR__ . '/../..',
 			'wwwDir' => __DIR__ . '/../..',
@@ -40,11 +33,9 @@ class CronnerExtensionTest extends \TestCase
 			'debugMode' => FALSE,
 			'productionMode' => TRUE,
 		);
-		$this->compiler = new Nette\DI\Compiler($builder);
+		$this->compiler = new Compiler($builder);
 		$this->compiler->addExtension('cronner', new CronnerExtension());
 	}
-
-
 
 	public function testDefaultConfiguration()
 	{
@@ -60,18 +51,16 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same('stekycz\Cronner\Cronner', $runner->getClass());
 	}
 
-
-
 	public function testCompleteConfiguration()
 	{
 		$compiler = $this->compiler;
 		$compiler->addConfig(
 			array(
 				'cronner' => array(
-					'timestampStorage' => new Nette\DI\Statement('stekycz\Cronner\TimestampStorage\DummyStorage'),
+					'timestampStorage' => new Statement('stekycz\Cronner\TimestampStorage\DummyStorage'),
 					'maxExecutionTime' => 120,
 					'criticalSectionTempDir' => '%tempDir%/cronner',
-				)
+				),
 			)
 		);
 		$compiler->compile();
@@ -86,7 +75,5 @@ class CronnerExtensionTest extends \TestCase
 	}
 
 }
-
-
 
 run(new CronnerExtensionTest());

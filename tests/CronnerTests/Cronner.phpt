@@ -11,6 +11,8 @@ use Mockery;
 use Nette\Utils\DateTime;
 use stdClass;
 use stekycz\Cronner\Cronner;
+use stekycz\Cronner\Exceptions\InvalidArgumentException;
+use stekycz\Cronner\ITimestampStorage;
 use stekycz\Cronner\Tasks\Task;
 use stekycz\Cronner\tests\objects\AnotherSimpleTestObject;
 use stekycz\Cronner\tests\objects\NextSimpleTestObject;
@@ -21,23 +23,18 @@ use Tester\Assert;
 
 require_once(__DIR__ . "/bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class CronnerTest extends \TestCase
 {
 
 	/**
-	 * @var \stekycz\Cronner\Cronner
+	 * @var Cronner
 	 */
 	private $cronner;
 
 	/**
-	 * @var \stekycz\Cronner\ITimestampStorage
+	 * @var ITimestampStorage
 	 */
 	private $timestampStorage;
-
-
 
 	protected function setUp()
 	{
@@ -59,8 +56,6 @@ class CronnerTest extends \TestCase
 		$this->cronner->onTaskError = array();
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderSetMaxExecutionTime
 	 */
@@ -69,8 +64,6 @@ class CronnerTest extends \TestCase
 		$this->cronner->setMaxExecutionTime($value);
 		Assert::same($expected, $this->cronner->getMaxExecutionTime());
 	}
-
-
 
 	public function dataProviderSetMaxExecutionTime()
 	{
@@ -83,18 +76,14 @@ class CronnerTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderSetMaxExecutionTimeError
-	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function testThrowsExceptionOnWrongTypeOfMaxExecutionTime($value)
 	{
 		$this->cronner->setMaxExecutionTime($value);
 	}
-
-
 
 	public function dataProviderSetMaxExecutionTimeError()
 	{
@@ -114,15 +103,11 @@ class CronnerTest extends \TestCase
 		);
 	}
 
-
-
 	public function testAcceptsTasksObjectWithTaskMethods()
 	{
 		$this->cronner->addTasks(new \stdClass());
 		Assert::equal(1, $this->cronner->countTaskObjects());
 	}
-
-
 
 	/**
 	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
@@ -133,8 +118,6 @@ class CronnerTest extends \TestCase
 		$this->cronner->addTasks($tasks);
 		$this->cronner->addTasks($tasks);
 	}
-
-
 
 	public function testProcessesAllAddedTasks()
 	{
@@ -149,8 +132,6 @@ class CronnerTest extends \TestCase
 		$this->cronner->run($now);
 	}
 
-
-
 	public function testCanSetOnTaskBeginCallback()
 	{
 		$this->cronner->onTaskBegin[] = function (Cronner $cronner, Task $task) {
@@ -158,8 +139,6 @@ class CronnerTest extends \TestCase
 		};
 		Assert::equal(1, count($this->cronner->onTaskBegin));
 	}
-
-
 
 	public function testCanSetOnTaskFinishedCallback()
 	{
@@ -169,8 +148,6 @@ class CronnerTest extends \TestCase
 		Assert::equal(1, count($this->cronner->onTaskFinished));
 	}
 
-
-
 	public function testCanSetOnTaskErrorCallback()
 	{
 		$this->cronner->onTaskError[] = function (Cronner $cronner, Exception $e, Task $task) {
@@ -178,8 +155,6 @@ class CronnerTest extends \TestCase
 		};
 		Assert::equal(1, count($this->cronner->onTaskError));
 	}
-
-
 
 	public function testIsAbleToContinueWithNextTaskWhenOneTaskThrowException()
 	{
@@ -208,8 +183,6 @@ class CronnerTest extends \TestCase
 		$this->cronner->run($now);
 	}
 
-
-
 	public function testAddingTwoTestsWithTheSameNameInOneObject()
 	{
 		$cronner = $this->cronner;
@@ -217,8 +190,6 @@ class CronnerTest extends \TestCase
 			$cronner->addTasks(new SameTaskNameObject());
 		}, '\stekycz\Cronner\Exceptions\DuplicateTaskNameException');
 	}
-
-
 
 	public function testAddingTwoTestsWithTheSameNameInMoreObjects()
 	{

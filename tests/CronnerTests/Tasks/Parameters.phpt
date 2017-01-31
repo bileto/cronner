@@ -11,13 +11,8 @@ use Nette;
 use stekycz\Cronner\Tasks\Parameters;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class ParametersTest extends \TestCase
 {
 
@@ -31,8 +26,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->getName());
 	}
-
-
 
 	public function dataProviderGetName()
 	{
@@ -49,8 +42,6 @@ class ParametersTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderIsTask
 	 * @param bool $expected
@@ -61,8 +52,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isTask());
 	}
-
-
 
 	public function dataProviderIsTask()
 	{
@@ -79,13 +68,11 @@ class ParametersTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderIsNextPeriod
 	 * @param bool $expected
-	 * @param \DateTime $now
-	 * @param \DateTime|null $lastRunTime
+	 * @param DateTime $now
+	 * @param DateTime|null $lastRunTime
 	 * @param array $parameters
 	 */
 	public function testDetectsIfNowIsInNextPeriod($expected, DateTime $now, DateTime $lastRunTime = NULL, array $parameters)
@@ -94,8 +81,6 @@ class ParametersTest extends \TestCase
 		Assert::same($expected, $params->isNextPeriod($now, $lastRunTime));
 	}
 
-
-
 	public function dataProviderIsNextPeriod()
 	{
 		return array(
@@ -103,80 +88,76 @@ class ParametersTest extends \TestCase
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:54:59'),
-				array(Parameters::PERIOD => '5 minutes',)
+				array(Parameters::PERIOD => '5 minutes',),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:00'),
-				array(Parameters::PERIOD => '5 minutes',)
+				array(Parameters::PERIOD => '5 minutes',),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:01'),
-				array(Parameters::PERIOD => '5 minutes',)
+				array(Parameters::PERIOD => '5 minutes',),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:05'),
-				array(Parameters::PERIOD => '5 minutes',)
+				array(Parameters::PERIOD => '5 minutes',),
 			),
 			array(
 				FALSE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:06'),
-				array(Parameters::PERIOD => '5 minutes',)
+				array(Parameters::PERIOD => '5 minutes',),
 			),
 			array(
 				FALSE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:01'),
-				array(Parameters::PERIOD => '1 hour',)
+				array(Parameters::PERIOD => '1 hour',),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:00:00'),
-				array(Parameters::PERIOD => '1 hour',)
+				array(Parameters::PERIOD => '1 hour',),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:00:00'),
-				array()
+				array(),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				NULL,
-				array(Parameters::PERIOD => '1 hour',)
+				array(Parameters::PERIOD => '1 hour',),
 			),
 			array(
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				NULL,
-				array()
+				array(),
 			),
 		);
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderIsInDay
 	 * @param bool $expected
 	 * @param array $parameters
-	 * @param \DateTime $now
+	 * @param DateTime $now
 	 */
 	public function testDetectsAllowedDaysOfWeek($expected, array $parameters, DateTime $now)
 	{
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isInDay($now));
 	}
-
-
 
 	public function dataProviderIsInDay()
 	{
@@ -215,8 +196,6 @@ class ParametersTest extends \TestCase
 		);
 	}
 
-
-
 	/**
 	 * @dataProvider dataProviderIsInTime
 	 * @param bool $expected
@@ -229,8 +208,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isInTime($now));
 	}
-
-
 
 	public function dataProviderIsInTime()
 	{
@@ -245,7 +222,7 @@ class ParametersTest extends \TestCase
 					),
 				),
 				),
-				'2013-02-11 11:00:00'
+				'2013-02-11 11:00:00',
 			),
 			array(
 				TRUE,
@@ -256,7 +233,7 @@ class ParametersTest extends \TestCase
 					),
 				),
 				),
-				'2013-02-11 11:00:59'
+				'2013-02-11 11:00:59',
 			),
 			array(
 				FALSE,
@@ -267,7 +244,7 @@ class ParametersTest extends \TestCase
 					),
 				),
 				),
-				'2013-02-11 10:59:59'
+				'2013-02-11 10:59:59',
 			),
 			array(
 				FALSE,
@@ -278,7 +255,7 @@ class ParametersTest extends \TestCase
 					),
 				),
 				),
-				'2013-02-11 11:01:00'
+				'2013-02-11 11:01:00',
 			),
 			// Range
 			array(
@@ -290,7 +267,7 @@ class ParametersTest extends \TestCase
 					),
 				),
 				),
-				'2013-02-11 11:00:00'
+				'2013-02-11 11:00:00',
 			),
 			array(
 				TRUE,
@@ -301,7 +278,7 @@ class ParametersTest extends \TestCase
 					),
 				),
 				),
-				'2013-02-11 11:30:00'
+				'2013-02-11 11:30:00',
 			),
 			array(
 				TRUE,
@@ -309,7 +286,7 @@ class ParametersTest extends \TestCase
 					array('from' => '11:00', 'to' => '12:00',),
 				),
 				),
-				'2013-02-11 12:00:59'
+				'2013-02-11 12:00:59',
 			),
 			array(
 				FALSE,
@@ -317,7 +294,7 @@ class ParametersTest extends \TestCase
 					array('from' => '11:00', 'to' => '12:00',),
 				),
 				),
-				'2013-02-11 10:59:59'
+				'2013-02-11 10:59:59',
 			),
 			array(
 				FALSE,
@@ -325,18 +302,18 @@ class ParametersTest extends \TestCase
 					array('from' => '11:00', 'to' => '12:00',),
 				),
 				),
-				'2013-02-11 12:01:00'
+				'2013-02-11 12:01:00',
 			),
 			// Empty
 			array(
 				TRUE,
 				array(Parameters::TIME => array(),),
-				'2013-02-11 12:00:00'
+				'2013-02-11 12:00:00',
 			),
 			array(
 				TRUE,
 				array(Parameters::TIME => NULL,),
-				'2013-02-11 12:00:00'
+				'2013-02-11 12:00:00',
 			),
 		);
 	}

@@ -7,19 +7,14 @@
 namespace stekycz\Cronner\tests\Tasks;
 
 use Mockery;
-use Nette\Reflection\Method;
 use Nette;
+use Nette\Reflection\Method;
 use stekycz\Cronner\Tasks\Task;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class TaskTest extends \TestCase
 {
 
@@ -28,15 +23,11 @@ class TaskTest extends \TestCase
 	 */
 	private $object;
 
-
-
 	protected function setUp()
 	{
 		parent::setUp();
 		$this->object = new TestObject();
 	}
-
-
 
 	public function testInvokesTaskWithSavingLastRunTime()
 	{
@@ -50,8 +41,6 @@ class TaskTest extends \TestCase
 		$task($now);
 		Assert::$counter++; // Hack for nette tester
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderShouldBeRun
@@ -76,8 +65,6 @@ class TaskTest extends \TestCase
 		Assert::same($expected, $task->shouldBeRun($now));
 	}
 
-
-
 	public function dataProviderShouldBeRun()
 	{
 		return array(
@@ -93,8 +80,6 @@ class TaskTest extends \TestCase
 			array(TRUE, 1, 'test02', '2013-02-04 09:30:00', '2013-02-03 15:30:00'),
 		);
 	}
-
-
 
 	public function testShouldBeRunOnShortLaterRun()
 	{
