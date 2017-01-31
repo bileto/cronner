@@ -127,16 +127,16 @@ final class Parameters extends Object
 		}
 
 		$parameters = array(
-			static::TASK => Parser::parseName($method->getAnnotation(Parameters::TASK))
+			static::TASK => Parser::parseName((string) $method->getAnnotation(Parameters::TASK))
 				?: $taskName,
 			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
-				? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
+				? Parser::parsePeriod((string) $method->getAnnotation(Parameters::PERIOD))
 				: NULL,
 			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
-				? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
+				? Parser::parseDays((string) $method->getAnnotation(Parameters::DAYS))
 				: NULL,
 			static::TIME => $method->hasAnnotation(Parameters::TIME)
-				? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
+				? Parser::parseTimes((string) $method->getAnnotation(Parameters::TIME))
 				: NULL,
 		);
 
