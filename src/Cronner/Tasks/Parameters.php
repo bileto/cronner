@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\Tasks;
 
 use DateTime;
@@ -8,11 +10,6 @@ use Nette\Object;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
 
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 final class Parameters extends Object
 {
 
@@ -26,8 +23,6 @@ final class Parameters extends Object
 	 */
 	private $values;
 
-
-
 	/**
 	 * @param array $values
 	 */
@@ -39,39 +34,20 @@ final class Parameters extends Object
 		$this->values = $values;
 	}
 
-
-
-	/**
-	 * Returns name of task.
-	 *
-	 * @return string
-	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->values[static::TASK];
 	}
 
-
-
-	/**
-	 * Returns true if task is really a task.
-	 *
-	 * @return bool
-	 */
-	public function isTask()
+	public function isTask() : bool
 	{
 		return Strings::length($this->values[static::TASK]) > 0;
 	}
 
-
-
 	/**
 	 * Returns true if today is allowed day of week.
-	 *
-	 * @param \DateTime $now
-	 * @return bool
 	 */
-	public function isInDay(DateTime $now)
+	public function isInDay(DateTime $now) : bool
 	{
 		if (($days = $this->values[static::DAYS]) !== NULL) {
 			return in_array($now->format('D'), $days);
@@ -80,15 +56,10 @@ final class Parameters extends Object
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Returns true if current time is in allowed range.
-	 *
-	 * @param \DateTime $now
-	 * @return bool
 	 */
-	public function isInTime(DateTime $now)
+	public function isInTime(DateTime $now) : bool
 	{
 		if ($times = $this->values[static::TIME]) {
 			foreach ($times as $time) {
@@ -107,35 +78,25 @@ final class Parameters extends Object
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Returns true if current time is next period of invocation.
-	 *
-	 * @param \DateTime $now
-	 * @param \DateTime|null $lastRunTime
-	 * @return bool
 	 */
-	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL)
+	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL) : bool
 	{
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			// Prevent run task on next cronner run because of a few seconds shift
 			$now = Nette\Utils\DateTime::from($now)->modifyClone('+5 seconds');
+
 			return $lastRunTime === NULL || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
 		}
 
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Parse cronner values from annotations.
-	 *
-	 * @param \Nette\Reflection\Method $method
-	 * @return array
 	 */
-	public static function parseParameters(Method $method)
+	public static function parseParameters(Method $method) : array
 	{
 		$taskName = NULL;
 		if ($method->hasAnnotation(Parameters::TASK)) {
@@ -144,19 +105,22 @@ final class Parameters extends Object
 			$taskName = $className . ' - ' . $methodName;
 		}
 
-		$parameters = array(
-			static::TASK => Parser::parseName($method->getAnnotation(Parameters::TASK))
-					? : $taskName,
+		$taskAnnotation = $method->getAnnotation(Parameters::TASK);
+
+		$parameters = [
+			static::TASK => is_string($taskAnnotation)
+				? Parser::parseName($taskAnnotation)
+				: $taskName,
 			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
-					? Parser::parsePeriod($method->getAnnotation(Parameters::PERIOD))
-					: NULL,
+				? Parser::parsePeriod((string) $method->getAnnotation(Parameters::PERIOD))
+				: NULL,
 			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
-					? Parser::parseDays($method->getAnnotation(Parameters::DAYS))
-					: NULL,
+				? Parser::parseDays((string) $method->getAnnotation(Parameters::DAYS))
+				: NULL,
 			static::TIME => $method->hasAnnotation(Parameters::TIME)
-					? Parser::parseTimes($method->getAnnotation(Parameters::TIME))
-					: NULL,
-		);
+				? Parser::parseTimes((string) $method->getAnnotation(Parameters::TIME))
+				: NULL,
+		];
 
 		return $parameters;
 	}

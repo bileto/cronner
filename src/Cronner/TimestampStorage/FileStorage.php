@@ -1,21 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\TimestampStorage;
 
 use DateTime;
-use Nette;
 use Nette\Object;
 use Nette\Utils\FileSystem;
+use Nette\Utils\SafeStream;
 use Nette\Utils\Strings;
-use stekycz\Cronner\EmptyTaskNameException;
-use stekycz\Cronner\InvalidTaskNameException;
+use stekycz\Cronner\Exceptions\EmptyTaskNameException;
+use stekycz\Cronner\Exceptions\InvalidTaskNameException;
 use stekycz\Cronner\ITimestampStorage;
 
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class FileStorage extends Object implements ITimestampStorage
 {
 
@@ -31,40 +28,34 @@ class FileStorage extends Object implements ITimestampStorage
 	 */
 	private $taskName = NULL;
 
-
-
 	/**
 	 * @param string $directory
 	 */
-	public function __construct($directory)
+	public function __construct(string $directory)
 	{
-		Nette\Utils\SafeStream::register();
+		SafeStream::register();
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
 		FileSystem::createDir($directory);
 		$this->directory = $directory;
 	}
-
-
 
 	/**
 	 * Sets name of current task.
 	 *
 	 * @param string|null $taskName
 	 */
-	public function setTaskName($taskName = NULL)
+	public function setTaskName(string $taskName = NULL)
 	{
-		if ($taskName !== NULL && (!$taskName || !is_string($taskName) || Strings::length($taskName) <= 0)) {
+		if ($taskName !== NULL && Strings::length($taskName) <= 0) {
 			throw new InvalidTaskNameException('Given task name is not valid.');
 		}
 		$this->taskName = $taskName;
 	}
 
-
-
 	/**
 	 * Saves current date and time as last invocation time.
 	 *
-	 * @param \DateTime $now
+	 * @param DateTime $now
 	 */
 	public function saveRunTime(DateTime $now)
 	{
@@ -72,12 +63,10 @@ class FileStorage extends Object implements ITimestampStorage
 		file_put_contents($filepath, $now->format(self::DATETIME_FORMAT));
 	}
 
-
-
 	/**
 	 * Returns date and time of last cron task invocation.
 	 *
-	 * @return \DateTime|null
+	 * @return DateTime|null
 	 */
 	public function loadLastRunTime()
 	{
@@ -91,20 +80,16 @@ class FileStorage extends Object implements ITimestampStorage
 		return $date ? $date : NULL;
 	}
 
-
-
 	/**
 	 * Builds file path from directory and task name.
-	 *
-	 * @return string
 	 */
-	private function buildFilePath()
+	private function buildFilePath() : string
 	{
 		if ($this->taskName === NULL) {
 			throw new EmptyTaskNameException('Task name was not set.');
 		}
 
-		return 'safe://' . $this->directory . '/' . sha1($this->taskName);
+		return SafeStream::PROTOCOL . '://' . $this->directory . '/' . sha1($this->taskName);
 	}
 
 }

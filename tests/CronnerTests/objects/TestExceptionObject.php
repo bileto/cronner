@@ -1,15 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\tests\objects;
 
-use Nette\Object;
 use Exception;
+use Nette\Object;
 
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class TestExceptionObject extends Object
 {
 
@@ -21,8 +18,6 @@ class TestExceptionObject extends Object
 	{
 		throw new Exception('Test 01');
 	}
-
-
 
 	/**
 	 * @cronner-task

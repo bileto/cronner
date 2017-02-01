@@ -1,14 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\tests\objects;
 
 use Nette\Object;
 
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class TestObject extends Object
 {
 
@@ -20,8 +17,6 @@ class TestObject extends Object
 	{
 	}
 
-
-
 	/**
 	 * @cronner-task E-mail notifications
 	 * @cronner-period 5 minutes
@@ -29,8 +24,6 @@ class TestObject extends Object
 	public function test01()
 	{
 	}
-
-
 
 	/**
 	 * @cronner-task
@@ -42,8 +35,6 @@ class TestObject extends Object
 	{
 	}
 
-
-
 	/**
 	 * @cronner-task Test 3
 	 * @cronner-period 17 minutes
@@ -53,8 +44,6 @@ class TestObject extends Object
 	public function test03()
 	{
 	}
-
-
 
 	/**
 	 * @cronner-task Test 4

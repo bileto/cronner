@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @testCase
  */
@@ -7,9 +9,15 @@
 namespace stekycz\Cronner\tests;
 
 use Exception;
+use Mockery;
+use Nette\Object;
 use Nette\Utils\DateTime;
 use stdClass;
+use stekycz\Cronner\CriticalSection;
 use stekycz\Cronner\Cronner;
+use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
+use stekycz\Cronner\Exceptions\InvalidArgumentException;
+use stekycz\Cronner\ITimestampStorage;
 use stekycz\Cronner\Tasks\Task;
 use stekycz\Cronner\tests\objects\AnotherSimpleTestObject;
 use stekycz\Cronner\tests\objects\NextSimpleTestObject;
@@ -18,149 +26,130 @@ use stekycz\Cronner\tests\objects\TestExceptionObject;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class CronnerTest extends \TestCase
 {
 
 	/**
-	 * @var \stekycz\Cronner\Cronner
+	 * @var Cronner
 	 */
 	private $cronner;
 
 	/**
-	 * @var \stekycz\Cronner\ITimestampStorage
+	 * @var ITimestampStorage
 	 */
 	private $timestampStorage;
-
-
 
 	protected function setUp()
 	{
 		parent::setUp();
-		$this->timestampStorage = $this->mockista->create(
-			'\stekycz\Cronner\ITimestampStorage',
-			array('setTaskName', 'saveRunTime', 'loadLastRunTime')
-		);
-		$this->timestampStorage->expects('loadLastRunTime')
-			->andReturn(new DateTime('2013-02-04 08:00:00'));
+		$timestampStorage = Mockery::mock(ITimestampStorage::class);
+		$timestampStorage->shouldReceive('setTaskName');
+		$timestampStorage->shouldReceive('saveRunTime');
+		$timestampStorage->shouldReceive('loadLastRunTime')->andReturn(new DateTime('2013-02-04 08:00:00'));
+		$this->timestampStorage = $timestampStorage;
 
-		$criticalSection = $this->mockista->create(
-			'\stekycz\Cronner\CriticalSection',
-			array("enter", "leave", "isEntered")
-		);
-		$criticalSection->expects("enter")
-			->andReturn(TRUE);
-		$criticalSection->expects("leave")
-			->andReturn(TRUE);
-		$criticalSection->expects("isEntered")
-			->andReturn(FALSE);
+		$criticalSection = Mockery::mock(CriticalSection::class);
+		$criticalSection->shouldReceive("enter")->andReturn(TRUE);
+		$criticalSection->shouldReceive("leave")->andReturn(TRUE);
+		$criticalSection->shouldReceive("isEntered")->andReturn(FALSE);
 
 		$this->cronner = new Cronner($this->timestampStorage, $criticalSection);
-		$this->cronner->onTaskBegin = array();
-		$this->cronner->onTaskFinished = array();
-		$this->cronner->onTaskError = array();
+		$this->cronner->onTaskBegin = [];
+		$this->cronner->onTaskFinished = [];
+		$this->cronner->onTaskError = [];
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderSetMaxExecutionTime
+	 * @param int|null $expected
+	 * @param int|null $value
 	 */
-	public function testCanSetMaxExecutionTime($expected, $value)
+	public function testCanSetMaxExecutionTime(int $expected = NULL, int $value = NULL)
 	{
 		$this->cronner->setMaxExecutionTime($value);
 		Assert::same($expected, $this->cronner->getMaxExecutionTime());
 	}
 
-
-
-	public function dataProviderSetMaxExecutionTime()
+	public function dataProviderSetMaxExecutionTime() : array
 	{
-		return array(
-			array(1234, 1234),
-			array(1234, '1234'),
-			array(1234, 1234.5),
-			array(1234, '1234.5'),
-			array(NULL, NULL),
-		);
+		return [
+			[1234, 1234],
+			[NULL, NULL],
+		];
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderSetMaxExecutionTimeError
-	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 * @throws \TypeError
 	 */
 	public function testThrowsExceptionOnWrongTypeOfMaxExecutionTime($value)
 	{
 		$this->cronner->setMaxExecutionTime($value);
 	}
 
-
-
 	public function dataProviderSetMaxExecutionTimeError()
 	{
-		return array(
-			array(-1234),
-			array('-1234'),
-			array(0),
-			array('0'),
-			array(-2.5),
-			array('-2.5'),
-			array(0.0),
-			array('0.0'),
-			array('nejaky blabol'),
-			array(TRUE),
-			array(FALSE),
-			array(new stdClass()),
-		);
+		return [
+			['-1234'],
+			['0'],
+			[-2.5],
+			['-2.5'],
+			[0.0],
+			['0.0'],
+			['nejaky blabol'],
+			[TRUE],
+			[FALSE],
+			[new stdClass()],
+		];
 	}
 
+	/**
+	 * @dataProvider dataProviderSetMaxExecutionTimeWrongValue
+	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
+	 */
+	public function testThrowsExceptionOnWrongValueOfMaxExecutionTime($value)
+	{
+		$this->cronner->setMaxExecutionTime($value);
+	}
 
+	public function dataProviderSetMaxExecutionTimeWrongValue()
+	{
+		return [
+			[-1234],
+			[0],
+		];
+	}
 
 	public function testAcceptsTasksObjectWithTaskMethods()
 	{
-		$this->cronner->addTasks(new \stdClass());
+		$this->cronner->addTasks(new stdClass());
 		Assert::equal(1, $this->cronner->countTaskObjects());
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\InvalidArgumentException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
 	 */
 	public function testThrowsExceptionOnDuplicateTasksObjectAddition()
 	{
-		$tasks = new \stdClass();
+		$tasks = new stdClass();
 		$this->cronner->addTasks($tasks);
 		$this->cronner->addTasks($tasks);
 	}
-
-
 
 	public function testProcessesAllAddedTasks()
 	{
 		$now = new DateTime('2013-02-04 09:30:00');
 		$tasks = new TestObject();
 
-		$this->timestampStorage->expects('setTaskName')
-			->atLeast(8);
-		$this->timestampStorage->expects('saveRunTime')
-			->with($now)
-			->atLeastOnce();
+		$this->timestampStorage->shouldReceive('setTaskName')->atLeast(8);
+		$this->timestampStorage->shouldReceive('saveRunTime')->with($now)->atLeast(1);
 
 		$this->cronner->addTasks($tasks);
 		Assert::equal(4, $this->cronner->countTasks());
 		$this->cronner->run($now);
 	}
-
-
 
 	public function testCanSetOnTaskBeginCallback()
 	{
@@ -170,8 +159,6 @@ class CronnerTest extends \TestCase
 		Assert::equal(1, count($this->cronner->onTaskBegin));
 	}
 
-
-
 	public function testCanSetOnTaskFinishedCallback()
 	{
 		$this->cronner->onTaskFinished[] = function (Cronner $cronner, Task $task) {
@@ -179,8 +166,6 @@ class CronnerTest extends \TestCase
 		};
 		Assert::equal(1, count($this->cronner->onTaskFinished));
 	}
-
-
 
 	public function testCanSetOnTaskErrorCallback()
 	{
@@ -190,25 +175,19 @@ class CronnerTest extends \TestCase
 		Assert::equal(1, count($this->cronner->onTaskError));
 	}
 
-
-
 	public function testIsAbleToContinueWithNextTaskWhenOneTaskThrowException()
 	{
 		$now = new DateTime('2013-02-04 09:30:00');
 
-		$logCallback = $this->mockista->create('\Nette\Object', array('logBegin', 'logFinished', 'logError'));
-		$logCallback->expects('logError')
-			->once()
-			->andCallback(function (Exception $e, Task $task) {
-				Assert::equal('Test 01', $e->getMessage());
-			});
-		$logCallback->expects('logBegin')
-			->twice();
-		$logCallback->expects('logFinished')
-			->once();
+		$logCallback = Mockery::mock(Object::class);
+		$logCallback->shouldReceive('logError')->once()->andReturnUsing( function (Exception $e, Task $task) {
+			Assert::equal('Test 01', $e->getMessage());
+		});
+		$logCallback->shouldReceive('logBegin')->twice();
+		$logCallback->shouldReceive('logFinished')->once();
 
-		$this->timestampStorage->expects('setTaskName');
-		$this->timestampStorage->expects('saveRunTime');
+		$this->timestampStorage->shouldReceive('setTaskName');
+		$this->timestampStorage->shouldReceive('saveRunTime');
 
 		$this->cronner->onTaskBegin[] = function (Cronner $cronner, Task $task) use ($logCallback) {
 			$logCallback->logBegin($task);
@@ -223,17 +202,13 @@ class CronnerTest extends \TestCase
 		$this->cronner->run($now);
 	}
 
-
-
 	public function testAddingTwoTestsWithTheSameNameInOneObject()
 	{
 		$cronner = $this->cronner;
 		Assert::exception(function () use ($cronner) {
 			$cronner->addTasks(new SameTaskNameObject());
-		}, '\stekycz\Cronner\DuplicateTaskNameException');
+		}, DuplicateTaskNameException::class);
 	}
-
-
 
 	public function testAddingTwoTestsWithTheSameNameInMoreObjects()
 	{
@@ -241,7 +216,7 @@ class CronnerTest extends \TestCase
 		Assert::exception(function () use ($cronner) {
 			$cronner->addTasks(new AnotherSimpleTestObject());
 			$cronner->addTasks(new NextSimpleTestObject());
-		}, '\stekycz\Cronner\DuplicateTaskNameException');
+		}, DuplicateTaskNameException::class);
 	}
 
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @testCase
  */
@@ -10,20 +12,15 @@ use Nette\Utils\FileSystem;
 use stekycz\Cronner\CriticalSection;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class CriticalSectionTest extends \TestCase
 {
 
 	const TEST_LABEL = "test";
 
 	/**
-	 * @var \stekycz\Cronner\CriticalSection
+	 * @var CriticalSection
 	 */
 	private $criticalSection;
 
@@ -31,8 +28,6 @@ class CriticalSectionTest extends \TestCase
 	 * @var string
 	 */
 	private $filesDir;
-
-
 
 	protected function setUp()
 	{
@@ -42,8 +37,6 @@ class CriticalSectionTest extends \TestCase
 		$this->criticalSection = new CriticalSection($this->filesDir);
 	}
 
-
-
 	protected function tearDown()
 	{
 		parent::tearDown();
@@ -52,18 +45,14 @@ class CriticalSectionTest extends \TestCase
 		}
 	}
 
-
-
 	public function testCanBeEnteredAndLeaved()
 	{
 		Assert::false($this->criticalSection->isEntered(self::TEST_LABEL));
-		Assert::true($this-> criticalSection->enter(self::TEST_LABEL));
+		Assert::true($this->criticalSection->enter(self::TEST_LABEL));
 		Assert::true($this->criticalSection->isEntered(self::TEST_LABEL));
 		Assert::true($this->criticalSection->leave(self::TEST_LABEL));
 		Assert::false($this->criticalSection->isEntered(self::TEST_LABEL));
 	}
-
-
 
 	public function testCannotBeEnteredTwice()
 	{
@@ -72,15 +61,11 @@ class CriticalSectionTest extends \TestCase
 		Assert::false($this->criticalSection->enter(self::TEST_LABEL));
 	}
 
-
-
 	public function testCannotBeLeavedWithoutEnter()
 	{
 		Assert::false($this->criticalSection->isEntered(self::TEST_LABEL));
 		Assert::false($this->criticalSection->leave(self::TEST_LABEL));
 	}
-
-
 
 	public function testCannotBeLeavedTwice()
 	{
@@ -89,8 +74,6 @@ class CriticalSectionTest extends \TestCase
 		Assert::true($this->criticalSection->leave(self::TEST_LABEL));
 		Assert::false($this->criticalSection->leave(self::TEST_LABEL));
 	}
-
-
 
 	public function testMultipleCriticalSectionHandlers()
 	{

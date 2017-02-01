@@ -1,36 +1,23 @@
 language: php
 
 php:
-  - 5.3.3
-  - 5.4
-  - 5.5
-  - 5.6
   - 7.0
-  - hhvm
+  - 7.1
 
 env:
   - PHP_BIN=php
   - PHP_BIN=php-cgi
 
-matrix:
-  allow_failures:
-    - php: hhvm
-
-  exclude:
-    - php: hhvm
-      env: PHP_BIN=php-cgi
-
 before_install:
-  - if [[ "$TRAVIS_PHP_VERSION" == "hhvm" ]]; then cat tests/php.ini-unix >> /etc/hhvm/php.ini; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then phpenv config-add tests/php.ini-unix; fi
+  - phpenv config-add tests/php.ini-unix
 
 install:
-  - if [[ "$TRAVIS_PHP_VERSION" == "5.3.3" ]]; then composer config -g disable-tls true; composer config -g secure-http false; fi
   - composer self-update
-  - composer install --prefer-source --no-interaction --optimize-autoloader
+  - composer install --no-interaction --optimize-autoloader
 
 before_script:
   - ./vendor/bin/parallel-lint -e php,phpt --exclude vendor .
+  - ./vendor/bin/phpstan analyze --no-progress -l 5 -c ./phpstan.neon ./
 
 script:
   - ./vendor/bin/tester -s -p $PHP_BIN -j 32 -c ./tests/php.ini-unix ./tests/CronnerTests

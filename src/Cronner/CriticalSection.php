@@ -1,15 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner;
 
 use Nette\Object;
 use Nette\Utils\FileSystem;
 
-
-
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class CriticalSection extends Object
 {
 
@@ -23,27 +20,17 @@ class CriticalSection extends Object
 	 */
 	private $lockFilesDir;
 
-
-
-	/**
-	 * @param string $lockFilesDir
-	 */
-	public function __construct($lockFilesDir)
+	public function __construct(string $lockFilesDir)
 	{
 		$lockFilesDir = rtrim($lockFilesDir, DIRECTORY_SEPARATOR);
 		FileSystem::createDir($lockFilesDir);
 		$this->lockFilesDir = $lockFilesDir;
 	}
 
-
-
 	/**
 	 * Enters critical section.
-	 *
-	 * @param string $label
-	 * @return bool
 	 */
-	public function enter($label)
+	public function enter(string $label) : bool
 	{
 		if ($this->isEntered($label)) {
 			return FALSE;
@@ -57,6 +44,7 @@ class CriticalSection extends Object
 		$locked = flock($handle, LOCK_EX | LOCK_NB);
 		if ($locked === FALSE) {
 			fclose($handle);
+
 			return FALSE;
 		}
 		$this->locks[$label] = $handle;
@@ -64,15 +52,10 @@ class CriticalSection extends Object
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Leaves critical section.
-	 *
-	 * @param string $label
-	 * @return bool
 	 */
-	public function leave($label)
+	public function leave(string $label) : bool
 	{
 		if (!$this->isEntered($label)) {
 			return FALSE;
@@ -89,26 +72,15 @@ class CriticalSection extends Object
 		return TRUE;
 	}
 
-
-
 	/**
 	 * Returns TRUE if critical section is entered.
-	 *
-	 * @param string $label
-	 * @return bool
 	 */
-	public function isEntered($label)
+	public function isEntered(string $label) : bool
 	{
 		return array_key_exists($label, $this->locks) && $this->locks[$label] !== NULL;
 	}
 
-
-
-	/**
-	 * @param string $label
-	 * @return string
-	 */
-	private function getFilePath($label)
+	private function getFilePath(string $label) : string
 	{
 		return $this->lockFilesDir . "/" . sha1($label);
 	}

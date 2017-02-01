@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @testCase
  */
@@ -7,16 +9,12 @@
 namespace stekycz\Cronner\tests\Tasks;
 
 use stdClass;
+use stekycz\Cronner\Exceptions\InvalidParameterException;
 use stekycz\Cronner\Tasks\Parser;
 use Tester\Assert;
 
-
-
 require_once(__DIR__ . "/../bootstrap.php");
 
-/**
- * @author Martin Štekl <martin.stekl@gmail.com>
- */
 class ParserTest extends \TestCase
 {
 
@@ -25,385 +23,360 @@ class ParserTest extends \TestCase
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function parsesName($expected, $annotation)
+	public function parsesName(string $expected, string $annotation)
 	{
 		Assert::equal($expected, Parser::parseName($annotation));
 	}
 
-
-
-	public function dataProviderParseName()
+	public function dataProviderParseName() : array
 	{
-		return array(
-			array('Testovací úkol', 'Testovací úkol'),
-			array('Testovací úkol', '   Testovací úkol   '),
-			array('true', 'true'),
-			array('false', 'false'),
-			array('0', '0'),
-			array('1', '1'),
-			array(NULL, TRUE),
-			array(NULL, FALSE),
-			array(NULL, 0),
-			array(NULL, 1),
-			array(NULL, new stdClass()),
-		);
+		return [
+			['Testovací úkol', 'Testovací úkol'],
+			['Testovací úkol', '   Testovací úkol   '],
+			['true', 'true'],
+			['false', 'false'],
+			['0', '0'],
+			['1', '1'],
+			[NULL, TRUE],
+			[NULL, FALSE],
+			[NULL, 0],
+			[NULL, 1],
+			[NULL, new stdClass()],
+		];
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderParsePeriod
 	 * @param string $expected
 	 * @param string $annotation
 	 */
-	public function testParsesPeriod($expected, $annotation)
+	public function testParsesPeriod(string $expected, string $annotation)
 	{
 		Assert::equal($expected, Parser::parsePeriod($annotation));
 	}
 
-
-
-	public function dataProviderParsePeriod()
+	public function dataProviderParsePeriod() : array
 	{
-		return array(
-			array('5 minutes', '5 minutes'),
-			array('5 minutes', '   5 minutes   '),
-			array('2 seconds', '2 seconds'),
-			array('2 weeks', '2 weeks'),
-			array('2 months', '2 months'),
-		);
+		return [
+			['5 minutes', '5 minutes'],
+			['5 minutes', '   5 minutes   '],
+			['2 seconds', '2 seconds'],
+			['2 weeks', '2 weeks'],
+			['2 months', '2 months'],
+		];
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameterException
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
+	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 */
-	public function testThrowsExceptionOnWrongPeriodDefinition($annotation)
+	public function testThrowsExceptionOnWrongPeriodDefinition(string $annotation)
 	{
 		Parser::parsePeriod($annotation);
 	}
 
-
-
-	public function dataProviderParsePeriodError()
+	public function dataProviderParsePeriodError() : array
 	{
-		return array(
-			array('nejaky blabol'),
-			array('true'),
-			array('false'),
-			array('0'),
-			array('1'),
-			array(TRUE),
-			array(FALSE),
-			array(0),
-			array(1),
-			array(new stdClass()),
-		);
+		return [
+			['nejaky blabol'],
+			['true'],
+			['false'],
+			['0'],
+			['1'],
+		];
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderParseDays
-	 * @param string $expected
+	 * @param string[] $expected
 	 * @param string $annotation
 	 */
-	public function testParsesDays($expected, $annotation)
+	public function testParsesDays(array $expected, string $annotation)
 	{
 		Assert::equal($expected, Parser::parseDays($annotation));
 	}
 
-
-
-	public function dataProviderParseDays()
+	public function dataProviderParseDays() : array
 	{
-		return array(
+		return [
 			// Regular and simple values
-			array(array('Mon',), 'Mon'),
-			array(array('Mon', 'Tue',), 'Mon, Tue'),
-			array(array('Mon', 'Fri',), 'Mon, Fri'),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri',), 'working days'),
-			array(array('Sat', 'Sun',), 'weekend'),
+			[['Mon',], 'Mon'],
+			[['Mon', 'Tue',], 'Mon, Tue'],
+			[['Mon', 'Fri',], 'Mon, Fri'],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri',], 'working days'],
+			[['Sat', 'Sun',], 'weekend'],
 			// Day groups
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',), 'working days, weekend'),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',), 'weekend, working days'),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri',), 'working days, Mon'),
-			array(array('Sat', 'Sun',), 'weekend, Sat'),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri',), 'Wed, working days'),
-			array(array('Sat', 'Sun',), 'Sat, weekend'),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',), 'Sat, working days'),
-			array(array('Wed', 'Sat', 'Sun',), 'Wed, weekend'),
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',], 'working days, weekend'],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',], 'weekend, working days'],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri',], 'working days, Mon'],
+			[['Sat', 'Sun',], 'weekend, Sat'],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri',], 'Wed, working days'],
+			[['Sat', 'Sun',], 'Sat, weekend'],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat',], 'Sat, working days'],
+			[['Wed', 'Sat', 'Sun',], 'Wed, weekend'],
 			// Day ranges
-			array(array('Mon', 'Tue', 'Wed',), 'Mon-Wed'),
-			array(array('Mon', 'Tue', 'Wed', 'Fri',), 'Mon-Wed, Fri'),
-			array(array('Mon', 'Wed', 'Thu', 'Fri', 'Sun',), 'Mon, Wed-Fri, Sun'),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',), 'Mon-Wed, Tue-Fri, Thu-Sun'),
-			array(array('Thu', 'Fri', 'Sat', 'Sun',), 'Thu-Sat, weekend'),
-			array(array('Sat', 'Sun',), 'Sat-Tue'),
+			[['Mon', 'Tue', 'Wed',], 'Mon-Wed'],
+			[['Mon', 'Tue', 'Wed', 'Fri',], 'Mon-Wed, Fri'],
+			[['Mon', 'Wed', 'Thu', 'Fri', 'Sun',], 'Mon, Wed-Fri, Sun'],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',], 'Mon-Wed, Tue-Fri, Thu-Sun'],
+			[['Thu', 'Fri', 'Sat', 'Sun',], 'Thu-Sat, weekend'],
+			[['Sat', 'Sun',], 'Sat-Tue'],
 			// Special cases (whitespaces)
-			array(array('Mon',), '   Mon   '),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri',), '   working days   '),
-			array(array('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',), '   Mon   ,   weekend   ,   working days   '),
-			array(array('Tue', 'Wed', 'Thu',), '   Tue   -   Thu   '),
-		);
+			[['Mon',], '   Mon   '],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri',], '   working days   '],
+			[['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun',], '   Mon   ,   weekend   ,   working days   '],
+			[['Tue', 'Wed', 'Thu',], '   Tue   -   Thu   '],
+		];
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameterException
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
+	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 */
-	public function testThrowsExceptionOnWrongDaysDefinition($annotation)
+	public function testThrowsExceptionOnWrongDaysDefinition(string $annotation)
 	{
 		Parser::parseDays($annotation);
 	}
 
-
-
-	public function dataProviderParseDaysError()
+	public function dataProviderParseDaysError() : array
 	{
-		return array(
-			array('nejaky blabol'),
-			array('true'),
-			array('false'),
-			array('0'),
-			array('1'),
-			array(TRUE),
-			array(FALSE),
-			array(0),
-			array(1),
-			array(new stdClass()),
-		);
+		return [
+			['nejaky blabol'],
+			['true'],
+			['false'],
+			['0'],
+			['1'],
+		];
 	}
-
-
 
 	/**
 	 * @dataProvider dataProviderParseTimes
-	 * @param string $expected
+	 * @param string[][] $expected
 	 * @param string $annotation
 	 */
-	public function testParsesTimes($expected, $annotation)
+	public function testParsesTimes(array $expected, string $annotation)
 	{
 		Assert::equal($expected, Parser::parseTimes($annotation));
 	}
 
-
-
-	public function dataProviderParseTimes()
+	public function dataProviderParseTimes() : array
 	{
-		return array(
+		return [
 			// Basic
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '11:00',
 						'to' => NULL,
-					),
-				), '11:00',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'11:00',
+			],
+			[
+				[
+					[
 						'from' => '11:00',
 						'to' => '12:00',
-					),
-				), '11:00 - 12:00',
-			),
+					],
+				],
+				'11:00 - 12:00',
+			],
 			// Multiple
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '11:00',
 						'to' => NULL,
-					),
-					array(
+					],
+					[
 						'from' => '17:00',
 						'to' => NULL,
-					),
-				), '11:00, 17:00',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'11:00, 17:00',
+			],
+			[
+				[
+					[
 						'from' => '11:00',
 						'to' => '12:00',
-					),
-					array(
+					],
+					[
 						'from' => '17:00',
 						'to' => '19:00',
-					),
-				), '11:00 - 12:00, 17:00-19:00',
-			),
+					],
+				],
+				'11:00 - 12:00, 17:00-19:00',
+			],
 			// Many whitespaces
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '11:00',
 						'to' => '12:00',
-					),
-				), '    11:00     -     12:00    ',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'    11:00     -     12:00    ',
+			],
+			[
+				[
+					[
 						'from' => '11:00',
 						'to' => '12:00',
-					),
-					array(
+					],
+					[
 						'from' => '17:00',
 						'to' => '19:00',
-					),
-				), '   11:00   -   12:00   ,   17:00   -   19:00   ',
-			),
+					],
+				],
+				'   11:00   -   12:00   ,   17:00   -   19:00   ',
+			],
 			// Over midnight
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '00:00',
 						'to' => '05:00',
-					),
-					array(
+					],
+					[
 						'from' => '21:30',
 						'to' => '23:59',
-					),
-				), '21:30 - 05:00',
-			),
+					],
+				],
+				'21:30 - 05:00',
+			],
 			// Critical
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '00:00',
 						'to' => '05:00',
-					),
-					array(
+					],
+					[
 						'from' => '16:00',
 						'to' => '18:00',
-					),
-					array(
+					],
+					[
 						'from' => '21:30',
 						'to' => '23:59',
-					),
-				), '16:00 - 18:00, 21:30 - 05:00',
-			),
+					],
+				],
+				'16:00 - 18:00, 21:30 - 05:00',
+			],
 			// Shortcuts
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '06:00',
 						'to' => '11:59',
-					),
-				), 'morning',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'morning',
+			],
+			[
+				[
+					[
 						'from' => '12:00',
 						'to' => '12:29',
-					),
-				), 'noon',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'noon',
+			],
+			[
+				[
+					[
 						'from' => '12:30',
 						'to' => '16:59',
-					),
-				), 'afternoon',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'afternoon',
+			],
+			[
+				[
+					[
 						'from' => '17:00',
 						'to' => '21:59',
-					),
-				), 'evening',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'evening',
+			],
+			[
+				[
+					[
 						'from' => '00:00',
 						'to' => '05:59',
-					),
-					array(
+					],
+					[
 						'from' => '22:00',
 						'to' => '23:59',
-					),
-				), 'night',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'night',
+			],
+			[
+				[
+					[
 						'from' => '00:00',
 						'to' => '00:29',
-					),
-				), 'midnight',
-			),
+					],
+				],
+				'midnight',
+			],
 			// Combined
-			array(
-				array(
-					array(
+			[
+				[
+					[
 						'from' => '00:00',
 						'to' => '00:29',
-					),
-					array(
+					],
+					[
 						'from' => '06:00',
 						'to' => '11:59',
-					),
-				), 'morning, midnight',
-			),
-			array(
-				array(
-					array(
+					],
+				],
+				'morning, midnight',
+			],
+			[
+				[
+					[
 						'from' => '00:00',
 						'to' => '00:29',
-					),
-					array(
+					],
+					[
 						'from' => '03:00',
 						'to' => '04:00',
-					),
-					array(
+					],
+					[
 						'from' => '06:00',
 						'to' => '11:59',
-					),
-				), 'morning, midnight, 03:00 - 04:00',
-			),
-		);
+					],
+				],
+				'morning, midnight, 03:00 - 04:00',
+			],
+		];
 	}
 
-
-
 	/**
-	 * @throws \stekycz\Cronner\InvalidParameterException
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
+	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
 	 */
-	public function testThrowsExceptionOnWrongTimesDefinition($annotation)
+	public function testThrowsExceptionOnWrongTimesDefinition(string $annotation)
 	{
 		Parser::parseTimes($annotation);
 	}
 
-
-
-	public function dataProviderParseTimesError()
+	public function dataProviderParseTimesError() : array
 	{
-		return array(
-			array('nejaky blabol'),
-			array('true'),
-			array('false'),
-			array('0'),
-			array('1'),
-			array(TRUE),
-			array(FALSE),
-			array(0),
-			array(1),
-			array(new stdClass()),
-		);
+		return [
+			['nejaky blabol'],
+			['true'],
+			['false'],
+			['0'],
+			['1'],
+		];
 	}
 
 }
