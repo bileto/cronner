@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner;
 
 use DateTime;
@@ -12,7 +14,7 @@ interface ITimestampStorage
 	 *
 	 * @param string|null $taskName
 	 */
-	public function setTaskName($taskName = NULL);
+	public function setTaskName(string $taskName = NULL);
 
 	/**
 	 * Saves current date and time as last invocation time.

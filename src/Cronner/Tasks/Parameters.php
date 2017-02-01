@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\Tasks;
 
 use DateTime;
@@ -32,33 +34,20 @@ final class Parameters extends Object
 		$this->values = $values;
 	}
 
-	/**
-	 * Returns name of task.
-	 *
-	 * @return string
-	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->values[static::TASK];
 	}
 
-	/**
-	 * Returns true if task is really a task.
-	 *
-	 * @return bool
-	 */
-	public function isTask()
+	public function isTask() : bool
 	{
 		return Strings::length($this->values[static::TASK]) > 0;
 	}
 
 	/**
 	 * Returns true if today is allowed day of week.
-	 *
-	 * @param DateTime $now
-	 * @return bool
 	 */
-	public function isInDay(DateTime $now)
+	public function isInDay(DateTime $now) : bool
 	{
 		if (($days = $this->values[static::DAYS]) !== NULL) {
 			return in_array($now->format('D'), $days);
@@ -69,11 +58,8 @@ final class Parameters extends Object
 
 	/**
 	 * Returns true if current time is in allowed range.
-	 *
-	 * @param DateTime $now
-	 * @return bool
 	 */
-	public function isInTime(DateTime $now)
+	public function isInTime(DateTime $now) : bool
 	{
 		if ($times = $this->values[static::TIME]) {
 			foreach ($times as $time) {
@@ -94,12 +80,8 @@ final class Parameters extends Object
 
 	/**
 	 * Returns true if current time is next period of invocation.
-	 *
-	 * @param DateTime $now
-	 * @param DateTime|null $lastRunTime
-	 * @return bool
 	 */
-	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL)
+	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL) : bool
 	{
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			// Prevent run task on next cronner run because of a few seconds shift
@@ -113,11 +95,8 @@ final class Parameters extends Object
 
 	/**
 	 * Parse cronner values from annotations.
-	 *
-	 * @param Method $method
-	 * @return array
 	 */
-	public static function parseParameters(Method $method)
+	public static function parseParameters(Method $method) : array
 	{
 		$taskName = NULL;
 		if ($method->hasAnnotation(Parameters::TASK)) {
@@ -126,9 +105,12 @@ final class Parameters extends Object
 			$taskName = $className . ' - ' . $methodName;
 		}
 
-		$parameters = array(
-			static::TASK => Parser::parseName((string) $method->getAnnotation(Parameters::TASK))
-				?: $taskName,
+		$taskAnnotation = $method->getAnnotation(Parameters::TASK);
+
+		$parameters = [
+			static::TASK => is_string($taskAnnotation)
+				? Parser::parseName($taskAnnotation)
+				: $taskName,
 			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
 				? Parser::parsePeriod((string) $method->getAnnotation(Parameters::PERIOD))
 				: NULL,
@@ -138,7 +120,7 @@ final class Parameters extends Object
 			static::TIME => $method->hasAnnotation(Parameters::TIME)
 				? Parser::parseTimes((string) $method->getAnnotation(Parameters::TIME))
 				: NULL,
-		);
+		];
 
 		return $parameters;
 	}

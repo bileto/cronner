@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner;
 
 use Exception;
@@ -77,8 +79,8 @@ class Cronner extends Object
 	public function __construct(
 		ITimestampStorage $timestampStorage,
 		CriticalSection $criticalSection,
-		$maxExecutionTime = NULL,
-		$skipFailedTask = TRUE
+		int $maxExecutionTime = NULL,
+		bool $skipFailedTask = TRUE
 	)
 	{
 		$this->setTimestampStorage($timestampStorage);
@@ -93,16 +95,12 @@ class Cronner extends Object
 	/**
 	 * @return Task[]
 	 */
-	public function getTasks()
+	public function getTasks() : array
 	{
 		return $this->tasks;
 	}
 
-	/**
-	 * @param ITimestampStorage $timestampStorage
-	 * @return Cronner
-	 */
-	public function setTimestampStorage(ITimestampStorage $timestampStorage)
+	public function setTimestampStorage(ITimestampStorage $timestampStorage) : self
 	{
 		$this->timestampStorage = $timestampStorage;
 
@@ -116,27 +114,22 @@ class Cronner extends Object
 	 * @return Cronner
 	 * @throws InvalidArgumentException
 	 */
-	public function setMaxExecutionTime($maxExecutionTime = NULL)
+	public function setMaxExecutionTime(int $maxExecutionTime = NULL) : self
 	{
-		if ($maxExecutionTime !== NULL && (!is_numeric($maxExecutionTime) || ((int) $maxExecutionTime) <= 0)) {
-			throw new InvalidArgumentException(
-				"Max execution time must be NULL or numeric value. Type '" . gettype($maxExecutionTime) . "' was given."
-			);
+		if ($maxExecutionTime !== NULL && $maxExecutionTime <= 0) {
+			throw new InvalidArgumentException("Max execution time must be NULL or non negative number.");
 		}
-		$this->maxExecutionTime = (int) $maxExecutionTime;
+		$this->maxExecutionTime = $maxExecutionTime;
 
 		return $this;
 	}
 
 	/**
 	 * Sets flag that thrown exceptions will not be thrown but cached and logged.
-	 *
-	 * @param bool $skipFailedTask
-	 * @return Cronner
 	 */
-	public function setSkipFailedTask($skipFailedTask = TRUE)
+	public function setSkipFailedTask(bool $skipFailedTask = TRUE) : self
 	{
-		$this->skipFailedTask = (bool) $skipFailedTask;
+		$this->skipFailedTask = $skipFailedTask;
 
 		return $this;
 	}
@@ -160,7 +153,7 @@ class Cronner extends Object
 	 * @return Cronner
 	 * @throws InvalidArgumentException
 	 */
-	public function addTasks($tasks)
+	public function addTasks($tasks) : self
 	{
 		$tasksId = $this->createIdFromObject($tasks);
 		if (in_array($tasksId, $this->registeredTaskObjects)) {
@@ -185,10 +178,8 @@ class Cronner extends Object
 
 	/**
 	 * Runs all cron tasks.
-	 *
-	 * @param DateTime|null $now
 	 */
-	public function run(\DateTime $now = NULL)
+	public function run(DateTime $now = NULL)
 	{
 		if ($now === NULL) {
 			$now = new DateTime();
@@ -225,20 +216,16 @@ class Cronner extends Object
 
 	/**
 	 * Returns count of added task objects.
-	 *
-	 * @return int
 	 */
-	public function countTaskObjects()
+	public function countTaskObjects() : int
 	{
 		return count($this->registeredTaskObjects);
 	}
 
 	/**
 	 * Returns count of added tasks.
-	 *
-	 * @return int
 	 */
-	public function countTasks()
+	public function countTasks() : int
 	{
 		return count($this->tasks);
 	}
@@ -249,7 +236,7 @@ class Cronner extends Object
 	 * @param object $tasks
 	 * @return string
 	 */
-	private function createIdFromObject($tasks)
+	private function createIdFromObject($tasks) : string
 	{
 		return sha1(get_class($tasks));
 	}

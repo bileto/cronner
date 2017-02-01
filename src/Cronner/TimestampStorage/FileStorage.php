@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\TimestampStorage;
 
 use DateTime;
@@ -29,7 +31,7 @@ class FileStorage extends Object implements ITimestampStorage
 	/**
 	 * @param string $directory
 	 */
-	public function __construct($directory)
+	public function __construct(string $directory)
 	{
 		SafeStream::register();
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
@@ -42,9 +44,9 @@ class FileStorage extends Object implements ITimestampStorage
 	 *
 	 * @param string|null $taskName
 	 */
-	public function setTaskName($taskName = NULL)
+	public function setTaskName(string $taskName = NULL)
 	{
-		if ($taskName !== NULL && (!$taskName || !is_string($taskName) || Strings::length($taskName) <= 0)) {
+		if ($taskName !== NULL && Strings::length($taskName) <= 0) {
 			throw new InvalidTaskNameException('Given task name is not valid.');
 		}
 		$this->taskName = $taskName;
@@ -80,10 +82,8 @@ class FileStorage extends Object implements ITimestampStorage
 
 	/**
 	 * Builds file path from directory and task name.
-	 *
-	 * @return string
 	 */
-	private function buildFilePath()
+	private function buildFilePath() : string
 	{
 		if ($this->taskName === NULL) {
 			throw new EmptyTaskNameException('Task name was not set.');

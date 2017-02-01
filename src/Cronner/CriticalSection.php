@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner;
 
 use Nette\Object;
@@ -18,10 +20,7 @@ class CriticalSection extends Object
 	 */
 	private $lockFilesDir;
 
-	/**
-	 * @param string $lockFilesDir
-	 */
-	public function __construct($lockFilesDir)
+	public function __construct(string $lockFilesDir)
 	{
 		$lockFilesDir = rtrim($lockFilesDir, DIRECTORY_SEPARATOR);
 		FileSystem::createDir($lockFilesDir);
@@ -30,11 +29,8 @@ class CriticalSection extends Object
 
 	/**
 	 * Enters critical section.
-	 *
-	 * @param string $label
-	 * @return bool
 	 */
-	public function enter($label)
+	public function enter(string $label) : bool
 	{
 		if ($this->isEntered($label)) {
 			return FALSE;
@@ -58,11 +54,8 @@ class CriticalSection extends Object
 
 	/**
 	 * Leaves critical section.
-	 *
-	 * @param string $label
-	 * @return bool
 	 */
-	public function leave($label)
+	public function leave(string $label) : bool
 	{
 		if (!$this->isEntered($label)) {
 			return FALSE;
@@ -81,20 +74,13 @@ class CriticalSection extends Object
 
 	/**
 	 * Returns TRUE if critical section is entered.
-	 *
-	 * @param string $label
-	 * @return bool
 	 */
-	public function isEntered($label)
+	public function isEntered(string $label) : bool
 	{
 		return array_key_exists($label, $this->locks) && $this->locks[$label] !== NULL;
 	}
 
-	/**
-	 * @param string $label
-	 * @return string
-	 */
-	private function getFilePath($label)
+	private function getFilePath(string $label) : string
 	{
 		return $this->lockFilesDir . "/" . sha1($label);
 	}

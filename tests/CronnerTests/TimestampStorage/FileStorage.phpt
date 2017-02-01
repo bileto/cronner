@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @testCase
  */
@@ -20,7 +22,7 @@ class FileStorageTest extends \TestCase
 {
 
 	/**
-	 * @var \stekycz\Cronner\TimestampStorage\FileStorage
+	 * @var FileStorage
 	 */
 	private $storage;
 
@@ -52,27 +54,18 @@ class FileStorageTest extends \TestCase
 
 	/**
 	 * @dataProvider dataProviderSetTaskName
-	 * @throws InvalidTaskNameException
+	 * @throws \stekycz\Cronner\Exceptions\InvalidTaskNameException
 	 */
-	public function testThrowsExceptionOnInvalidTaskName($taskName)
+	public function testThrowsExceptionOnInvalidTaskName(string $taskName = NULL)
 	{
 		$this->storage->setTaskName($taskName);
 	}
 
-	public function dataProviderSetTaskName()
+	public function dataProviderSetTaskName() : array
 	{
-		return array(
-			array(''),
-			array(0),
-			array(1),
-			array(0.0),
-			array(1.0),
-			array(FALSE),
-			array(TRUE),
-			array(new stdClass()),
-			array(array()),
-			array(array('Test task 1')),
-		);
+		return [
+			[''],
+		];
 	}
 
 	/**
@@ -96,13 +89,13 @@ class FileStorageTest extends \TestCase
 		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
-	public function dataProviderSaveRunTime()
+	public function dataProviderSaveRunTime() : array
 	{
-		return array(
-			array(new Nette\Utils\DateTime('2013-01-30 17:30:00')),
-			array(new Nette\Utils\DateTime('2013-01-30 18:30:01')),
-			array(new Nette\Utils\DateTime('2013-01-30 18:31:01')),
-		);
+		return [
+			[new Nette\Utils\DateTime('2013-01-30 17:30:00')],
+			[new Nette\Utils\DateTime('2013-01-30 18:30:01')],
+			[new Nette\Utils\DateTime('2013-01-30 18:31:01')],
+		];
 	}
 
 	public function testSavesLastRunTimeByTaskName()

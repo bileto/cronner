@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\TimestampStorage;
 
 use DateTime;
@@ -14,7 +16,7 @@ class DummyStorage extends Object implements ITimestampStorage
 	 *
 	 * @param string|null $taskName
 	 */
-	public function setTaskName($taskName = NULL)
+	public function setTaskName(string $taskName = NULL)
 	{
 		// Dummy
 	}

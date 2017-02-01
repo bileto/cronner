@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @testCase
  */
@@ -18,28 +20,28 @@ class ParametersTest extends \TestCase
 
 	/**
 	 * @dataProvider dataProviderGetName
-	 * @param bool $expected
+	 * @param string $expected
 	 * @param array $parameters
 	 */
-	public function testReturnsTaskName($expected, array $parameters)
+	public function testReturnsTaskName(string $expected, array $parameters)
 	{
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->getName());
 	}
 
-	public function dataProviderGetName()
+	public function dataProviderGetName() : array
 	{
-		return array(
-			array('Name of task', array(Parameters::TASK => 'Name of task',)),
-			array('0', array(Parameters::TASK => '0',)),
-			array('', array(Parameters::TASK => '   ',)),
-			array('', array(Parameters::TASK => '',)),
-			array('', array(Parameters::TASK => TRUE,)),
-			array('', array(Parameters::TASK => FALSE,)),
-			array('', array(Parameters::TASK => NULL,)),
-			array('', array(Parameters::TASK => 0,)),
-			array('', array()),
-		);
+		return [
+			['Name of task', [Parameters::TASK => 'Name of task',]],
+			['0', [Parameters::TASK => '0',]],
+			['', [Parameters::TASK => '   ',]],
+			['', [Parameters::TASK => '',]],
+			['', [Parameters::TASK => TRUE,]],
+			['', [Parameters::TASK => FALSE,]],
+			['', [Parameters::TASK => NULL,]],
+			['', [Parameters::TASK => 0,]],
+			['', []],
+		];
 	}
 
 	/**
@@ -47,25 +49,25 @@ class ParametersTest extends \TestCase
 	 * @param bool $expected
 	 * @param array $parameters
 	 */
-	public function testDetectsTask($expected, array $parameters)
+	public function testDetectsTask(bool $expected, array $parameters)
 	{
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isTask());
 	}
 
-	public function dataProviderIsTask()
+	public function dataProviderIsTask() : array
 	{
-		return array(
-			array(TRUE, array(Parameters::TASK => 'Name of task',)),
-			array(TRUE, array(Parameters::TASK => '0',)),
-			array(FALSE, array(Parameters::TASK => '   ',)),
-			array(FALSE, array(Parameters::TASK => '',)),
-			array(FALSE, array(Parameters::TASK => TRUE,)),
-			array(FALSE, array(Parameters::TASK => FALSE,)),
-			array(FALSE, array(Parameters::TASK => NULL,)),
-			array(FALSE, array(Parameters::TASK => 0,)),
-			array(FALSE, array()),
-		);
+		return [
+			[TRUE, [Parameters::TASK => 'Name of task',]],
+			[TRUE, [Parameters::TASK => '0',]],
+			[FALSE, [Parameters::TASK => '   ',]],
+			[FALSE, [Parameters::TASK => '',]],
+			[FALSE, [Parameters::TASK => TRUE,]],
+			[FALSE, [Parameters::TASK => FALSE,]],
+			[FALSE, [Parameters::TASK => NULL,]],
+			[FALSE, [Parameters::TASK => 0,]],
+			[FALSE, []],
+		];
 	}
 
 	/**
@@ -75,76 +77,76 @@ class ParametersTest extends \TestCase
 	 * @param DateTime|null $lastRunTime
 	 * @param array $parameters
 	 */
-	public function testDetectsIfNowIsInNextPeriod($expected, DateTime $now, DateTime $lastRunTime = NULL, array $parameters)
+	public function testDetectsIfNowIsInNextPeriod(bool $expected, DateTime $now, DateTime $lastRunTime = NULL, array $parameters)
 	{
 		$params = new Parameters($parameters);
 		Assert::same($expected, $params->isNextPeriod($now, $lastRunTime));
 	}
 
-	public function dataProviderIsNextPeriod()
+	public function dataProviderIsNextPeriod() : array
 	{
-		return array(
-			array(
+		return [
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:54:59'),
-				array(Parameters::PERIOD => '5 minutes',),
-			),
-			array(
+				[Parameters::PERIOD => '5 minutes',],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:00'),
-				array(Parameters::PERIOD => '5 minutes',),
-			),
-			array(
+				[Parameters::PERIOD => '5 minutes',],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:01'),
-				array(Parameters::PERIOD => '5 minutes',),
-			),
-			array(
+				[Parameters::PERIOD => '5 minutes',],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:05'),
-				array(Parameters::PERIOD => '5 minutes',),
-			),
-			array(
+				[Parameters::PERIOD => '5 minutes',],
+			],
+			[
 				FALSE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:06'),
-				array(Parameters::PERIOD => '5 minutes',),
-			),
-			array(
+				[Parameters::PERIOD => '5 minutes',],
+			],
+			[
 				FALSE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:55:01'),
-				array(Parameters::PERIOD => '1 hour',),
-			),
-			array(
+				[Parameters::PERIOD => '1 hour',],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:00:00'),
-				array(Parameters::PERIOD => '1 hour',),
-			),
-			array(
+				[Parameters::PERIOD => '1 hour',],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				new Nette\Utils\DateTime('2013-02-03 16:00:00'),
-				array(),
-			),
-			array(
+				[],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				NULL,
-				array(Parameters::PERIOD => '1 hour',),
-			),
-			array(
+				[Parameters::PERIOD => '1 hour',],
+			],
+			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),
 				NULL,
-				array(),
-			),
-		);
+				[],
+			],
+		];
 	}
 
 	/**
@@ -153,47 +155,47 @@ class ParametersTest extends \TestCase
 	 * @param array $parameters
 	 * @param DateTime $now
 	 */
-	public function testDetectsAllowedDaysOfWeek($expected, array $parameters, DateTime $now)
+	public function testDetectsAllowedDaysOfWeek(bool $expected, array $parameters, DateTime $now)
 	{
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isInDay($now));
 	}
 
-	public function dataProviderIsInDay()
+	public function dataProviderIsInDay() : array
 	{
-		return array(
+		return [
 			// One day
-			array(TRUE, array(Parameters::DAYS => array('Mon',),), new Nette\Utils\DateTime('2013-02-11 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Mon',),), new Nette\Utils\DateTime('2013-02-12 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => array('Tue',),), new Nette\Utils\DateTime('2013-02-12 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Tue',),), new Nette\Utils\DateTime('2013-02-13 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => array('Wed',),), new Nette\Utils\DateTime('2013-02-13 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Wed',),), new Nette\Utils\DateTime('2013-02-14 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => array('Thu',),), new Nette\Utils\DateTime('2013-02-14 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Thu',),), new Nette\Utils\DateTime('2013-02-15 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => array('Fri',),), new Nette\Utils\DateTime('2013-02-15 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Fri',),), new Nette\Utils\DateTime('2013-02-16 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => array('Sat',),), new Nette\Utils\DateTime('2013-02-16 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Sat',),), new Nette\Utils\DateTime('2013-02-17 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => array('Sun',),), new Nette\Utils\DateTime('2013-02-17 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array('Sun',),), new Nette\Utils\DateTime('2013-02-18 12:34:56')),
+			[TRUE, [Parameters::DAYS => ['Mon',],], new Nette\Utils\DateTime('2013-02-11 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Mon',],], new Nette\Utils\DateTime('2013-02-12 12:34:56')],
+			[TRUE, [Parameters::DAYS => ['Tue',],], new Nette\Utils\DateTime('2013-02-12 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Tue',],], new Nette\Utils\DateTime('2013-02-13 12:34:56')],
+			[TRUE, [Parameters::DAYS => ['Wed',],], new Nette\Utils\DateTime('2013-02-13 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Wed',],], new Nette\Utils\DateTime('2013-02-14 12:34:56')],
+			[TRUE, [Parameters::DAYS => ['Thu',],], new Nette\Utils\DateTime('2013-02-14 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Thu',],], new Nette\Utils\DateTime('2013-02-15 12:34:56')],
+			[TRUE, [Parameters::DAYS => ['Fri',],], new Nette\Utils\DateTime('2013-02-15 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Fri',],], new Nette\Utils\DateTime('2013-02-16 12:34:56')],
+			[TRUE, [Parameters::DAYS => ['Sat',],], new Nette\Utils\DateTime('2013-02-16 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Sat',],], new Nette\Utils\DateTime('2013-02-17 12:34:56')],
+			[TRUE, [Parameters::DAYS => ['Sun',],], new Nette\Utils\DateTime('2013-02-17 12:34:56')],
+			[FALSE, [Parameters::DAYS => ['Sun',],], new Nette\Utils\DateTime('2013-02-18 12:34:56')],
 			// Empty days
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-11 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-12 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-13 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-14 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-15 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-16 12:34:56')),
-			array(FALSE, array(Parameters::DAYS => array(),), new Nette\Utils\DateTime('2013-02-17 12:34:56')),
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-11 12:34:56')],
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-12 12:34:56')],
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-13 12:34:56')],
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-14 12:34:56')],
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-15 12:34:56')],
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-16 12:34:56')],
+			[FALSE, [Parameters::DAYS => [],], new Nette\Utils\DateTime('2013-02-17 12:34:56')],
 			// Without days
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-11 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-12 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-13 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-14 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-15 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-16 12:34:56')),
-			array(TRUE, array(Parameters::DAYS => NULL,), new Nette\Utils\DateTime('2013-02-17 12:34:56')),
-		);
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-11 12:34:56')],
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-12 12:34:56')],
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-13 12:34:56')],
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-14 12:34:56')],
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-15 12:34:56')],
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-16 12:34:56')],
+			[TRUE, [Parameters::DAYS => NULL,], new Nette\Utils\DateTime('2013-02-17 12:34:56')],
+		];
 	}
 
 	/**
@@ -202,120 +204,129 @@ class ParametersTest extends \TestCase
 	 * @param array $parameters
 	 * @param string $now
 	 */
-	public function testDetectsAllowedTimeRange($expected, array $parameters, $now)
+	public function testDetectsAllowedTimeRange(bool $expected, array $parameters, string $now)
 	{
 		$now = new Nette\Utils\DateTime($now);
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isInTime($now));
 	}
 
-	public function dataProviderIsInTime()
+	public function dataProviderIsInTime() : array
 	{
-		return array(
+		return [
 			// One minute
-			array(
+			[
 				TRUE,
-				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => NULL,
-					),
-				),
-				),
+				[
+					Parameters::TIME => [
+						[
+							'from' => '11:00',
+							'to' => NULL,
+						],
+					],
+				],
 				'2013-02-11 11:00:00',
-			),
-			array(
+			],
+			[
 				TRUE,
-				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => NULL,
-					),
-				),
-				),
+				[
+					Parameters::TIME => [
+						[
+							'from' => '11:00',
+							'to' => NULL,
+						],
+					],
+				],
 				'2013-02-11 11:00:59',
-			),
-			array(
+			],
+			[
 				FALSE,
-				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => NULL,
-					),
-				),
-				),
+				[
+					Parameters::TIME => [
+						[
+							'from' => '11:00',
+							'to' => NULL,
+						],
+					],
+				],
 				'2013-02-11 10:59:59',
-			),
-			array(
+			],
+			[
 				FALSE,
-				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => NULL,
-					),
-				),
-				),
+				[
+					Parameters::TIME => [
+						[
+							'from' => '11:00',
+							'to' => NULL,
+						],
+					],
+				],
 				'2013-02-11 11:01:00',
-			),
+			],
 			// Range
-			array(
+			[
 				TRUE,
-				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => '12:00',
-					),
-				),
-				),
+				[
+					Parameters::TIME => [
+						[
+							'from' => '11:00',
+							'to' => '12:00',
+						],
+					],
+				],
 				'2013-02-11 11:00:00',
-			),
-			array(
+			],
+			[
 				TRUE,
-				array(Parameters::TIME => array(
-					array(
-						'from' => '11:00',
-						'to' => '12:00',
-					),
-				),
-				),
+				[
+					Parameters::TIME => [
+						[
+							'from' => '11:00',
+							'to' => '12:00',
+						],
+					],
+				],
 				'2013-02-11 11:30:00',
-			),
-			array(
+			],
+			[
 				TRUE,
-				array(Parameters::TIME => array(
-					array('from' => '11:00', 'to' => '12:00',),
-				),
-				),
+				[
+					Parameters::TIME => [
+						['from' => '11:00', 'to' => '12:00',],
+					],
+				],
 				'2013-02-11 12:00:59',
-			),
-			array(
+			],
+			[
 				FALSE,
-				array(Parameters::TIME => array(
-					array('from' => '11:00', 'to' => '12:00',),
-				),
-				),
+				[
+					Parameters::TIME => [
+						['from' => '11:00', 'to' => '12:00',],
+					],
+				],
 				'2013-02-11 10:59:59',
-			),
-			array(
+			],
+			[
 				FALSE,
-				array(Parameters::TIME => array(
-					array('from' => '11:00', 'to' => '12:00',),
-				),
-				),
+				[
+					Parameters::TIME => [
+						['from' => '11:00', 'to' => '12:00',],
+					],
+				],
 				'2013-02-11 12:01:00',
-			),
+			],
 			// Empty
-			array(
+			[
 				TRUE,
-				array(Parameters::TIME => array(),),
+				[Parameters::TIME => [],],
 				'2013-02-11 12:00:00',
-			),
-			array(
+			],
+			[
 				TRUE,
-				array(Parameters::TIME => NULL,),
+				[Parameters::TIME => NULL,],
 				'2013-02-11 12:00:00',
-			),
-		);
+			],
+		];
 	}
 
 }

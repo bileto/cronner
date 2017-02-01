@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace stekycz\Cronner\Bar;
 
 use Nette\Object;
@@ -19,15 +21,12 @@ class Tasks extends Object implements IBarPanel
 		$this->cronner = $cronner;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getPanel()
+	public function getPanel() : string
 	{
-		$tasks = array();
+		$tasks = [];
 		foreach ($this->cronner->getTasks() as $task) {
 			if (!array_key_exists($task->getObjectName(), $tasks)) {
-				$tasks[$task->getObjectName()] = array();
+				$tasks[$task->getObjectName()] = [];
 			}
 
 			$tasks[$task->getObjectName()][] = $task;
@@ -38,10 +37,7 @@ class Tasks extends Object implements IBarPanel
 		return ob_get_clean();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getTab()
+	public function getTab() : string
 	{
 		ob_start();
 		$count = $this->cronner->countTasks();
