@@ -10,6 +10,7 @@ use Nette\Reflection\ClassType;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
 use ReflectionMethod;
+use stekycz\CriticalSection\ICriticalSection;
 use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
 use stekycz\Cronner\Exceptions\InvalidArgumentException;
 use stekycz\Cronner\Exceptions\RuntimeException;
@@ -56,7 +57,7 @@ class Cronner extends Object
 	private $timestampStorage;
 
 	/**
-	 * @var CriticalSection
+	 * @var ICriticalSection
 	 */
 	private $criticalSection;
 
@@ -72,13 +73,13 @@ class Cronner extends Object
 
 	/**
 	 * @param ITimestampStorage $timestampStorage
-	 * @param CriticalSection $criticalSection
+	 * @param ICriticalSection $criticalSection
 	 * @param int|null $maxExecutionTime It is used only when Cronner runs
 	 * @param bool $skipFailedTask
 	 */
 	public function __construct(
 		ITimestampStorage $timestampStorage,
-		CriticalSection $criticalSection,
+		ICriticalSection $criticalSection,
 		int $maxExecutionTime = NULL,
 		bool $skipFailedTask = TRUE
 	)

@@ -6,8 +6,12 @@ namespace stekycz\Cronner;
 
 use Nette\Object;
 use Nette\Utils\FileSystem;
+use stekycz\CriticalSection\ICriticalSection;
 
-class CriticalSection extends Object
+/**
+ * @deprecated use stekycz\CriticalSection\CriticalSection
+ */
+class CriticalSection extends Object implements ICriticalSection
 {
 
 	/**
@@ -22,6 +26,10 @@ class CriticalSection extends Object
 
 	public function __construct(string $lockFilesDir)
 	{
+		$className = self::class;
+		$newClass = \stekycz\CriticalSection\CriticalSection::class;
+		trigger_error("Class {$className} is deprecated, use {$newClass}", E_USER_DEPRECATED);
+
 		$lockFilesDir = rtrim($lockFilesDir, DIRECTORY_SEPARATOR);
 		FileSystem::createDir($lockFilesDir);
 		$this->lockFilesDir = $lockFilesDir;

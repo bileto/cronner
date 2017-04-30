@@ -9,7 +9,7 @@ namespace stekycz\Cronner\tests\DI;
 use Nette\DI\Compiler;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\Statement;
-use stekycz\Cronner\CriticalSection;
+use stekycz\CriticalSection\CriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\DI\CronnerExtension;
 use stekycz\Cronner\TimestampStorage\DummyStorage;
@@ -29,16 +29,17 @@ class CronnerExtensionTest extends \TestCase
 	protected function setUp()
 	{
 		parent::setUp();
-		$builder = new ContainerBuilder();
-		$builder->parameters = [
-			'appDir' => __DIR__ . '/../..',
-			'wwwDir' => __DIR__ . '/../..',
-			'tempDir' => TEMP_DIR,
-			'debugMode' => FALSE,
-			'productionMode' => TRUE,
-		];
-		$this->compiler = new Compiler($builder);
+		$this->compiler = new Compiler();
 		$this->compiler->addExtension('cronner', new CronnerExtension());
+		$this->compiler->addConfig([
+			'parameters' => [
+				'appDir' => __DIR__ . '/../..',
+				'wwwDir' => __DIR__ . '/../..',
+				'tempDir' => TEMP_DIR,
+				'debugMode' => FALSE,
+				'productionMode' => TRUE,
+			],
+		]);
 	}
 
 	public function testDefaultConfiguration()
