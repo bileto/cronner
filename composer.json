@@ -16,6 +16,12 @@
 		"issues": "https://github.com/stekycz/Cronner/issues",
 		"source": "https://github.com/stekycz/Cronner"
 	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "git@github.com:stekycz/CriticalSection.git"
+		}
+	],
 	"require": {
 		"php": ">=7.0.0",
 		"tracy/tracy": "^2.4",
@@ -23,7 +29,8 @@
 		"nette/bootstrap": "^2.4",
 		"nette/utils": "^2.4",
 		"nette/reflection": "^2.4",
-		"nette/safe-stream": "^2.3"
+		"nette/safe-stream": "^2.3",
+		"stekycz/critical-section": "dev-master"
 	},
 	"require-dev": {
 		"nette/tester": "^1.7",

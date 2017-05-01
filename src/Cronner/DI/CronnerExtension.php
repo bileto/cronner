@@ -13,8 +13,9 @@ use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
 use Nette\Utils\Validators;
+use stekycz\CriticalSection\CriticalSection;
+use stekycz\CriticalSection\Driver\FileDriver;
 use stekycz\Cronner\Bar\Tasks;
-use stekycz\Cronner\CriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\ITimestampStorage;
 use stekycz\Cronner\TimestampStorage\FileStorage;
@@ -33,7 +34,7 @@ class CronnerExtension extends CompilerExtension
 	public $defaults = [
 		'timestampStorage' => NULL,
 		'maxExecutionTime' => NULL,
-		'criticalSectionTempDir' => "%tempDir%/critical-section",
+		'criticalSectionTempDir' => '%tempDir%/critical-section',
 		'tasks' => [],
 		'bar' => '%debugMode%',
 	];
@@ -78,12 +79,19 @@ class CronnerExtension extends CompilerExtension
 			}
 		}
 
-		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
-             ->setClass(CriticalSection::class, [
-                 $config['criticalSectionTempDir'],
-             ])
-             ->setAutowired(FALSE)
-             ->setInject(FALSE);
+		$container->addDefinition($this->prefix('criticalSectionDriver'))
+			->setClass(FileDriver::class, [
+				$config['criticalSectionTempDir']
+			])
+			->setAutowired(FALSE)
+			->setInject(FALSE);
+
+		$criticalSection = $container->addDefinition($this->prefix('criticalSection'))
+            ->setClass(CriticalSection::class, [
+				$this->prefix('@criticalSectionDriver')
+			])
+            ->setAutowired(FALSE)
+            ->setInject(FALSE);
 
 		$runner = $container->addDefinition($this->prefix('runner'))
             ->setClass(Cronner::class, [
