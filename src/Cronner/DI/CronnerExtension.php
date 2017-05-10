@@ -7,6 +7,8 @@ namespace stekycz\Cronner\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
+use Nette\DI\ContainerBuilder;
+use Nette\DI\ServiceDefinition;
 use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
@@ -49,56 +51,42 @@ class CronnerExtension extends CompilerExtension
 		Validators::assert($config['criticalSectionTempDir'], 'string|null', 'Critical section files directory path (for critical section files driver only)');
 		Validators::assert($config['criticalSectionDriver'], 'string|object|null', 'Critical section driver definition');
 
-		$storage = $container->addDefinition($this->prefix('timestampStorage'))
-            ->setAutowired(FALSE)
-            ->setInject(FALSE);
-		if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
-			$storage->setFactory($config['timestampStorage']);
-		} elseif (is_object($config['timestampStorage'])) {
-			$storage->setClass($config['timestampStorage']->entity, $config['timestampStorage']->arguments);
-		} else {
-			$storageServiceName = $container->getByType(ITimestampStorage::class);
-			if ($storageServiceName) {
-				$storage->setFactory('@' . $storageServiceName);
-			} else {
-				$storage->setClass(self::DEFAULT_STORAGE_CLASS, [
-					$container->expand(self::DEFAULT_STORAGE_DIRECTORY),
-				]);
-			}
-		}
+		$storage = $this->createServiceByConfig(
+			$container,
+			$this->prefix('timestampStorage'),
+			$config['timestampStorage'],
+			ITimestampStorage::class,
+			self::DEFAULT_STORAGE_CLASS,
+			[
+				self::DEFAULT_STORAGE_DIRECTORY,
+			]
+		);
 
-		$criticalSectionDriver = $container->addDefinition($this->prefix('criticalSectionDriver'))
-			->setAutowired(FALSE)
-			->setInject(FALSE);
-		if (is_string($config['criticalSectionDriver']) && $container->getServiceName($config['criticalSectionDriver'])) {
-			$criticalSectionDriver->setFactory($config['criticalSectionDriver']);
-		} elseif (is_object($config['criticalSectionDriver'])) {
-			$criticalSectionDriver->setClass($config['criticalSectionDriver']->entity, $config['criticalSectionDriver']->arguments);
-		} else {
-			$criticalSectionDriverServiceName = $container->getByType(IDriver::class);
-			if ($criticalSectionDriverServiceName) {
-				$criticalSectionDriver->setFactory('@' . $criticalSectionDriverServiceName);
-			} else {
-				$criticalSectionDriver->setClass(FileDriver::class, [
-					$container->expand($config['criticalSectionTempDir']),
-				]);
-			}
-		}
+		$criticalSectionDriver = $this->createServiceByConfig(
+			$container,
+			$this->prefix('criticalSectionDriver'),
+			$config['criticalSectionDriver'],
+			IDriver::class,
+			FileDriver::class,
+			[
+				$config['criticalSectionTempDir'],
+			]
+		);
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
-             ->setClass(CriticalSection::class, [
-             	$criticalSectionDriver,
-             ])
-             ->setAutowired(FALSE)
-             ->setInject(FALSE);
+			 ->setClass(CriticalSection::class, [
+			 	$criticalSectionDriver,
+			 ])
+			 ->setAutowired(FALSE)
+			 ->setInject(FALSE);
 
 		$runner = $container->addDefinition($this->prefix('runner'))
-            ->setClass(Cronner::class, [
-                $storage,
-                $criticalSection,
-                $config['maxExecutionTime'],
-                array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
-            ]);
+			->setClass(Cronner::class, [
+				$storage,
+				$criticalSection,
+				$config['maxExecutionTime'],
+				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
+			]);
 
 		Validators::assert($config['tasks'], 'array');
 		foreach ($config['tasks'] as $task) {
@@ -153,6 +141,37 @@ class CronnerExtension extends CompilerExtension
 		$configurator->onCompile[] = function (Configurator $config, Compiler $compiler) {
 			$compiler->addExtension('cronner', new CronnerExtension());
 		};
+	}
+
+	private function createServiceByConfig(
+		ContainerBuilder $container,
+		string $serviceName,
+		$config,
+		string $fallbackType,
+		string $fallbackClass,
+		array $fallbackArguments
+	) : ServiceDefinition
+	{
+		if (is_string($config) && $container->getServiceName($config)) {
+			$definition = $container->addDefinition($serviceName)
+				->setFactory($config);
+		} elseif ($config instanceof Statement) {
+			$definition = $container->addDefinition($serviceName)
+				->setClass($config->entity, $config->arguments);
+		} else {
+			$foundServiceName = $container->getByType($fallbackType);
+			if ($foundServiceName) {
+				$definition = $container->addDefinition($serviceName)
+					->setFactory('@' . $foundServiceName);
+			} else {
+				$definition = $container->addDefinition($serviceName)
+					->setClass($fallbackClass, $container->expand($fallbackArguments));
+			}
+		}
+
+		return $definition
+			->setAutowired(FALSE)
+			->setInject(FALSE);
 	}
 
 }
