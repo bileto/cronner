@@ -13,6 +13,7 @@ use Nette\Utils\Json;
 use Nette\Utils\Validators;
 use stekycz\CriticalSection\CriticalSection;
 use stekycz\CriticalSection\Driver\FileDriver;
+use stekycz\CriticalSection\Driver\IDriver;
 use stekycz\Cronner\Bar\Tasks;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\ITimestampStorage;
@@ -33,6 +34,7 @@ class CronnerExtension extends CompilerExtension
 		'timestampStorage' => NULL,
 		'maxExecutionTime' => NULL,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
+		'criticalSectionDriver' => NULL,
 		'tasks' => [],
 		'bar' => '%debugMode%',
 	];
@@ -44,7 +46,8 @@ class CronnerExtension extends CompilerExtension
 		$config = $this->getConfig($this->defaults);
 		Validators::assert($config['timestampStorage'], 'string|object|null', 'Timestamp storage definition');
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
-		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
+		Validators::assert($config['criticalSectionTempDir'], 'string|null', 'Critical section files directory path (for critical section files driver only)');
+		Validators::assert($config['criticalSectionDriver'], 'string|object|null', 'Critical section driver definition');
 
 		$storage = $container->addDefinition($this->prefix('timestampStorage'))
             ->setAutowired(FALSE)
@@ -65,11 +68,22 @@ class CronnerExtension extends CompilerExtension
 		}
 
 		$criticalSectionDriver = $container->addDefinition($this->prefix('criticalSectionDriver'))
-			->setClass(FileDriver::class, [
-				$config['criticalSectionTempDir'],
-			])
 			->setAutowired(FALSE)
 			->setInject(FALSE);
+		if (is_string($config['criticalSectionDriver']) && $container->getServiceName($config['criticalSectionDriver'])) {
+			$criticalSectionDriver->setFactory($config['criticalSectionDriver']);
+		} elseif (is_object($config['criticalSectionDriver'])) {
+			$criticalSectionDriver->setClass($config['criticalSectionDriver']->entity, $config['criticalSectionDriver']->arguments);
+		} else {
+			$criticalSectionDriverServiceName = $container->getByType(IDriver::class);
+			if ($criticalSectionDriverServiceName) {
+				$criticalSectionDriver->setFactory('@' . $criticalSectionDriverServiceName);
+			} else {
+				$criticalSectionDriver->setClass(FileDriver::class, [
+					$container->expand($config['criticalSectionTempDir']),
+				]);
+			}
+		}
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
              ->setClass(CriticalSection::class, [
