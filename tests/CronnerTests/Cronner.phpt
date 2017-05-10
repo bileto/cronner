@@ -13,7 +13,7 @@ use Mockery;
 use Nette\Object;
 use Nette\Utils\DateTime;
 use stdClass;
-use stekycz\Cronner\CriticalSection;
+use stekycz\CriticalSection\ICriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
 use stekycz\Cronner\Exceptions\InvalidArgumentException;
@@ -50,7 +50,7 @@ class CronnerTest extends \TestCase
 		$timestampStorage->shouldReceive('loadLastRunTime')->andReturn(new DateTime('2013-02-04 08:00:00'));
 		$this->timestampStorage = $timestampStorage;
 
-		$criticalSection = Mockery::mock(CriticalSection::class);
+		$criticalSection = Mockery::mock(ICriticalSection::class);
 		$criticalSection->shouldReceive("enter")->andReturn(TRUE);
 		$criticalSection->shouldReceive("leave")->andReturn(TRUE);
 		$criticalSection->shouldReceive("isEntered")->andReturn(FALSE);

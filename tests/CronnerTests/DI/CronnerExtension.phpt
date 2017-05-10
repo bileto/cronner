@@ -8,7 +8,7 @@ namespace stekycz\Cronner\tests\DI;
 
 use Nette\DI\Compiler;
 use Nette\DI\Statement;
-use stekycz\Cronner\CriticalSection;
+use stekycz\CriticalSection\CriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\DI\CronnerExtension;
 use stekycz\Cronner\TimestampStorage\DummyStorage;
