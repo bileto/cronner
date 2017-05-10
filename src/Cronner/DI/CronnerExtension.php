@@ -7,8 +7,6 @@ namespace stekycz\Cronner\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
-use Nette\DI\ContainerBuilder;
-use Nette\DI\ServiceDefinition;
 use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
@@ -38,17 +36,6 @@ class CronnerExtension extends CompilerExtension
 		'bar' => '%debugMode%',
 	];
 
-	/**
-	 * @param ContainerBuilder $containerBuilder
-	 * @return ServiceDefinition
-	 */
-	protected function createTimestampStorage(ContainerBuilder $containerBuilder) : ServiceDefinition
-	{
-		return $containerBuilder->addDefinition($this->prefix('timestampStorage'))
-            ->setAutowired(FALSE)
-            ->setInject(FALSE);
-	}
-
 	public function loadConfiguration()
 	{
 		$container = $this->getContainerBuilder();
@@ -58,23 +45,21 @@ class CronnerExtension extends CompilerExtension
 		Validators::assert($config['maxExecutionTime'], 'integer|null', 'Script max execution time');
 		Validators::assert($config['criticalSectionTempDir'], 'string', 'Critical section files directory path');
 
-		if ($config['timestampStorage'] === NULL) {
+		$storage = $container->addDefinition($this->prefix('timestampStorage'))
+            ->setAutowired(FALSE)
+            ->setInject(FALSE);
+		if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
+			$storage->setFactory($config['timestampStorage']);
+		} elseif (is_object($config['timestampStorage'])) {
+			$storage->setClass($config['timestampStorage']->entity, $config['timestampStorage']->arguments);
+		} else {
 			$storageServiceName = $container->getByType(ITimestampStorage::class);
-
-			$storage = $this->createTimestampStorage($container);
 			if ($storageServiceName) {
 				$storage->setFactory('@' . $storageServiceName);
 			} else {
 				$storage->setClass(self::DEFAULT_STORAGE_CLASS, [
 					$container->expand(self::DEFAULT_STORAGE_DIRECTORY),
 				]);
-			}
-		} else {
-			$storage = $this->createTimestampStorage($container);
-			if (is_string($config['timestampStorage']) && $container->getServiceName($config['timestampStorage'])) {
-				$storage->setFactory($config['timestampStorage']);
-			} else {
-				$storage->setClass($config['timestampStorage']->entity, $config['timestampStorage']->arguments);
 			}
 		}
 
