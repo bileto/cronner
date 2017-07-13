@@ -7,7 +7,7 @@ namespace stekycz\Cronner;
 use Exception;
 use Nette\Object;
 use Nette\Reflection\ClassType;
-use Nette\Utils\DateTime;
+use DateTime;
 use Nette\Utils\Strings;
 use ReflectionMethod;
 use stekycz\CriticalSection\ICriticalSection;
