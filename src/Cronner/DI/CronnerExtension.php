@@ -90,7 +90,7 @@ class CronnerExtension extends CompilerExtension
 
 		Validators::assert($config['tasks'], 'array');
 		foreach ($config['tasks'] as $task) {
-			$def = $container->addDefinition($this->prefix('task.' . md5(Json::encode($task))));
+			$def = $container->addDefinition($this->prefix('task.' . md5(is_string($task) ? $task : sprintf('%s-%s', $task->getEntity(), Json::encode($task)))));
 			list($def->factory) = Compiler::filterArguments([
 				is_string($task) ? new Statement($task) : $task,
 			]);
