@@ -10,7 +10,6 @@ namespace stekycz\Cronner\tests;
 
 use Exception;
 use Mockery;
-use Nette\Object;
 use Nette\Utils\DateTime;
 use stdClass;
 use stekycz\CriticalSection\ICriticalSection;
@@ -179,7 +178,7 @@ class CronnerTest extends \TestCase
 	{
 		$now = new DateTime('2013-02-04 09:30:00');
 
-		$logCallback = Mockery::mock(Object::class);
+		$logCallback = Mockery::mock(stdClass::class);
 		$logCallback->shouldReceive('logError')->once()->andReturnUsing( function (Exception $e, Task $task) {
 			Assert::equal('Test 01', $e->getMessage());
 		});

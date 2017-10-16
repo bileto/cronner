@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace stekycz\Cronner\TimestampStorage;
 
 use DateTime;
-use Nette\Object;
 use stekycz\Cronner\ITimestampStorage;
 
-class DummyStorage extends Object implements ITimestampStorage
+class DummyStorage implements ITimestampStorage
 {
+	use \Nette\SmartObject;
 
 	/**
 	 * Sets name of current task.

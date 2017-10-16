@@ -58,7 +58,7 @@ class TaskTest extends \TestCase
 		$now = new Nette\Utils\DateTime($now);
 		$lastRunTime = $lastRunTime ? new Nette\Utils\DateTime($lastRunTime) : NULL;
 
-		$method = $this->object->getReflection()->getMethod($methodName);
+		$method = (new \Nette\Reflection\ClassType($this->object))->getMethod($methodName);
 
 		$timestampStorage = Mockery::mock(ITimestampStorage::class);
 		$timestampStorage->shouldReceive("loadLastRunTime")->times($loads)->andReturn($lastRunTime);

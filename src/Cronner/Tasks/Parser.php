@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner\Tasks;
 
-use Nette\Object;
 use Nette\Utils\Strings;
 use stekycz\Cronner\Exceptions\InvalidParameterException;
 
-class Parser extends Object
+class Parser
 {
+	use \Nette\SmartObject;
 
 	/**
 	 * Parses name of cron task.

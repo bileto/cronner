@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner\Bar;
 
-use Nette\Object;
 use stekycz\Cronner\Cronner;
 use Tracy\IBarPanel;
 
-class Tasks extends Object implements IBarPanel
+class Tasks implements IBarPanel
 {
+	use \Nette\SmartObject;
 
 	/**
 	 * @var Cronner

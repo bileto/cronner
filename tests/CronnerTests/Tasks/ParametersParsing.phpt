@@ -35,13 +35,13 @@ class ParametersParsingTest extends \TestCase
 	 */
 	public function testParsesTaskSettings(array $expected, string $methodName)
 	{
-		if (!$this->object->getReflection()->hasMethod($methodName)) {
+		if (!(new \Nette\Reflection\ClassType($this->object))->hasMethod($methodName)) {
 			Assert::fail('Tested class does not have method "' . $methodName . '".');
 
 			return;
 		}
 
-		Assert::same($expected, Parameters::parseParameters($this->object->getReflection()->getMethod($methodName)));
+		Assert::same($expected, Parameters::parseParameters((new \Nette\Reflection\ClassType($this->object))->getMethod($methodName)));
 	}
 
 	public function dataProviderParse() : array
