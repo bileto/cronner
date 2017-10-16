@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace stekycz\Cronner\tests\objects;
 
 use Exception;
-use Nette\Object;
 
-class TestExceptionObject extends Object
+class TestExceptionObject
 {
+	use \Nette\SmartObject;
 
 	/**
 	 * @cronner-task

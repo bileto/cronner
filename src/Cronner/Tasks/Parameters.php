@@ -6,12 +6,12 @@ namespace stekycz\Cronner\Tasks;
 
 use DateTime;
 use Nette;
-use Nette\Object;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
 
-final class Parameters extends Object
+final class Parameters
 {
+	use \Nette\SmartObject;
 
 	const TASK = 'cronner-task';
 	const PERIOD = 'cronner-period';

@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner\tests\objects;
 
-use Nette\Object;
-
-class SameTaskNameObject extends Object
+class SameTaskNameObject
 {
+	use \Nette\SmartObject;
 
 	/**
 	 * @cronner-task Test

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace stekycz\Cronner;
 
 use Exception;
-use Nette\Object;
 use Nette\Reflection\ClassType;
 use Nette\Utils\DateTime;
 use Nette\Utils\Strings;
@@ -23,9 +22,10 @@ use Tracy\Debugger;
  * @method onTaskFinished(Cronner $cronner, Task $task)
  * @method onTaskError(Cronner $cronner, Exception $exception, Task $task)
  */
-class Cronner extends Object
+class Cronner
 {
-
+	use \Nette\SmartObject;
+  
 	/**
 	 * @var callable[]
 	 */

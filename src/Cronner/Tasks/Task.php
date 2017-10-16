@@ -6,13 +6,13 @@ namespace stekycz\Cronner\Tasks;
 
 use DateTime;
 use Nette;
-use Nette\Object;
 use Nette\Reflection\Method;
 use ReflectionClass;
 use stekycz\Cronner\ITimestampStorage;
 
-final class Task extends Object
+final class Task
 {
+	use \Nette\SmartObject;
 
 	/**
 	 * @var object
