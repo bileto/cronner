@@ -1,0 +1,11 @@
+extensions:
+	cronner: stekycz\Cronner\DI\CronnerExtension
+
+services:
+	fooService: stekycz\Cronner\tests\objects\FooService
+
+
+cronner:
+	tasks:
+		- stekycz\Cronner\tests\objects\SimpleTestObjectWithDependency(@fooService)
+		- stekycz\Cronner\tests\objects\AnotherSimpleTestObjectWithDependency(@fooService)
