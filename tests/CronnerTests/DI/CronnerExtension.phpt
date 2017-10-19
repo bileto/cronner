@@ -6,6 +6,7 @@
 
 namespace stekycz\Cronner\tests\DI;
 
+use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\Statement;
 use stekycz\CriticalSection\CriticalSection;
@@ -74,6 +75,20 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same(DummyStorage::class, $timestampStorage->getClass());
 		Assert::same(CriticalSection::class, $criticalSection->getClass());
 		Assert::same(Cronner::class, $runner->getClass());
+	}
+
+	public function testRegisterTasks()
+	{
+		\Tester\Helpers::purge(__DIR__ . '/../../tmp/');
+
+		$config = new Configurator();
+		$config->setTempDirectory(__DIR__ . '/../../tmp/');
+		$config->addConfig(__DIR__ . '/../config/config.neon');
+		$container = $config->createContainer();
+
+		$cronner = $container->getByType('stekycz\Cronner\Cronner');
+
+		Assert::same(2, count($cronner->getTasks()));
 	}
 
 }
