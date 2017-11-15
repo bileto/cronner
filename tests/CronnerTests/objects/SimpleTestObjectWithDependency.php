@@ -2,9 +2,7 @@
 
 namespace stekycz\Cronner\tests\objects;
 
-use Nette\Object;
-
-class SimpleTestObjectWithDependency extends Object
+class SimpleTestObjectWithDependency
 {
 
 	public function __construct(FooService $service)
