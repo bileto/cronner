@@ -5,7 +5,3 @@ parameters:
 	excludes_analyse:
 		- %projectDir%/tests/
 		- %projectDir%/vendor/
-	ignoreErrors:
-		- '#.*Cronner::onTaskBegin\(\).*#'
-		- '#.*Cronner::onTaskFinished\(\).*#'
-		- '#.*Cronner::onTaskError\(\).*#'

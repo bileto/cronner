@@ -30,7 +30,7 @@
 		"nette/tester": "^1.7",
 		"jakub-onderka/php-parallel-lint": "^0.9",
 		"mockery/mockery": "^0.9",
-		"phpstan/phpstan": "^0.6"
+		"phpstan/phpstan": "^0.8"
 	},
 	"suggest": {
 		"kdyby/events": "Events for Nette Framework",

@@ -18,9 +18,9 @@ use stekycz\Cronner\Tasks\Task;
 use Tracy\Debugger;
 
 /**
- * @method onTaskBegin(Cronner $cronner, Task $task)
- * @method onTaskFinished(Cronner $cronner, Task $task)
- * @method onTaskError(Cronner $cronner, Exception $exception, Task $task)
+ * @method void onTaskBegin(Cronner $cronner, Task $task)
+ * @method void onTaskFinished(Cronner $cronner, Task $task)
+ * @method void onTaskError(Cronner $cronner, Exception $exception, Task $task)
  */
 class Cronner
 {
