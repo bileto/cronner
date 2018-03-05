@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace stekycz\Cronner\tests\Tasks;
 
 use DateTime;
+use DateTimeInterface;
 use Nette;
 use stekycz\Cronner\Tasks\Parameters;
 use Tester\Assert;
@@ -73,11 +74,11 @@ class ParametersTest extends \TestCase
 	/**
 	 * @dataProvider dataProviderIsNextPeriod
 	 * @param bool $expected
-	 * @param DateTime $now
-	 * @param DateTime|null $lastRunTime
+	 * @param DateTimeInterface $now
+	 * @param DateTimeInterface|null $lastRunTime
 	 * @param array $parameters
 	 */
-	public function testDetectsIfNowIsInNextPeriod(bool $expected, DateTime $now, DateTime $lastRunTime = NULL, array $parameters)
+	public function testDetectsIfNowIsInNextPeriod(bool $expected, DateTimeInterface $now, DateTimeInterface $lastRunTime = NULL, array $parameters)
 	{
 		$params = new Parameters($parameters);
 		Assert::same($expected, $params->isNextPeriod($now, $lastRunTime));
@@ -86,6 +87,12 @@ class ParametersTest extends \TestCase
 	public function dataProviderIsNextPeriod() : array
 	{
 		return [
+			[
+				TRUE,
+				new \DateTimeImmutable('2013-02-03 17:00:00'),
+				new \DateTimeImmutable('2013-02-03 16:54:59'),
+				[Parameters::PERIOD => '5 minutes',],
+			],
 			[
 				TRUE,
 				new Nette\Utils\DateTime('2013-02-03 17:00:00'),

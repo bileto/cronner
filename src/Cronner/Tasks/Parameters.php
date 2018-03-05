@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner\Tasks;
 
-use DateTime;
+use DateTimeInterface;
 use Nette;
 use Nette\Reflection\Method;
 use Nette\Utils\Strings;
+use stekycz\Cronner\Exceptions\InvalidArgumentException;
 
 final class Parameters
 {
@@ -47,7 +48,7 @@ final class Parameters
 	/**
 	 * Returns true if today is allowed day of week.
 	 */
-	public function isInDay(DateTime $now) : bool
+	public function isInDay(DateTimeInterface $now) : bool
 	{
 		if (($days = $this->values[static::DAYS]) !== NULL) {
 			return in_array($now->format('D'), $days);
@@ -59,7 +60,7 @@ final class Parameters
 	/**
 	 * Returns true if current time is in allowed range.
 	 */
-	public function isInTime(DateTime $now) : bool
+	public function isInTime(DateTimeInterface $now) : bool
 	{
 		if ($times = $this->values[static::TIME]) {
 			foreach ($times as $time) {
@@ -81,8 +82,16 @@ final class Parameters
 	/**
 	 * Returns true if current time is next period of invocation.
 	 */
-	public function isNextPeriod(DateTime $now, DateTime $lastRunTime = NULL) : bool
+	public function isNextPeriod(DateTimeInterface $now, DateTimeInterface $lastRunTime = NULL) : bool
 	{
+		if (
+			$lastRunTime !== NULL
+			&& !$lastRunTime instanceof \DateTimeImmutable
+			&& !$lastRunTime instanceof \DateTime
+		) {
+			throw new InvalidArgumentException;
+		}
+
 		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
 			// Prevent run task on next cronner run because of a few seconds shift
 			$now = Nette\Utils\DateTime::from($now)->modifyClone('+5 seconds');

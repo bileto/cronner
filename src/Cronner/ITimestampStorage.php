@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner;
 
-use DateTime;
+use DateTimeInterface;
 
 interface ITimestampStorage
 {
@@ -19,14 +19,14 @@ interface ITimestampStorage
 	/**
 	 * Saves current date and time as last invocation time.
 	 *
-	 * @param DateTime $now
+	 * @param DateTimeInterface $now
 	 */
-	public function saveRunTime(DateTime $now);
+	public function saveRunTime(DateTimeInterface $now);
 
 	/**
 	 * Returns date and time of last cron task invocation.
 	 *
-	 * @return DateTime|null
+	 * @return DateTimeInterface|null
 	 */
 	public function loadLastRunTime();
 

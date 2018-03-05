@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace stekycz\Cronner\Tasks;
 
 use DateTime;
-use Nette;
+use DateTimeInterface;
 use Nette\Reflection\Method;
 use ReflectionClass;
 use stekycz\Cronner\ITimestampStorage;
@@ -68,7 +68,7 @@ final class Task
 	/**
 	 * Returns True if given parameters should be run.
 	 */
-	public function shouldBeRun(DateTime $now = NULL) : bool
+	public function shouldBeRun(DateTimeInterface $now = NULL) : bool
 	{
 		if ($now === NULL) {
 			$now = new DateTime();
@@ -90,7 +90,7 @@ final class Task
 		return $this->getParameters()->getName();
 	}
 
-	public function __invoke(DateTime $now)
+	public function __invoke(DateTimeInterface $now)
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getName());

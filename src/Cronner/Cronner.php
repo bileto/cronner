@@ -6,6 +6,7 @@ namespace stekycz\Cronner;
 
 use Exception;
 use Nette\Reflection\ClassType;
+use DateTimeInterface;
 use DateTime;
 use Nette\Utils\Strings;
 use ReflectionMethod;
@@ -180,7 +181,7 @@ class Cronner
 	/**
 	 * Runs all cron tasks.
 	 */
-	public function run(DateTime $now = NULL)
+	public function run(DateTimeInterface $now = NULL)
 	{
 		if ($now === NULL) {
 			$now = new DateTime();

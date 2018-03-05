@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace stekycz\Cronner\TimestampStorage;
 
 use DateTime;
+use DateTimeInterface;
 use Nette\Utils\FileSystem;
 use Nette\Utils\SafeStream;
 use Nette\Utils\Strings;
@@ -55,9 +56,9 @@ class FileStorage implements ITimestampStorage
 	/**
 	 * Saves current date and time as last invocation time.
 	 *
-	 * @param DateTime $now
+	 * @param DateTimeInterface $now
 	 */
-	public function saveRunTime(DateTime $now)
+	public function saveRunTime(DateTimeInterface $now)
 	{
 		$filepath = $this->buildFilePath();
 		file_put_contents($filepath, $now->format(self::DATETIME_FORMAT));
@@ -66,7 +67,7 @@ class FileStorage implements ITimestampStorage
 	/**
 	 * Returns date and time of last cron task invocation.
 	 *
-	 * @return DateTime|null
+	 * @return DateTimeInterface|null
 	 */
 	public function loadLastRunTime()
 	{
