@@ -179,6 +179,8 @@ class Cronner
 
 	/**
 	 * Runs all cron tasks.
+	 *
+	 * @param DateTime $now
 	 */
 	public function run(DateTime $now = NULL)
 	{
@@ -190,28 +192,7 @@ class Cronner
 		}
 
 		foreach ($this->tasks as $task) {
-			try {
-				$name = $task->getName();
-				if ($task->shouldBeRun($now)) {
-					if ($this->criticalSection->enter($name)) {
-						$this->onTaskBegin($this, $task);
-						$task($now);
-						$this->onTaskFinished($this, $task);
-						$this->criticalSection->leave($name);
-					}
-				}
-			} catch (Exception $e) {
-				$this->onTaskError($this, $e, $task);
-				$name = $task->getName();
-				if ($this->criticalSection->isEntered($name)) {
-					$this->criticalSection->leave($name);
-				}
-				if ($e instanceof RuntimeException) {
-					throw $e; // Throw exception if it is Cronner Runtime exception
-				} elseif ($this->skipFailedTask === FALSE) {
-					throw $e; // Throw exception if failed task should not be skipped
-				}
-			}
+			$this->executeTask($task, $now);
 		}
 	}
 
@@ -240,6 +221,51 @@ class Cronner
 	private function createIdFromObject($tasks) : string
 	{
 		return sha1(get_class($tasks));
+	}
+
+	/**
+	 * @param Task $task
+	 * @param DateTime $now
+	 * @param bool $forceRun
+	 * @throws Exception
+	 */
+	private function executeTask(Task $task, DateTime $now, $forceRun = FALSE)
+	{
+		try {
+			$name = $task->getName();
+			if ($task->shouldBeRun($now) || $forceRun) {
+				if ($this->criticalSection->enter($name)) {
+					$this->onTaskBegin($this, $task);
+					$task($now);
+					$this->onTaskFinished($this, $task);
+					$this->criticalSection->leave($name);
+				}
+			}
+		} catch (Exception $e) {
+			$this->onTaskError($this, $e, $task);
+			$name = $task->getName();
+			if ($this->criticalSection->isEntered($name)) {
+				$this->criticalSection->leave($name);
+			}
+			if ($e instanceof RuntimeException) {
+				throw $e; // Throw exception if it is Cronner Runtime exception
+			} elseif ($this->skipFailedTask === FALSE) {
+				throw $e; // Throw exception if failed task should not be skipped
+			}
+		}
+	}
+
+	/**
+	 * @param Task $task
+	 * @param bool $forceRun
+	 */
+	public function runTask(Task $task, $forceRun = FALSE)
+	{
+		if ($this->maxExecutionTime !== NULL) {
+			set_time_limit($this->maxExecutionTime);
+		}
+
+		$this->executeTask($task, new DateTime(), $forceRun);
 	}
 
 }
