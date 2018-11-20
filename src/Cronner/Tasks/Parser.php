@@ -65,14 +65,19 @@ class Parser
 		if (Strings::length($annotation)) {
 			$days = static::translateToDayNames($annotation);
 			$days = static::expandDaysRange($days);
+			$numericDays = [];
 			foreach ($days as $day) {
-				if (!in_array($day, $validValues)) {
+				if ((!in_array($day, $validValues) && !is_numeric($day)) || (($day < 1 || $day > 31) && is_numeric($day))) {
 					throw new InvalidParameterException(
-						"Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . "."
+						"Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . " or numeric from range 1-31."
 					);
+				}
+				if (is_numeric($day)) {
+					$numericDays[] = $day;
 				}
 			}
 			$days = array_values(array_intersect($validValues, $days));
+			$days = array_merge($days, $numericDays);
 		}
 
 		return $days ?: NULL;
@@ -161,6 +166,13 @@ class Parser
 						$started = FALSE;
 					}
 				}
+			} elseif (Strings::match($day, '~^(3[01]|[12][0-9]|[1-9])\s*-\s*(3[01]|[12][0-9]|[1-9])$~u')) {
+				list($begin, $end) = Strings::split($day, '~\s*-\s*~');
+
+				for ($i = $begin; $i <= $end; $i++) {
+					if (!in_array($i, $expandedValues)) {
+						$expandedValues[] = $i;
+					}
 			} else {
 				$expandedValues[] = $day;
 			}

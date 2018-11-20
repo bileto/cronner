@@ -46,12 +46,12 @@ final class Parameters
 	}
 
 	/**
-	 * Returns true if today is allowed day of week.
+	 * Returns true if today is allowed day of week or day od month.
 	 */
 	public function isInDay(DateTimeInterface $now) : bool
 	{
 		if (($days = $this->values[static::DAYS]) !== NULL) {
-			return in_array($now->format('D'), $days);
+			return in_array($now->format('D'), $days) || in_array($now->format('j'), $days);
 		}
 
 		return TRUE;
