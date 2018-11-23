@@ -65,19 +65,51 @@ class Parser
 		if (Strings::length($annotation)) {
 			$days = static::translateToDayNames($annotation);
 			$days = static::expandDaysRange($days);
-			$numericDays = [];
 			foreach ($days as $day) {
-				if ((!in_array($day, $validValues) && !is_numeric($day)) || (($day < 1 || $day > 31) && is_numeric($day))) {
+				if (!in_array($day, $validValues)) {
 					throw new InvalidParameterException(
-						"Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . " or numeric from range 1-31."
+						"Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . "."
 					);
 				}
-				if (is_numeric($day)) {
-					$numericDays[] = $day;
+			}
+
+			$days = array_values(array_intersect($validValues, $days));
+		}
+
+		return $days ?: NULL;
+	}
+
+	/**
+	 * Parses allowed days om month for cron task. If annotation is invalid
+	 * throws exception.
+	 * @param string $annotation
+	 * @param DateTimeInterface $now
+	 * @return string[]|null
+	 * @throws InvalidParameterException
+	 */
+	public static function parseDaysOfMonth(string $annotation, DateTimeInterface $now)
+	{
+		$days = NULL;
+		$annotation = Strings::trim($annotation);
+		if (Strings::length($annotation)) {
+			$days = static::splitMultipleValues($annotation);
+			$days = static::expandDaysOfMonthRange($days);
+
+			$dayInMonthCount = cal_days_in_month(CAL_GREGORIAN, (int)$now->format('n'), (int)$now->format('Y'));
+
+			foreach ($days as $day) {
+				if (($day < 1 || $day > 31) || !is_numeric($day)) {
+					throw new InvalidParameterException(
+						"Given day parameter '" . $day . "' must be numeric from range 1-31."
+					);
+				}
+
+				if ($day > $dayInMonthCount) {
+					if (!in_array($dayInMonthCount, $days)) {
+						$days[] = $dayInMonthCount;
+					}
 				}
 			}
-			$days = array_values(array_intersect($validValues, $days));
-			$days = array_merge($days, $numericDays);
 		}
 
 		return $days ?: NULL;
@@ -166,15 +198,37 @@ class Parser
 						$started = FALSE;
 					}
 				}
-			} elseif (Strings::match($day, '~^(3[01]|[12][0-9]|[1-9])\s*-\s*(3[01]|[12][0-9]|[1-9])$~u')) {
+			} else {
+				$expandedValues[] = $day;
+			}
+		}
+
+		return array_unique($expandedValues);
+	}
+
+	/**
+	 * Expands given day of month ranges to array.
+	 *
+	 * @param string[] $days
+	 * @return string[]
+	 */
+	private static function expandDaysOfMonthRange(array $days) : array
+	{
+		$expandedValues = [];
+
+		foreach ($days as $day) {
+			if (Strings::match($day, '~^(3[01]|[12][0-9]|[1-9])\s*-\s*(3[01]|[12][0-9]|[1-9])$~u')) {
 				list($begin, $end) = Strings::split($day, '~\s*-\s*~');
 
 				for ($i = $begin; $i <= $end; $i++) {
 					if (!in_array($i, $expandedValues)) {
 						$expandedValues[] = $i;
 					}
+				}
 			} else {
-				$expandedValues[] = $day;
+				if (!in_array($day, $expandedValues)) {
+					$expandedValues[] = $day;
+				}
 			}
 		}
 

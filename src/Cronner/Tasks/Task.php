@@ -35,17 +35,23 @@ final class Task
 	private $parameters = NULL;
 
 	/**
+	 * @var DateTimeInterface|null
+	 */
+	private $now = NULL;
+
+	/**
 	 * Creates instance of one task.
 	 *
 	 * @param object $object
 	 * @param Method $method
 	 * @param ITimestampStorage $timestampStorage
 	 */
-	public function __construct($object, Method $method, ITimestampStorage $timestampStorage)
+	public function __construct($object, Method $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = NULL)
 	{
 		$this->object = $object;
 		$this->method = $method;
 		$this->timestampStorage = $timestampStorage;
+		$this->setNow($now);
 	}
 
 	public function getObjectName() : string
@@ -82,7 +88,8 @@ final class Task
 
 		return $parameters->isInDay($now)
 			&& $parameters->isInTime($now)
-			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime());
+			&& $parameters->isNextPeriod($now, $this->timestampStorage->loadLastRunTime())
+			&& $parameters->isInDayOfMonth($now);
 	}
 
 	public function getName() : string
@@ -104,10 +111,28 @@ final class Task
 	private function getParameters() : Parameters
 	{
 		if ($this->parameters === NULL) {
-			$this->parameters = new Parameters(Parameters::parseParameters($this->method));
+			$this->parameters = new Parameters(Parameters::parseParameters($this->method, $this->getNow()));
 		}
 
 		return $this->parameters;
 	}
 
+
+	public function setNow($now)
+	{
+		if ($now === NULL) {
+			$now = new DateTime();
+		}
+
+		$this->now = $now;
+	}
+
+	public function getNow()
+	{
+		if ($this->now === NULL) {
+			$this->now = new DateTime();
+		}
+		return $this->now;
+	}
 }
+

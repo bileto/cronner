@@ -17,6 +17,7 @@ final class Parameters
 	const TASK = 'cronner-task';
 	const PERIOD = 'cronner-period';
 	const DAYS = 'cronner-days';
+	const DAYS_OF_MONTH = 'cronner-days-of-month';
 	const TIME = 'cronner-time';
 
 	/**
@@ -46,12 +47,24 @@ final class Parameters
 	}
 
 	/**
-	 * Returns true if today is allowed day of week or day od month.
+	 * Returns true if today is allowed day of week.
 	 */
 	public function isInDay(DateTimeInterface $now) : bool
 	{
 		if (($days = $this->values[static::DAYS]) !== NULL) {
-			return in_array($now->format('D'), $days) || in_array($now->format('j'), $days);
+			return in_array($now->format('D'), $days);
+		}
+
+		return TRUE;
+	}
+
+	/**
+	 * Returns true if today is allowed day of month.
+	 */
+	public function isInDayOfMonth(DateTimeInterface $now) : bool
+	{
+		if (($days = $this->values[static::DAYS_OF_MONTH]) !== NULL) {
+			return in_array($now->format('j'), $days);
 		}
 
 		return TRUE;
@@ -105,7 +118,7 @@ final class Parameters
 	/**
 	 * Parse cronner values from annotations.
 	 */
-	public static function parseParameters(Method $method) : array
+	public static function parseParameters(Method $method, DateTimeInterface $now) : array
 	{
 		$taskName = NULL;
 		if ($method->hasAnnotation(Parameters::TASK)) {
@@ -126,6 +139,9 @@ final class Parameters
 			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
 				? Parser::parseDays((string) $method->getAnnotation(Parameters::DAYS))
 				: NULL,
+			static::DAYS_OF_MONTH => $method->hasAnnotation(Parameters::DAYS_OF_MONTH)
+				? Parser::parseDaysOfMonth((string) $method->getAnnotation(Parameters::DAYS_OF_MONTH), $now)
+				: NULL,
 			static::TIME => $method->hasAnnotation(Parameters::TIME)
 				? Parser::parseTimes((string) $method->getAnnotation(Parameters::TIME))
 				: NULL,
@@ -135,3 +151,4 @@ final class Parameters
 	}
 
 }
+
