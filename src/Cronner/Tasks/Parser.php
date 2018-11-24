@@ -87,7 +87,7 @@ class Parser
 	 * @return string[]|null
 	 * @throws InvalidParameterException
 	 */
-	public static function parseDaysOfMonth(string $annotation, DateTimeInterface $now)
+	public static function parseDaysOfMonth(string $annotation, \DateTime $now)
 	{
 		$days = NULL;
 		$annotation = Strings::trim($annotation);
