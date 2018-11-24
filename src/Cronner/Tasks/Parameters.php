@@ -118,7 +118,7 @@ final class Parameters
 	/**
 	 * Parse cronner values from annotations.
 	 */
-	public static function parseParameters(Method $method, DateTimeInterface $now) : array
+	public static function parseParameters(Method $method, \DateTime $now) : array
 	{
 		$taskName = NULL;
 		if ($method->hasAnnotation(Parameters::TASK)) {
@@ -151,4 +151,3 @@ final class Parameters
 	}
 
 }
-
