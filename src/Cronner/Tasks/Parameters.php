@@ -6,7 +6,7 @@ namespace stekycz\Cronner\Tasks;
 
 use DateTimeInterface;
 use Nette;
-use Nette\Reflection\Method;
+use Nette\Application\UI\MethodReflection;
 use Nette\Utils\Strings;
 use stekycz\Cronner\Exceptions\InvalidArgumentException;
 
@@ -105,7 +105,7 @@ final class Parameters
 	/**
 	 * Parse cronner values from annotations.
 	 */
-	public static function parseParameters(Method $method) : array
+	public static function parseParameters(MethodReflection $method) : array
 	{
 		$taskName = NULL;
 		if ($method->hasAnnotation(Parameters::TASK)) {

@@ -4,3 +4,4 @@ tests/*.log
 tests/coverage.xml
 tests/tmp/*
 !tests/tmp/.gitkeep
+.idea

@@ -29,8 +29,9 @@ class CronTasks {
     }
 
     /**
-     * @cronner-task Important data replication
-     * @cronner-period 3 hours
+     * Use brackets in Nette 3
+     * @cronner-task(Important data replication)
+     * @cronner-period(3 hours)
      */
     public function replicateImportantData() {
         // Replication code
@@ -43,6 +44,12 @@ class CronTasks {
 ```neon
 extension:
     cronner: stekycz\Cronner\DI\CronnerExtension
+    
+cronner:    
+    timestampStorage: stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner)
+    maxExecutionTime: 1800
+    criticalSectionTempDir: %wwwDir%/../temp/cronnerCritical
+    criticalSectionDriver: null
 ```
 
 It does not require any configuration however your own implementation of timestamp storage could be better
@@ -115,7 +122,7 @@ every time when Cronner runs.
 
 ```php
 /**
- * @cronner-task Fetches all public data from all registered social networks
+ * @cronner-task(Fetches all public data from all registered social networks)
  */
 ```
 
@@ -133,7 +140,7 @@ is not acceptable however `1 month` is acceptable.
 
 ```php
 /**
- * @cronner-period 1 day
+ * @cronner-period(1 day)
  */
 ```
 
@@ -148,7 +155,7 @@ expanded to specific days. Multiple values must be separated by comma (`Mon, Wed
 
 ```php
 /**
- * @cronner-days working days, Sun
+ * @cronner-days(working days, Sun)
  */
 ```
 
@@ -166,6 +173,6 @@ start from any reason.
 
 ```php
 /**
- * @cronner-time 11:00, 23:30 - 05:00
+ * @cronner-time(11:00, 23:30 - 05:00)
  */
 ```

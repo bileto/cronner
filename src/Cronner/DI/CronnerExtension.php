@@ -8,6 +8,7 @@ use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use Nette\DI\ContainerBuilder;
+use Nette\DI\Helpers;
 use Nette\DI\ServiceDefinition;
 use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
@@ -74,37 +75,37 @@ class CronnerExtension extends CompilerExtension
 		);
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
-			 ->setClass(CriticalSection::class, [
+			 ->setFactory(CriticalSection::class, [
 			 	$criticalSectionDriver,
 			 ])
-			 ->setAutowired(FALSE)
-			 ->setInject(FALSE);
+			 ->setAutowired(FALSE);
 
 		$runner = $container->addDefinition($this->prefix('runner'))
-			->setClass(Cronner::class, [
+			->setFactory(Cronner::class, [
 				$storage,
 				$criticalSection,
 				$config['maxExecutionTime'],
 				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
 			]);
 
-		Validators::assert($config['tasks'], 'array');
-		foreach ($config['tasks'] as $task) {
-			$def = $container->addDefinition($this->prefix('task.' . md5(is_string($task) ? $task : sprintf('%s-%s', $task->getEntity(), Json::encode($task)))));
-			list($def->factory) = Compiler::filterArguments([
-				is_string($task) ? new Statement($task) : $task,
-			]);
+		if (isset($config['tasks'])) {
+			Validators::assert($config['tasks'], 'array');
+			foreach ($config['tasks'] as $task) {
+				$def = $container->addDefinition($this->prefix('task.' . md5(is_string($task) ? $task : sprintf('%s-%s', $task->getEntity(), Json::encode($task)))));
+				list($def->factory) = Compiler::filterArguments([
+					is_string($task) ? new Statement($task) : $task,
+				]);
 
-			if (class_exists($def->factory->entity)) {
-				$def->setClass($def->factory->entity);
+				if (class_exists($def->factory->entity)) {
+					$def->setFactory($def->factory->entity);
+				}
+
+				$def->setAutowired(FALSE);
+				$def->addTag(self::TASKS_TAG);
 			}
-
-			$def->setAutowired(FALSE);
-			$def->setInject(FALSE);
-			$def->addTag(self::TASKS_TAG);
 		}
 
-		if ($config['bar'] && class_exists('Tracy\Bar')) {
+		if (isset($config['bar']) && class_exists('Tracy\Bar')) {
 			$container->addDefinition($this->prefix('bar'))
 				->setClass(Tasks::class, [
 					$this->prefix('@runner'),
@@ -152,26 +153,26 @@ class CronnerExtension extends CompilerExtension
 		array $fallbackArguments
 	) : ServiceDefinition
 	{
-		if (is_string($config) && $container->getServiceName($config)) {
-			$definition = $container->addDefinition($serviceName)
+		// @todo Nette 3 addFactoryDefinition
+		if (is_string($config) && $container->findByType($config)) {
+			$definition = $container->addFactoryDefinition($serviceName)
+				->getResultDefinition()
 				->setFactory($config);
 		} elseif ($config instanceof Statement) {
-			$definition = $container->addDefinition($serviceName)
+			$definition = @$container->addDefinition($serviceName)
 				->setClass($config->entity, $config->arguments);
 		} else {
-			$foundServiceName = $container->getByType($fallbackType);
+			$foundServiceName = @$container->getByType($fallbackType);
 			if ($foundServiceName) {
 				$definition = $container->addDefinition($serviceName)
 					->setFactory('@' . $foundServiceName);
 			} else {
-				$definition = $container->addDefinition($serviceName)
-					->setClass($fallbackClass, $container->expand($fallbackArguments));
+				$definition = @$container->addDefinition($serviceName)
+					->setClass($fallbackClass, Helpers::expand($fallbackArguments, $container->parameters));
 			}
 		}
 
-		return $definition
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+		return $definition->setAutowired(FALSE);
 	}
 
 }

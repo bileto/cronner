@@ -6,7 +6,7 @@ namespace stekycz\Cronner\Tasks;
 
 use DateTime;
 use DateTimeInterface;
-use Nette\Reflection\Method;
+use \Nette\Application\UI\MethodReflection;
 use ReflectionClass;
 use stekycz\Cronner\ITimestampStorage;
 
@@ -38,10 +38,10 @@ final class Task
 	 * Creates instance of one task.
 	 *
 	 * @param object $object
-	 * @param Method $method
+	 * @param MethodReflection $method
 	 * @param ITimestampStorage $timestampStorage
 	 */
-	public function __construct($object, Method $method, ITimestampStorage $timestampStorage)
+	public function __construct($object, MethodReflection $method, ITimestampStorage $timestampStorage)
 	{
 		$this->object = $object;
 		$this->method = $method;
@@ -53,7 +53,7 @@ final class Task
 		return get_class($this->object);
 	}
 
-	public function getMethodReflection() : Method
+	public function getMethodReflection() : MethodReflection
 	{
 		return $this->method;
 	}
