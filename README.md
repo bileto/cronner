@@ -8,6 +8,15 @@
 
 ## Description
 
+```
+Use brackets in Nette 3
+
+/**
+ * @cronner-task(E-mail sending)
+ * @cronner-period(1 day)
+ */
+```
+
 Simple tool which helps with maintenance of cron tasks.
 
 It requires **PHP >= 7.0.0** and **Nette Framework >= 2.4.0**.
@@ -19,17 +28,16 @@ It is very simple to use it because configuration is only in method annotations.
 ```php
 class CronTasks {
     /**
-     * @cronner-task E-mail sending
-     * @cronner-period 1 day
-     * @cronner-days working days
-     * @cronner-time 23:30 - 05:00
+     * @cronner-task(E-mail sending)
+     * @cronner-period(1 day)
+     * @cronner-days(working days)
+     * @cronner-time(23:30 - 05:00)
      */
     public function sendEmails() {
         // Code which sends all your e-mails
     }
 
     /**
-     * Use brackets in Nette 3
      * @cronner-task(Important data replication)
      * @cronner-period(3 hours)
      */
