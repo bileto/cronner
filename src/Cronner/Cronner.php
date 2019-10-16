@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace stekycz\Cronner;
 
 use Exception;
-use Nette\Reflection\ClassType;
 use DateTimeInterface;
 use DateTime;
 use Nette\Utils\Strings;
@@ -162,11 +161,15 @@ class Cronner
 			throw new InvalidArgumentException("Tasks with ID '" . $tasksId . "' have been already added.");
 		}
 
-		$reflection = new ClassType($tasks);
-		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
+		$className = get_class($tasks);
+		$class = new \ReflectionClass($className);
+		$methods = $class->getMethods(ReflectionMethod::IS_PUBLIC);
+
 		foreach ($methods as $method) {
-			if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
-				$task = new Task($tasks, $method, $this->timestampStorage);
+			$methodReflection = new MethodReflection($className, $method->getName());
+
+			if (!Strings::startsWith($method->getName(), '__') && $methodReflection->hasAnnotation(Parameters::TASK)) {
+				$task = new Task($tasks, $methodReflection, $this->timestampStorage);
 				if (array_key_exists($task->getName(), $this->tasks)) {
 					throw new DuplicateTaskNameException('Cannot use more tasks with the same name "' . $task->getName() . '".');
 				}
@@ -187,7 +190,7 @@ class Cronner
 			$now = new DateTime();
 		}
 		if ($this->maxExecutionTime !== NULL) {
-			set_time_limit($this->maxExecutionTime);
+			@set_time_limit($this->maxExecutionTime);
 		}
 
 		foreach ($this->tasks as $task) {
