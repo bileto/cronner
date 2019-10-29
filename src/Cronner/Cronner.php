@@ -8,6 +8,7 @@ use Exception;
 use DateTimeInterface;
 use DateTime;
 use Nette\Utils\Strings;
+use Nette\Application\UI\MethodReflection;
 use ReflectionMethod;
 use stekycz\CriticalSection\ICriticalSection;
 use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
