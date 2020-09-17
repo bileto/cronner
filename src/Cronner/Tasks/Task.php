@@ -9,6 +9,7 @@ use DateTimeInterface;
 use Nette\Reflection\Method;
 use ReflectionClass;
 use stekycz\Cronner\ITimestampStorage;
+use stekycz\Cronner\Tasks\Parameters;
 
 final class Task
 {
@@ -110,4 +111,95 @@ final class Task
 		return $this->parameters;
 	}
 
+	/**
+	 * @return DateTime|null
+	 */
+	public function getLastRun()
+	{
+		$this->timestampStorage->setTaskName($this->getName());
+		return $this->timestampStorage->loadLastRunTime();
+	}
+
+	/**
+	 * @param DateTime|null $startDate
+	 * @return DateTime
+	 */
+	public function getNextRun(DateTime $startDate = NULL) : DateTime
+	{
+		$startDate = is_null($startDate) ? new DateTime() : clone  $startDate;
+
+		$days = [
+			1 => 'Mon',
+			2 => 'Tue',
+			3 => 'Wed',
+			4 => 'Thu',
+			5 => 'Fri',
+			6 => 'Sat',
+			7 => 'Sun',
+		];
+
+		$lastRun = $this->getLastRun();
+
+		$parameters = Parameters::parseParameters($this->getMethodReflection());
+
+		if (is_null($parameters[Parameters::PERIOD]) && is_null($parameters[Parameters::DAYS]) && is_null($parameters[Parameters::TIME])) {
+			return $startDate;
+		}
+
+		if(is_null($parameters[Parameters::DAYS])) {
+			$parameters[Parameters::DAYS] = $days;
+		}
+
+		if(is_null($parameters[Parameters::TIME])) {
+			$parameters[Parameters::TIME][] = [
+				'from' => '00:00',
+				'to' => NULL,
+			];
+		}
+
+		$nextRun = $startDate;
+
+		if (!is_null($parameters[Parameters::PERIOD]) && !is_null($lastRun)) {
+			$nextRun = $lastRun->modify(sprintf('+ %s', $parameters[Parameters::PERIOD]));
+			$nextRun = $nextRun < $startDate ? $startDate : $nextRun;
+		}
+
+		$time = $nextRun->format('H:i');
+		$day = $nextRun->format('N');
+		$seconds = $nextRun->format('s');
+
+		$nextTimes = array_filter(
+			$parameters[Parameters::TIME],
+			function ($definedTimes) use ($nextRun) {
+				return $definedTimes['to'] === NULL || sprintf('%s:00', $definedTimes['to']) >= $nextRun->format('H:i:s');
+			});
+
+		if (in_array($nextRun->format('D'), $parameters[Parameters::DAYS]) && !empty($nextTimes)) {
+			$nextTime = reset($nextTimes)['from'];
+
+			if($nextTime <= $time) {
+				$nextTime = $time;
+			} else {
+				$seconds = 0;
+			}
+
+			$timeParts = explode(':', $nextTime);
+			$nextRun->setTime((int) $timeParts[0], (int) $timeParts[1], (int) $seconds);
+
+		} else {
+			$day++;
+			$day = $day > 7 ? 1 : $day;
+
+			while(!in_array($days[$day], $parameters[Parameters::DAYS])) {
+				$day = ($day + 1) > 7 ? 0 : $day;
+				$day++;
+			}
+
+			$nextRun->modify(sprintf('next %s', $days[$day]));
+			$timeParts = explode(':', reset($parameters[Parameters::TIME])['from']);
+			$nextRun->setTime((int) $timeParts[0], (int) $timeParts[1], 0);
+		}
+
+		return $nextRun;
+	}
 }
