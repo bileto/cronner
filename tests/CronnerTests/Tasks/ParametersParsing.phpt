@@ -11,6 +11,7 @@ namespace stekycz\Cronner\tests\Tasks;
 use stekycz\Cronner\Tasks\Parameters;
 use stekycz\Cronner\tests\objects\TestObject;
 use Tester\Assert;
+use DateTime;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
@@ -41,7 +42,12 @@ class ParametersParsingTest extends \TestCase
 			return;
 		}
 
-		Assert::same($expected, Parameters::parseParameters((new \Nette\Reflection\ClassType($this->object))->getMethod($methodName)));
+		Assert::same($expected, 
+			Parameters::parseParameters(
+				(new \Nette\Reflection\ClassType($this->object))->getMethod($methodName),
+				new DateTime('NOW')
+			)
+		);
 	}
 
 	public function dataProviderParse() : array
