@@ -24,7 +24,7 @@
 		"nette/utils": "^2.4",
 		"nette/reflection": "^2.4",
 		"nette/safe-stream": "^2.3",
-		"stekycz/critical-section": "^1.0"
+		"bileto/critical-section": "^2.0"
 	},
 	"require-dev": {
 		"nette/tester": "^1.7",

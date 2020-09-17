@@ -10,7 +10,7 @@ use DateTimeInterface;
 use DateTime;
 use Nette\Utils\Strings;
 use ReflectionMethod;
-use stekycz\CriticalSection\ICriticalSection;
+use Bileto\CriticalSection\ICriticalSection;
 use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
 use stekycz\Cronner\Exceptions\InvalidArgumentException;
 use stekycz\Cronner\Exceptions\RuntimeException;

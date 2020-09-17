@@ -12,7 +12,7 @@ use Exception;
 use Mockery;
 use Nette\Utils\DateTime;
 use stdClass;
-use stekycz\CriticalSection\ICriticalSection;
+use Bileto\CriticalSection\ICriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
 use stekycz\Cronner\Exceptions\InvalidArgumentException;

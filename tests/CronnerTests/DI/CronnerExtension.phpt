@@ -9,7 +9,7 @@ namespace stekycz\Cronner\tests\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\Statement;
-use stekycz\CriticalSection\CriticalSection;
+use Bileto\CriticalSection\CriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\DI\CronnerExtension;
 use stekycz\Cronner\TimestampStorage\DummyStorage;
