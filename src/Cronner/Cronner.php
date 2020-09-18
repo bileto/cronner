@@ -50,7 +50,7 @@ class Cronner
     /** @var ICriticalSection */
     private $criticalSection;
 
-    /** @var int Max execution time of PHP script in seconds */
+    /** @var int|null Max execution time of PHP script in seconds */
     private $maxExecutionTime;
 
     /** @var bool */
@@ -65,8 +65,8 @@ class Cronner
     public function __construct(
         ITimestampStorage $timestampStorage,
         ICriticalSection $criticalSection,
-        int $maxExecutionTime = NULL,
-        bool $skipFailedTask = TRUE
+        int $maxExecutionTime = null,
+        bool $skipFailedTask = true
     )
     {
         $this->setTimestampStorage($timestampStorage);

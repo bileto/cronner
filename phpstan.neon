@@ -7,5 +7,3 @@ parameters:
 	excludes_analyse:
 		- tests
 		- vendor
-	ignoreErrors:
-		- '#.*Redis::.*#'

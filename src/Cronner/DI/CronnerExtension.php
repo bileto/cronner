@@ -29,7 +29,7 @@ class CronnerExtension extends CompilerExtension
     const DEFAULT_STORAGE_CLASS = FileStorage::class;
     const DEFAULT_STORAGE_DIRECTORY = '%tempDir%/cronner';
 
-    /** @var array|string[] */
+    /** @var array */
     public $defaults = [
         'timestampStorage' => null,
         'maxExecutionTime' => null,
