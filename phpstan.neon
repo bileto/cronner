@@ -1,7 +1,11 @@
 parameters:
-	projectDir: %rootDir%/../../..
+	level: 6
+	paths:
+		- src
 	autoload_files:
-		- %projectDir%/vendor/autoload.php
+		- vendor/autoload.php
 	excludes_analyse:
-		- %projectDir%/tests/
-		- %projectDir%/vendor/
+		- tests
+		- vendor
+	ignoreErrors:
+		- '#.*Redis::.*#'

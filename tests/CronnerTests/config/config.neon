@@ -1,11 +1,11 @@
 extensions:
-	cronner: stekycz\Cronner\DI\CronnerExtension
+	cronner: Bileto\Cronner\DI\CronnerExtension
 
 services:
-	fooService: stekycz\Cronner\tests\objects\FooService
+	fooService: Bileto\Cronner\tests\objects\FooService
 
 
 cronner:
 	tasks:
-		- stekycz\Cronner\tests\objects\SimpleTestObjectWithDependency(@fooService)
-		- stekycz\Cronner\tests\objects\AnotherSimpleTestObjectWithDependency(@fooService)
+		- Bileto\Cronner\tests\objects\SimpleTestObjectWithDependency(@fooService)
+		- Bileto\Cronner\tests\objects\AnotherSimpleTestObjectWithDependency(@fooService)
