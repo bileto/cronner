@@ -10,8 +10,9 @@
 
 Simple tool which helps with maintenance of cron tasks.
 
-It requires **PHP >= 7.1.0** and **Nette Framework >= 2.4.0**.
+This is legacy branch that requires **PHP 7.1 to 7.3** and **Nette Framework  2.4**.
 
+Master branch provides support for **PHP 7.4** and **Nette Framework 3.0+**.
 ## Usage
 
 It is very simple to use it because configuration is only in method annotations. Example class with tasks follows.
