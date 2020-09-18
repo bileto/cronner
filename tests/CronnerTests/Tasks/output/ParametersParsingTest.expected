@@ -1,0 +1,7 @@
+[
+	'cronner-task' => 'E-mail notifications',
+	'cronner-period' => '5 minutes',
+	'cronner-days' => null,
+	'cronner-days-of-month' => null,
+	'cronner-time' => null,
+]

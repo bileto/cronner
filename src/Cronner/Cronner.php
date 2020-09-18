@@ -14,7 +14,7 @@ use ReflectionException;
 use ReflectionMethod;
 use Bileto\CriticalSection\ICriticalSection;
 use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
-use Bileto\Cronner\Exceptions\InvalidArgumentException;
+use InvalidArgumentException;
 use Bileto\Cronner\Exceptions\RuntimeException;
 use Bileto\Cronner\Tasks\Parameters;
 use Bileto\Cronner\Tasks\Task;

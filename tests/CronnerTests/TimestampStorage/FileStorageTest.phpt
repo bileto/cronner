@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\TimestampStorage;
+namespace CronnerTests\TimestampStorage;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
+use Bileto\Cronner\Exceptions\InvalidTaskNameException;
 use DateTime;
+use Mockery;
 use Nette\Utils\DateTime as NetteDateTime;
 use Nette\Utils\FileSystem;
 use Bileto\Cronner\TimestampStorage\FileStorage;
 use Tester\Assert;
+use Tester\TestCase;
 
-
-
-class FileStorageTest extends \TestCase
+class FileStorageTest extends TestCase
 {
 
     /** @var FileStorage */
@@ -22,15 +23,14 @@ class FileStorageTest extends \TestCase
 
     protected function setUp()
     {
-        parent::setUp();
         FileSystem::createDir(static::getTempDirPath());
         $this->storage = new FileStorage(static::getTempDirPath());
     }
 
     protected function tearDown()
     {
-        parent::tearDown();
         FileSystem::delete(static::getTempDirPath());
+        Mockery::close();
     }
 
     private static function getTempDirPath()
@@ -41,14 +41,14 @@ class FileStorageTest extends \TestCase
     public function testIsAbleToSetTaskName()
     {
         $this->storage->setTaskName('Test task 1');
-        $this->storage->setTaskName(NULL);
+        $this->storage->setTaskName(null);
         $this->storage->setTaskName();
         Assert::$counter++; // Hack for nette tester
     }
 
     /**
      * @dataProvider dataProviderSetTaskName
-     * @throws \Bileto\Cronner\Exceptions\InvalidTaskNameException
+     * @throws InvalidTaskNameException
      */
     public function testThrowsExceptionOnInvalidTaskName(string $taskName = NULL)
     {

@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Bileto\Cronner\Tasks;
 
 use DateTime;
-use DateTimeInterface;
+use InvalidArgumentException;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
-use Bileto\Cronner\Exceptions\InvalidParameterException;
 
 class Parser
 {
@@ -33,7 +32,7 @@ class Parser
      *
      * @param string $annotation
      * @return string|null
-     * @throws InvalidParameterException
+     * @throws InvalidArgumentException
      */
     public static function parsePeriod(string $annotation): ?string
     {
@@ -41,7 +40,7 @@ class Parser
         $annotation = Strings::trim($annotation);
         if (Strings::length($annotation)) {
             if (strtotime('+ ' . $annotation) === false) {
-                throw new InvalidParameterException(
+                throw new InvalidArgumentException(
                     "Given period parameter '" . $annotation . "' must be valid for strtotime() with '+' sign as its prefix (added by Cronner automatically)."
                 );
             }
@@ -57,7 +56,7 @@ class Parser
      *
      * @param string $annotation
      * @return string[]|null
-     * @throws InvalidParameterException
+     * @throws InvalidArgumentException
      */
     public static function parseDays(string $annotation): ?array
     {
@@ -70,7 +69,7 @@ class Parser
             $days = static::expandDaysRange($days);
             foreach ($days as $day) {
                 if (!in_array($day, $validValues)) {
-                    throw new InvalidParameterException(
+                    throw new InvalidArgumentException(
                         "Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . "."
                     );
                 }
@@ -163,6 +162,7 @@ class Parser
      * @param string $annotation
      * @param DateTime $now
      * @return string[]|null
+     * @throws InvalidArgumentException
      */
     public static function parseDaysOfMonth(string $annotation, DateTime $now)
     {
@@ -176,7 +176,7 @@ class Parser
 
             foreach ($days as $day) {
                 if (($day < 1 || $day > 31) || !is_numeric($day)) {
-                    throw new InvalidParameterException(
+                    throw new InvalidArgumentException(
                         "Given day parameter '" . $day . "' must be numeric from range 1-31."
                     );
                 }
@@ -227,7 +227,7 @@ class Parser
      *
      * @param string $annotation
      * @return string[][]|null
-     * @throws InvalidParameterException
+     * @throws InvalidArgumentException
      */
     public static function parseTimes(string $annotation)
     {
@@ -253,14 +253,14 @@ class Parser
      *
      * @param string $time
      * @return string[][]
-     * @throws InvalidParameterException
+     * @throws InvalidArgumentException
      */
     private static function parseOneTime(string $time): array
     {
         $time = static::translateToTimes($time);
         $parts = Strings::split($time, '/\s*-\s*/');
         if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
-            throw new InvalidParameterException(
+            throw new InvalidArgumentException(
                 "Times annotation is not in valid format. It must looks like 'hh:mm[ - hh:mm]' but '" . $time . "' was given."
             );
         }

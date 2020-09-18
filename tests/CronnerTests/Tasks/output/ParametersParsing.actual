@@ -1,0 +1,7 @@
+array(
+	'cronner-task' => 'Bileto\\Cronner\\tests\\objects\\TestObject - test01',
+	'cronner-period' => '5 minutes',
+	'cronner-days' => NULL,
+	'cronner-days-of-month' => NULL,
+	'cronner-time' => NULL,
+)

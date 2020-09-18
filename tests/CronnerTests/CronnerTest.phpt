@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests;
+namespace CronnerTests;
 
 require_once(__DIR__ . "/bootstrap.php");
 
@@ -15,15 +15,16 @@ use Bileto\Cronner\Cronner;
 use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
-use Bileto\Cronner\tests\objects\AnotherSimpleTestObject;
-use Bileto\Cronner\tests\objects\NextSimpleTestObject;
-use Bileto\Cronner\tests\objects\SameTaskNameObject;
-use Bileto\Cronner\tests\objects\TestExceptionObject;
-use Bileto\Cronner\tests\objects\TestObject;
+use CronnerTests\objects\AnotherSimpleTestObject;
+use CronnerTests\objects\NextSimpleTestObject;
+use CronnerTests\objects\SameTaskNameObject;
+use CronnerTests\objects\TestExceptionObject;
+use CronnerTests\objects\TestObject;
 use Tester\Assert;
+use Tester\TestCase;
 use TypeError;
 
-class CronnerTest extends \TestCase
+class CronnerTest extends TestCase
 {
 
     /** @var Cronner */
@@ -34,7 +35,6 @@ class CronnerTest extends \TestCase
 
     protected function setUp()
     {
-        parent::setUp();
         $timestampStorage = Mockery::mock(ITimestampStorage::class);
         $timestampStorage->shouldReceive('setTaskName');
         $timestampStorage->shouldReceive('saveRunTime');
@@ -42,9 +42,9 @@ class CronnerTest extends \TestCase
         $this->timestampStorage = $timestampStorage;
 
         $criticalSection = Mockery::mock(ICriticalSection::class);
-        $criticalSection->shouldReceive("enter")->andReturn(TRUE);
-        $criticalSection->shouldReceive("leave")->andReturn(TRUE);
-        $criticalSection->shouldReceive("isEntered")->andReturn(FALSE);
+        $criticalSection->shouldReceive("enter")->andReturn(true);
+        $criticalSection->shouldReceive("leave")->andReturn(true);
+        $criticalSection->shouldReceive("isEntered")->andReturn(false);
 
         $this->cronner = new Cronner($this->timestampStorage, $criticalSection);
         $this->cronner->onTaskBegin = [];
@@ -52,12 +52,17 @@ class CronnerTest extends \TestCase
         $this->cronner->onTaskError = [];
     }
 
+    protected function tearDown()
+    {
+        Mockery::close();
+    }
+
     /**
      * @dataProvider dataProviderSetMaxExecutionTime
      * @param int|null $expected
      * @param int|null $value
      */
-    public function testCanSetMaxExecutionTime(int $expected = NULL, int $value = NULL)
+    public function testCanSetMaxExecutionTime(int $expected = null, int $value = null)
     {
         $this->cronner->setMaxExecutionTime($value);
         Assert::same($expected, $this->cronner->getMaxExecutionTime());
@@ -67,7 +72,7 @@ class CronnerTest extends \TestCase
     {
         return [
             [1234, 1234],
-            [NULL, NULL],
+            [null, null],
         ];
     }
 
@@ -90,15 +95,15 @@ class CronnerTest extends \TestCase
             [0.0],
             ['0.0'],
             ['nejaky blabol'],
-            [TRUE],
-            [FALSE],
+            [true],
+            [false],
             [new stdClass()],
         ];
     }
 
     /**
      * @dataProvider dataProviderSetMaxExecutionTimeWrongValue
-     * @throws \Bileto\Cronner\Exceptions\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongValueOfMaxExecutionTime($value)
     {
@@ -120,7 +125,7 @@ class CronnerTest extends \TestCase
     }
 
     /**
-     * @throws \Bileto\Cronner\Exceptions\InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function testThrowsExceptionOnDuplicateTasksObjectAddition()
     {

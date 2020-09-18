@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\Tasks;
+namespace CronnerTests\Tasks;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
+use Exception;
 use Mockery;
 use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
-use Bileto\Cronner\tests\objects\TestObject;
+use CronnerTests\objects\TestObject;
 use Nette\Utils\DateTime;
 use Tester\Assert;
+use Tester\TestCase;
 
-
-
-class TaskTest extends \TestCase
+class TaskTest extends TestCase
 {
 
     /** @var object */
@@ -25,8 +25,12 @@ class TaskTest extends \TestCase
 
     protected function setUp()
     {
-        parent::setUp();
         $this->object = new TestObject();
+    }
+
+    protected function tearDown()
+    {
+        Mockery::close();
     }
 
     public function testInvokesTaskWithSavingLastRunTime()
@@ -49,8 +53,9 @@ class TaskTest extends \TestCase
      * @param string $methodName
      * @param string $now
      * @param string|null $lastRunTime
+     * @throws Exception
      */
-    public function testChecksIfCanBeRun(bool $expected, int $loads, string $methodName, string $now, string $lastRunTime = NULL)
+    public function testChecksIfCanBeRun(bool $expected, int $loads, string $methodName, string $now, string $lastRunTime = null)
     {
         $now = new DateTime($now);
         $lastRunTime = $lastRunTime ? new DateTime($lastRunTime) : NULL;
@@ -69,15 +74,15 @@ class TaskTest extends \TestCase
     {
         return [
             // Test 01
-            [TRUE, 1, 'test01', '2013-02-01 12:00:00', NULL],
-            [TRUE, 1, 'test01', '2013-02-01 12:10:00', '2013-02-01 12:00:00'],
-            [FALSE, 1, 'test01', '2013-02-01 12:04:00', '2013-02-01 12:00:00'],
+            [true, 1, 'test01', '2013-02-01 12:00:00', null],
+            [true, 1, 'test01', '2013-02-01 12:10:00', '2013-02-01 12:00:00'],
+            [false, 1, 'test01', '2013-02-01 12:04:00', '2013-02-01 12:00:00'],
             // Test 02
-            [FALSE, 0, 'test02', '2013-02-05 12:00:00', NULL],
-            [FALSE, 0, 'test02', '2013-02-04 12:00:00', NULL],
-            [FALSE, 1, 'test02', '2013-02-04 09:30:00', '2013-02-04 09:00:00'],
-            [TRUE, 1, 'test02', '2013-02-04 09:30:00', NULL],
-            [TRUE, 1, 'test02', '2013-02-04 09:30:00', '2013-02-03 15:30:00'],
+            [false, 0, 'test02', '2013-02-05 12:00:00', null],
+            [false, 0, 'test02', '2013-02-04 12:00:00', null],
+            [false, 1, 'test02', '2013-02-04 09:30:00', '2013-02-04 09:00:00'],
+            [true, 1, 'test02', '2013-02-04 09:30:00', null],
+            [true, 1, 'test02', '2013-02-04 09:30:00', '2013-02-03 15:30:00'],
         ];
     }
 

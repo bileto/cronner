@@ -9,19 +9,4 @@ define("TEMP_DIR", TEST_DIR . '/../tmp/' . (isset($_SERVER['argv']) ? md5(serial
 
 Tester\Environment::setup();
 
-function run(Tester\TestCase $testCase)
-{
-    $testCase->run(isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : NULL);
-}
-
-abstract class TestCase extends Tester\TestCase
-{
-
-    protected function tearDown()
-    {
-        Mockery::close();
-    }
-
-}
-
 return $autoloader;

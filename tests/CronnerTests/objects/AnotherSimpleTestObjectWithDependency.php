@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\objects;
+namespace CronnerTests\objects;
 
 class AnotherSimpleTestObjectWithDependency
 {

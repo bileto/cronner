@@ -1,0 +1,7 @@
+[
+	'cronner-task' => 'CronnerTests\\objects\\TestObject - test01',
+	'cronner-period' => '5 minutes',
+	'cronner-days' => null,
+	'cronner-days-of-month' => null,
+	'cronner-time' => null,
+]

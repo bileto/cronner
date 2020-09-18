@@ -7,12 +7,11 @@ namespace Bileto\Cronner\Tasks;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Nette\Reflection\Annotation;
 use Nette\Reflection\Method;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Nette\Utils\DateTime as NetteDateTime;
-use Bileto\Cronner\Exceptions\InvalidArgumentException;
+use \InvalidArgumentException;
 
 final class Parameters
 {
@@ -123,14 +122,14 @@ final class Parameters
             return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
      * Parse cronner values from annotations.
      * @param Method $method
      * @param DateTime $now
-     * @return array|string[]
+     * @return array
      */
     public static function parseParameters(Method $method, DateTime $now): array
     {
@@ -148,23 +147,23 @@ final class Parameters
                 ? Parser::parseName($taskAnnotation->__toString())
                 : $taskName,
             static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
-                ? Parser::parsePeriod(static::getMethodAnnotation($method, Parameters::PERIOD)->__toString())
+                ? Parser::parsePeriod(static::getMethodAnnotation($method, Parameters::PERIOD))
                 : null,
             static::DAYS => $method->hasAnnotation(Parameters::DAYS)
-                ? Parser::parseDays(static::getMethodAnnotation($method, Parameters::DAYS)->__toString())
+                ? Parser::parseDays(static::getMethodAnnotation($method, Parameters::DAYS))
                 : null,
             static::DAYS_OF_MONTH => $method->hasAnnotation(Parameters::DAYS_OF_MONTH)
-                ? Parser::parseDaysOfMonth(static::getMethodAnnotation($method, Parameters::DAYS_OF_MONTH)->__toString(), $now)
+                ? Parser::parseDaysOfMonth(static::getMethodAnnotation($method, Parameters::DAYS_OF_MONTH), $now)
                 : null,
             static::TIME => $method->hasAnnotation(Parameters::TIME)
-                ? Parser::parseTimes(static::getMethodAnnotation($method, Parameters::TIME)->__toString())
+                ? Parser::parseTimes(static::getMethodAnnotation($method, Parameters::TIME))
                 : null,
         ];
     }
 
-    public static function getMethodAnnotation(Method $method, string $parameter): Annotation
+    public static function getMethodAnnotation(Method $method, string $parameter): string
     {
-        /** @var Annotation $annotation */
+        /** @var string $annotation */
         $annotation = $method->getAnnotation($parameter);
         return $annotation;
     }

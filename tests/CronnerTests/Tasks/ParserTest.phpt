@@ -2,16 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\Tasks;
+namespace CronnerTests\Tasks;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-use stdClass;
 use Bileto\Cronner\Exceptions\InvalidParameterException;
+use InvalidArgumentException;
+use stdClass;
 use Bileto\Cronner\Tasks\Parser;
 use Tester\Assert;
+use Tester\TestCase;
 
-class ParserTest extends \TestCase
+class ParserTest extends TestCase
 {
 
     /**
@@ -33,11 +35,11 @@ class ParserTest extends \TestCase
             ['false', 'false'],
             ['0', '0'],
             ['1', '1'],
-            [NULL, TRUE],
-            [NULL, FALSE],
-            [NULL, 0],
-            [NULL, 1],
-            [NULL, new stdClass()],
+            [null, true],
+            [null, false],
+            [null, 0],
+            [null, 1],
+            [null, new stdClass()],
         ];
     }
 
@@ -65,7 +67,7 @@ class ParserTest extends \TestCase
     /**
      * @dataProvider dataProviderParsePeriodError
      * @param string $annotation
-     * @throws \Bileto\Cronner\Exceptions\InvalidParameterException
+     * @throws InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongPeriodDefinition(string $annotation)
     {
@@ -129,7 +131,7 @@ class ParserTest extends \TestCase
     /**
      * @dataProvider dataProviderParseDaysError
      * @param string $annotation
-     * @throws \Bileto\Cronner\Exceptions\InvalidParameterException
+     * @throws InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongDaysDefinition(string $annotation)
     {
@@ -165,7 +167,7 @@ class ParserTest extends \TestCase
                 [
                     [
                         'from' => '11:00',
-                        'to' => NULL,
+                        'to' => null,
                     ],
                 ],
                 '11:00',
@@ -184,11 +186,11 @@ class ParserTest extends \TestCase
                 [
                     [
                         'from' => '11:00',
-                        'to' => NULL,
+                        'to' => null,
                     ],
                     [
                         'from' => '17:00',
-                        'to' => NULL,
+                        'to' => null,
                     ],
                 ],
                 '11:00, 17:00',
@@ -357,7 +359,7 @@ class ParserTest extends \TestCase
     /**
      * @dataProvider dataProviderParseTimesError
      * @param string $annotation
-     * @throws \Bileto\Cronner\Exceptions\InvalidParameterException
+     * @throws InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongTimesDefinition(string $annotation)
     {

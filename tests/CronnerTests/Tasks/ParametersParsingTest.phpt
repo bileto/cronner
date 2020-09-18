@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\Tasks;
+namespace CronnerTests\Tasks;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
 use Bileto\Cronner\Tasks\Parameters;
-use Bileto\Cronner\tests\objects\TestObject;
+use CronnerTests\objects\TestObject;
+use Mockery;
 use Nette\Reflection\ClassType;
+use ReflectionException;
 use Tester\Assert;
 use DateTime;
+use Tester\AssertException;
+use Tester\TestCase;
 
-class ParametersParsingTest extends \TestCase
+class ParametersParsingTest extends TestCase
 {
 
     /** @var object */
@@ -20,14 +24,19 @@ class ParametersParsingTest extends \TestCase
 
     protected function setUp()
     {
-        parent::setUp();
         $this->object = new TestObject();
+    }
+
+    protected function tearDown()
+    {
+        Mockery::close();
     }
 
     /**
      * @dataProvider dataProviderParse
      * @param array $expected
      * @param string $methodName
+     * @throws ReflectionException|AssertException
      */
     public function testParsesTaskSettings(array $expected, string $methodName)
     {
@@ -52,18 +61,18 @@ class ParametersParsingTest extends \TestCase
                 [
                     Parameters::TASK => 'E-mail notifications',
                     Parameters::PERIOD => '5 minutes',
-                    Parameters::DAYS => NULL,
-                    Parameters::DAYS_OF_MONTH => NULL,
-                    Parameters::TIME => NULL,
+                    Parameters::DAYS => null,
+                    Parameters::DAYS_OF_MONTH => null,
+                    Parameters::TIME => null,
                 ],
                 'test01',
             ],
             [
                 [
-                    Parameters::TASK => 'stekycz\Cronner\tests\objects\TestObject - test02',
+                    Parameters::TASK => 'Bileto\Cronner\tests\objects\TestObject - test02',
                     Parameters::PERIOD => '1 hour',
                     Parameters::DAYS => ['Mon', 'Wed', 'Fri',],
-                    Parameters::DAYS_OF_MONTH => NULL,
+                    Parameters::DAYS_OF_MONTH => null,
                     Parameters::TIME => [
                         [
                             'from' => '09:00',
@@ -82,7 +91,7 @@ class ParametersParsingTest extends \TestCase
                     Parameters::TASK => 'Test 3',
                     Parameters::PERIOD => '17 minutes',
                     Parameters::DAYS => ['Mon', 'Tue', 'Wed', 'Thu', 'Fri',],
-                    Parameters::DAYS_OF_MONTH => NULL,
+                    Parameters::DAYS_OF_MONTH => null,
                     Parameters::TIME => [
                         [
                             'from' => '09:00',
@@ -97,8 +106,8 @@ class ParametersParsingTest extends \TestCase
                     Parameters::TASK => 'Test 4',
                     Parameters::PERIOD => '1 day',
                     Parameters::DAYS => ['Sat', 'Sun',],
-                    Parameters::DAYS_OF_MONTH => NULL,
-                    Parameters::TIME => NULL,
+                    Parameters::DAYS_OF_MONTH => null,
+                    Parameters::TIME => null,
                 ],
                 'test04',
             ],
