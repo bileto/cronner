@@ -10,10 +10,8 @@ use Bileto\Cronner\Tasks\Parameters;
 use CronnerTests\objects\TestObject;
 use Mockery;
 use Nette\Reflection\ClassType;
-use ReflectionException;
 use Tester\Assert;
 use DateTime;
-use Tester\AssertException;
 use Tester\TestCase;
 
 class ParametersParsingTest extends TestCase
@@ -36,11 +34,10 @@ class ParametersParsingTest extends TestCase
      * @dataProvider dataProviderParse
      * @param array $expected
      * @param string $methodName
-     * @throws ReflectionException|AssertException
      */
     public function testParsesTaskSettings(array $expected, string $methodName)
     {
-        if (!(new ClassType($this->object))->hasMethod($methodName)) {
+        if ((new ClassType($this->object))->hasMethod($methodName) === false) {
             Assert::fail('Tested class does not have method "' . $methodName . '".');
 
             return;
@@ -69,7 +66,7 @@ class ParametersParsingTest extends TestCase
             ],
             [
                 [
-                    Parameters::TASK => 'Bileto\Cronner\tests\objects\TestObject - test02',
+                    Parameters::TASK => 'CronnerTests\Objects\TestObject - test02',
                     Parameters::PERIOD => '1 hour',
                     Parameters::DAYS => ['Mon', 'Wed', 'Fri',],
                     Parameters::DAYS_OF_MONTH => null,

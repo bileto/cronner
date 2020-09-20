@@ -19,6 +19,9 @@ use Tester\Assert;
 use Tester\Helpers;
 use Tester\TestCase;
 
+/**
+ * @testCase
+ */
 class CronnerExtensionTest extends TestCase
 {
 
@@ -54,9 +57,9 @@ class CronnerExtensionTest extends TestCase
         $criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
         $runner = $compiler->getContainerBuilder()->getDefinition('cronner.runner');
 
-        Assert::same(FileStorage::class, $timestampStorage->getClass());
-        Assert::same(CriticalSection::class, $criticalSection->getClass());
-        Assert::same(Cronner::class, $runner->getClass());
+        Assert::same(FileStorage::class, $timestampStorage->getType());
+        Assert::same(CriticalSection::class, $criticalSection->getType());
+        Assert::same(Cronner::class, $runner->getType());
     }
 
     public function testCompleteConfiguration()
@@ -75,9 +78,9 @@ class CronnerExtensionTest extends TestCase
         $criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
         $runner = $compiler->getContainerBuilder()->getDefinition('cronner.runner');
 
-        Assert::same(DummyStorage::class, $timestampStorage->getClass());
-        Assert::same(CriticalSection::class, $criticalSection->getClass());
-        Assert::same(Cronner::class, $runner->getClass());
+        Assert::same(DummyStorage::class, $timestampStorage->getType());
+        Assert::same(CriticalSection::class, $criticalSection->getType());
+        Assert::same(Cronner::class, $runner->getType());
     }
 
     public function testRegisterTasks()

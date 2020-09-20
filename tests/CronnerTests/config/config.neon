@@ -2,10 +2,10 @@ extensions:
 	cronner: Bileto\Cronner\DI\CronnerExtension
 
 services:
-	fooService: Bileto\Cronner\tests\objects\FooService
+	fooService: CronnerTests\Objects\FooService
 
 
 cronner:
 	tasks:
-		- Bileto\Cronner\tests\objects\SimpleTestObjectWithDependency(@fooService)
-		- Bileto\Cronner\tests\objects\AnotherSimpleTestObjectWithDependency(@fooService)
+		- CronnerTests\Objects\SimpleTestObjectWithDependency(@fooService)
+		- CronnerTests\Objects\AnotherSimpleTestObjectWithDependency(@fooService)

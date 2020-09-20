@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace CronnerTests\objects;
+namespace CronnerTests\Objects;
 
 use Nette\SmartObject;
 
-class SameTaskNameObject
+class AnotherSimpleTestObject
 {
     use SmartObject;
 
@@ -14,13 +14,6 @@ class SameTaskNameObject
      * @cronner-task Test
      */
     public function test01()
-    {
-    }
-
-    /**
-     * @cronner-task Test
-     */
-    public function test02()
     {
     }
 

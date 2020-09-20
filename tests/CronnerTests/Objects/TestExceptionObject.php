@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CronnerTests\objects;
+namespace CronnerTests\Objects;
 
 use Exception;
 use Nette\SmartObject;
@@ -14,6 +14,7 @@ class TestExceptionObject
     /**
      * @cronner-task
      * @cronner-period 5 minutes
+     * @throws Exception
      */
     public function test01()
     {

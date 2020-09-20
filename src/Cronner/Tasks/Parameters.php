@@ -163,9 +163,8 @@ final class Parameters
 
     public static function getMethodAnnotation(Method $method, string $parameter): ?string
     {
-        /** @var string|null $annotation */
         $annotation = $method->getAnnotation($parameter);
-        return $annotation;
+        return ($annotation === false) ? null : $annotation;
     }
 
 }

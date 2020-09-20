@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CronnerTests\objects;
+namespace CronnerTests\Objects;
 
 class FooService
 {
