@@ -7,7 +7,9 @@ namespace CronnerTests;
 require_once(__DIR__ . "/bootstrap.php");
 
 use Exception;
+use InvalidArgumentException;
 use Mockery;
+use Mockery\MockInterface;
 use Nette\Utils\DateTime;
 use stdClass;
 use Bileto\CriticalSection\ICriticalSection;
@@ -15,11 +17,11 @@ use Bileto\Cronner\Cronner;
 use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
-use CronnerTests\objects\AnotherSimpleTestObject;
-use CronnerTests\objects\NextSimpleTestObject;
-use CronnerTests\objects\SameTaskNameObject;
-use CronnerTests\objects\TestExceptionObject;
-use CronnerTests\objects\TestObject;
+use CronnerTests\Objects\AnotherSimpleTestObject;
+use CronnerTests\Objects\NextSimpleTestObject;
+use CronnerTests\Objects\SameTaskNameObject;
+use CronnerTests\Objects\TestExceptionObject;
+use CronnerTests\Objects\TestObject;
 use Tester\Assert;
 use Tester\TestCase;
 use TypeError;
@@ -30,7 +32,7 @@ class CronnerTest extends TestCase
     /** @var Cronner */
     private $cronner;
 
-    /** @var ITimestampStorage */
+    /** @var ITimestampStorage|MockInterface */
     private $timestampStorage;
 
     protected function setUp()
@@ -78,11 +80,13 @@ class CronnerTest extends TestCase
 
     /**
      * @dataProvider dataProviderSetMaxExecutionTimeError
-     * @throws TypeError
+     * @param $value
      */
     public function testThrowsExceptionOnWrongTypeOfMaxExecutionTime($value)
     {
-        $this->cronner->setMaxExecutionTime($value);
+        Assert::throws(function () use ($value) {
+            $this->cronner->setMaxExecutionTime($value);
+        }, InvalidArgumentException::class);
     }
 
     public function dataProviderSetMaxExecutionTimeError()
@@ -103,11 +107,13 @@ class CronnerTest extends TestCase
 
     /**
      * @dataProvider dataProviderSetMaxExecutionTimeWrongValue
-     * @throws \InvalidArgumentException
+     * @param $value
      */
     public function testThrowsExceptionOnWrongValueOfMaxExecutionTime($value)
     {
-        $this->cronner->setMaxExecutionTime($value);
+        Assert::throws(function () use ($value) {
+            $this->cronner->setMaxExecutionTime($value);
+        }, InvalidArgumentException::class);
     }
 
     public function dataProviderSetMaxExecutionTimeWrongValue()
@@ -124,14 +130,14 @@ class CronnerTest extends TestCase
         Assert::equal(1, $this->cronner->countTaskObjects());
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     public function testThrowsExceptionOnDuplicateTasksObjectAddition()
     {
         $tasks = new stdClass();
         $this->cronner->addTasks($tasks);
-        $this->cronner->addTasks($tasks);
+
+        Assert::throws(function () use ($tasks) {
+            $this->cronner->addTasks($tasks);
+        }, InvalidArgumentException::class);
     }
 
     public function testProcessesAllAddedTasks()
