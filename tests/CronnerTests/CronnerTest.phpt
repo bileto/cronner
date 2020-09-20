@@ -86,7 +86,7 @@ class CronnerTest extends TestCase
     {
         Assert::throws(function () use ($value) {
             $this->cronner->setMaxExecutionTime($value);
-        }, InvalidArgumentException::class);
+        }, TypeError::class);
     }
 
     public function dataProviderSetMaxExecutionTimeError()

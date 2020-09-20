@@ -99,7 +99,7 @@ class Cronner
      * @return Cronner
      * @throws InvalidArgumentException
      */
-    public function setMaxExecutionTime(int $maxExecutionTime = NULL): self
+    public function setMaxExecutionTime(int $maxExecutionTime = null): self
     {
         if ($maxExecutionTime !== null && $maxExecutionTime <= 0) {
             throw new InvalidArgumentException("Max execution time must be NULL or non negative number.");
