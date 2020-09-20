@@ -48,11 +48,12 @@ class FileStorageTest extends TestCase
 
     /**
      * @dataProvider dataProviderSetTaskName
-     * @throws InvalidTaskNameException
      */
     public function testThrowsExceptionOnInvalidTaskName(string $taskName = NULL)
     {
-        $this->storage->setTaskName($taskName);
+        Assert::throws(function () use ($taskName) {
+            $this->storage->setTaskName($taskName);
+        }, InvalidTaskNameException::class);
     }
 
     public function dataProviderSetTaskName(): array
