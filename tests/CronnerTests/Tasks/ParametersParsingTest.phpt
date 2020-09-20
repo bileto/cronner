@@ -7,7 +7,7 @@ namespace CronnerTests\Tasks;
 require_once(__DIR__ . "/../bootstrap.php");
 
 use Bileto\Cronner\Tasks\Parameters;
-use CronnerTests\objects\TestObject;
+use CronnerTests\Objects\TestObject;
 use Mockery;
 use Nette\Reflection\ClassType;
 use Tester\Assert;
