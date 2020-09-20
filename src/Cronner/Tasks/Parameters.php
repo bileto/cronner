@@ -165,7 +165,7 @@ final class Parameters
     {
         /** @var bool|string|null $annotation */
         $annotation = $method->getAnnotation($parameter);
-        return ($annotation === false) ? null : $annotation;
+        return is_bool($annotation) ? null : $annotation;
     }
 
 }
