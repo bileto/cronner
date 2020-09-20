@@ -11,7 +11,7 @@ use Nette\Reflection\Method;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Nette\Utils\DateTime as NetteDateTime;
-use \InvalidArgumentException;
+use InvalidArgumentException;
 
 final class Parameters
 {
@@ -23,11 +23,11 @@ final class Parameters
     const DAYS_OF_MONTH = 'cronner-days-of-month';
     const TIME = 'cronner-time';
 
-    /** @var array */
+    /** @var array<mixed> */
     private $values;
 
     /**
-     * @param array $values
+     * @param array<mixed> $values
      */
     public function __construct(array $values)
     {
@@ -129,7 +129,7 @@ final class Parameters
      * Parse cronner values from annotations.
      * @param Method $method
      * @param DateTime $now
-     * @return array
+     * @return array<mixed>
      */
     public static function parseParameters(Method $method, DateTime $now): array
     {
@@ -143,8 +143,8 @@ final class Parameters
         $taskAnnotation = static::getMethodAnnotation($method, Parameters::TASK);
 
         return [
-            static::TASK => is_object($taskAnnotation)
-                ? Parser::parseName($taskAnnotation->__toString())
+            static::TASK => is_string($taskAnnotation)
+                ? Parser::parseName($taskAnnotation)
                 : $taskName,
             static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
                 ? Parser::parsePeriod(static::getMethodAnnotation($method, Parameters::PERIOD))
@@ -161,9 +161,9 @@ final class Parameters
         ];
     }
 
-    public static function getMethodAnnotation(Method $method, string $parameter): string
+    public static function getMethodAnnotation(Method $method, string $parameter): ?string
     {
-        /** @var string $annotation */
+        /** @var string|null $annotation */
         $annotation = $method->getAnnotation($parameter);
         return $annotation;
     }

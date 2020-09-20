@@ -17,7 +17,7 @@ class DummyStorage implements ITimestampStorage
      *
      * @param string|null $taskName
      */
-    public function setTaskName(string $taskName = NULL)
+    public function setTaskName(string $taskName = null): void
     {
         // Dummy
     }
@@ -27,7 +27,7 @@ class DummyStorage implements ITimestampStorage
      *
      * @param DateTimeInterface $now
      */
-    public function saveRunTime(DateTimeInterface $now)
+    public function saveRunTime(DateTimeInterface $now): void
     {
         // Dummy
     }
@@ -37,9 +37,9 @@ class DummyStorage implements ITimestampStorage
      *
      * @return DateTimeInterface|null
      */
-    public function loadLastRunTime()
+    public function loadLastRunTime(): ?DateTimeInterface
     {
-        return NULL; // Dummy
+        return null; // Dummy
     }
 
 }

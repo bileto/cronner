@@ -42,7 +42,7 @@ class FileStorage implements ITimestampStorage
      *
      * @param string|null $taskName
      */
-    public function setTaskName(string $taskName = null)
+    public function setTaskName(string $taskName = null): void
     {
         if ($taskName !== null && Strings::length($taskName) <= 0) {
             throw new InvalidTaskNameException('Given task name is not valid.');
@@ -55,7 +55,7 @@ class FileStorage implements ITimestampStorage
      *
      * @param DateTimeInterface $now
      */
-    public function saveRunTime(DateTimeInterface $now)
+    public function saveRunTime(DateTimeInterface $now): void
     {
         $filepath = $this->buildFilePath();
         file_put_contents($filepath, $now->format(self::DATETIME_FORMAT));
@@ -66,7 +66,7 @@ class FileStorage implements ITimestampStorage
      *
      * @return DateTimeInterface|null
      */
-    public function loadLastRunTime()
+    public function loadLastRunTime(): ?DateTimeInterface
     {
         $date = null;
         $filepath = $this->buildFilePath();

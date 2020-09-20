@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bileto\Cronner\Tasks;
 
 use DateTime;
-use DateTimeInterface;
 use Nette\Reflection\Method;
 use Nette\SmartObject;
 use ReflectionClass;
@@ -28,7 +27,7 @@ final class Task
     /** @var Parameters|null */
     private $parameters = null;
 
-    /** @var DateTimeInterface|null */
+    /** @var DateTime|null */
     private $now = null;
 
     /**
@@ -38,7 +37,7 @@ final class Task
      * @param Method $method
      * @param ITimestampStorage $timestampStorage
      */
-    public function __construct($object, Method $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = NULL)
+    public function __construct($object, Method $method, ITimestampStorage $timestampStorage, DateTime $now = null)
     {
         $this->object = $object;
         $this->method = $method;
@@ -69,10 +68,10 @@ final class Task
 
     /**
      * Returns True if given parameters should be run.
-     * @param DateTimeInterface|null $now
+     * @param DateTime|null $now
      * @return bool
      */
-    public function shouldBeRun(DateTimeInterface $now = NULL): bool
+    public function shouldBeRun(DateTime $now = null): bool
     {
         if ($now === null) {
             $now = new DateTime();
@@ -95,7 +94,7 @@ final class Task
         return $this->getParameters()->getName();
     }
 
-    public function __invoke(DateTimeInterface $now)
+    public function __invoke(DateTime $now): void
     {
         $this->method->invoke($this->object);
         $this->timestampStorage->setTaskName($this->getName());
@@ -116,7 +115,7 @@ final class Task
     }
 
 
-    public function setNow($now)
+    public function setNow(?DateTime $now): void
     {
         if ($now === null) {
             $now = new DateTime();
@@ -125,7 +124,7 @@ final class Task
         $this->now = $now;
     }
 
-    public function getNow()
+    public function getNow(): DateTime
     {
         if ($this->now === null) {
             $this->now = new DateTime();

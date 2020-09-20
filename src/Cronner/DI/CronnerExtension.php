@@ -29,7 +29,7 @@ class CronnerExtension extends CompilerExtension
     const DEFAULT_STORAGE_CLASS = FileStorage::class;
     const DEFAULT_STORAGE_DIRECTORY = '%tempDir%/cronner';
 
-    /** @var array */
+    /** @var array<mixed> */
     public $defaults = [
         'timestampStorage' => null,
         'maxExecutionTime' => null,
@@ -134,13 +134,22 @@ class CronnerExtension extends CompilerExtension
         }
     }
 
-    public static function register(Configurator $configurator)
+    public static function register(Configurator $configurator): void
     {
         $configurator->onCompile[] = function (Configurator $config, Compiler $compiler) {
             $compiler->addExtension('cronner', new CronnerExtension());
         };
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param string $serviceName
+     * @param mixed $config
+     * @param string $fallbackType
+     * @param string $fallbackClass
+     * @param array<mixed> $fallbackArguments
+     * @return ServiceDefinition
+     */
     private function createServiceByConfig(
         ContainerBuilder $container,
         string $serviceName,

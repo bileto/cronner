@@ -6,7 +6,6 @@ namespace Bileto\Cronner;
 
 use Exception;
 use Nette\Reflection\ClassType;
-use DateTimeInterface;
 use DateTime;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
@@ -15,7 +14,7 @@ use ReflectionMethod;
 use Bileto\CriticalSection\ICriticalSection;
 use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
 use InvalidArgumentException;
-use Bileto\Cronner\Exceptions\RuntimeException;
+use RuntimeException;
 use Bileto\Cronner\Tasks\Parameters;
 use Bileto\Cronner\Tasks\Task;
 use Tracy\Debugger;
@@ -166,10 +165,10 @@ class Cronner
 
     /**
      * Runs all cron tasks.
-     * @param DateTimeInterface|null $now
+     * @param DateTime|null $now
      * @throws Exception
      */
-    public function run(DateTimeInterface $now = null)
+    public function run(DateTime $now = null): void
     {
         if ($now === null) {
             $now = new DateTime();

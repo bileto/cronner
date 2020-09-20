@@ -319,7 +319,7 @@ class Parser
      * Returns array structure with given times.
      * @param string $from
      * @param string|null $to
-     * @return array
+     * @return array<?string>
      */
     private static function timePartsToArray(string $from, string $to = null): array
     {
