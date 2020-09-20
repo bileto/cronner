@@ -1,10 +1,15 @@
 {
-	"name": "stekycz/cronner",
+	"name": "bileto/cronner",
 	"type": "nette-addon",
 	"description": "Simple tool which helps with maintenance of cron tasks.",
 	"keywords": ["nette", "cron", "manager", "task"],
 	"license": "MIT",
 	"authors": [
+		{
+			"name": "Josef Petrák",
+			"email": "me@jspetrak.name",
+			"role": "Developer"
+		},
 		{
 			"name": "Martin Štekl",
 			"email": "martin.stekl@gmail.com",
@@ -35,6 +40,9 @@
 	"suggest": {
 		"kdyby/events": "Events for Nette Framework",
 		"kdyby/console": "Symfony Console integration for Kdyby components"
+	},
+	"replace": {
+		"stekycz/cronner": "v2.2.0"
 	},
 	"autoload": {
 		"psr-4": {
