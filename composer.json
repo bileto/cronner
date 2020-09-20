@@ -17,9 +17,9 @@
 		}
 	],
 	"support": {
-		"email": "martin.stekl@gmail.com",
-		"issues": "https://github.com/stekycz/Cronner/issues",
-		"source": "https://github.com/stekycz/Cronner"
+		"email": "development@bileto.com",
+		"issues": "https://github.com/bileto/cronner/issues",
+		"source": "https://github.com/bileto/cronner"
 	},
 	"require": {
 		"php": ">=7.1.0",
@@ -38,8 +38,6 @@
 		"phpstan/phpstan": "^0.8"
 	},
 	"suggest": {
-		"kdyby/events": "Events for Nette Framework",
-		"kdyby/console": "Symfony Console integration for Kdyby components"
 	},
 	"replace": {
 		"stekycz/cronner": "v2.2.0"
