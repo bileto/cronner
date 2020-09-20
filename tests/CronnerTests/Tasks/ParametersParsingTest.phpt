@@ -7,7 +7,7 @@ namespace CronnerTests\Tasks;
 require_once(__DIR__ . "/../bootstrap.php");
 
 use Bileto\Cronner\Tasks\Parameters;
-use CronnerTests\Objects\TestObject;
+use CronnerTests\TestObjects\TestObject;
 use Mockery;
 use Nette\Reflection\ClassType;
 use Tester\Assert;
@@ -66,7 +66,7 @@ class ParametersParsingTest extends TestCase
             ],
             [
                 [
-                    Parameters::TASK => 'CronnerTests\Objects\TestObject - test02',
+                    Parameters::TASK => 'CronnerTests\TestObjects\TestObject - test02',
                     Parameters::PERIOD => '1 hour',
                     Parameters::DAYS => ['Mon', 'Wed', 'Fri',],
                     Parameters::DAYS_OF_MONTH => null,

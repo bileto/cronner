@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace CronnerTests\Objects;
+namespace CronnerTests\TestObjects;
 
 use Nette\SmartObject;
 
-class AnotherSimpleTestObject
+class NextSimpleTestObject
 {
     use SmartObject;
 

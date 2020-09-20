@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CronnerTests\Objects;
+namespace CronnerTests\TestObjects;
 
-class AnotherSimpleTestObjectWithDependency
+class SimpleTestObjectWithDependency
 {
 
     public function __construct(FooService $service)
@@ -18,3 +18,4 @@ class AnotherSimpleTestObjectWithDependency
     {
     }
 }
+

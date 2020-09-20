@@ -12,7 +12,7 @@ use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
-use CronnerTests\Objects\TestObject;
+use CronnerTests\TestObjects\TestObject;
 use Nette\Utils\DateTime;
 use Tester\Assert;
 use Tester\TestCase;

@@ -6,7 +6,6 @@ namespace CronnerTests\Tasks;
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-use Bileto\Cronner\Exceptions\InvalidParameterException;
 use InvalidArgumentException;
 use stdClass;
 use Bileto\Cronner\Tasks\Parser;
@@ -67,11 +66,12 @@ class ParserTest extends TestCase
     /**
      * @dataProvider dataProviderParsePeriodError
      * @param string $annotation
-     * @throws InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongPeriodDefinition(string $annotation)
     {
-        Parser::parsePeriod($annotation);
+        Assert::throws(function () use ($annotation) {
+            Parser::parsePeriod($annotation);
+        }, InvalidArgumentException::class);
     }
 
     public function dataProviderParsePeriodError(): array
@@ -131,11 +131,12 @@ class ParserTest extends TestCase
     /**
      * @dataProvider dataProviderParseDaysError
      * @param string $annotation
-     * @throws InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongDaysDefinition(string $annotation)
     {
-        Parser::parseDays($annotation);
+        Assert::throws(function () use ($annotation) {
+            Parser::parseDays($annotation);
+        }, InvalidArgumentException::class);
     }
 
     public function dataProviderParseDaysError(): array
@@ -359,11 +360,12 @@ class ParserTest extends TestCase
     /**
      * @dataProvider dataProviderParseTimesError
      * @param string $annotation
-     * @throws InvalidArgumentException
      */
     public function testThrowsExceptionOnWrongTimesDefinition(string $annotation)
     {
-        Parser::parseTimes($annotation);
+        Assert::throws(function () use ($annotation) {
+            Parser::parseTimes($annotation);
+        }, InvalidArgumentException::class);
     }
 
     public function dataProviderParseTimesError(): array

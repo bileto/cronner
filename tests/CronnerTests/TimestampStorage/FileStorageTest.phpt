@@ -48,6 +48,7 @@ class FileStorageTest extends TestCase
 
     /**
      * @dataProvider dataProviderSetTaskName
+     * @param string|null $taskName
      */
     public function testThrowsExceptionOnInvalidTaskName(string $taskName = NULL)
     {

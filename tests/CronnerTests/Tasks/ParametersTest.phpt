@@ -215,7 +215,6 @@ class ParametersTest extends TestCase
      * @param bool $expected
      * @param array $parameters
      * @param string $now
-     * @throws Exception
      */
     public function testDetectsAllowedTimeRange(bool $expected, array $parameters, string $now)
     {
