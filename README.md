@@ -17,22 +17,26 @@ It requires **PHP >= 7.1.0** and **Nette Framework >= 2.4.0**.
 It is very simple to use it because configuration is only in method annotations. Example class with tasks follows.
 
 ```php
-class CronTasks {
+class CronTasks
+{
     /**
      * @cronner-task E-mail sending
      * @cronner-period 1 day
      * @cronner-days working days
      * @cronner-time 23:30 - 05:00
      */
-    public function sendEmails() {
+    public function sendEmails(): void
+    {
         // Code which sends all your e-mails
     }
+
 
     /**
      * @cronner-task Important data replication
      * @cronner-period 3 hours
      */
-    public function replicateImportantData() {
+    public function replicateImportantData(): void
+    {
         // Replication code
     }
 }
@@ -72,14 +76,17 @@ automatically. However you can still add new task objects by your own using `add
 Then you can use it very easily in `Presenter`
 
 ```php
-class CronPresenter extends \Nette\Application\UI\Presenter {
+class CronPresenter extends \Nette\Application\UI\Presenter
+{
     /**
      * @var \stekycz\Cronner\Cronner
      * @inject
      */
     public $cronner;
 
-    public function actionCron() {
+    
+    public function actionCron(): void
+    {
         $this->cronner->run();
     }
 }

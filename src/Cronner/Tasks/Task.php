@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner\Tasks;
 
+
 use DateTime;
 use DateTimeInterface;
 use Nette\Reflection\Method;
@@ -14,39 +15,28 @@ final class Task
 {
 	use \Nette\SmartObject;
 
-	/**
-	 * @var object
-	 */
+	/** @var object */
 	private $object;
 
-	/**
-	 * @var Method
-	 */
+	/** @var Method */
 	private $method;
 
-	/**
-	 * @var ITimestampStorage
-	 */
+	/** @var ITimestampStorage */
 	private $timestampStorage;
 
-	/**
-	 * @var Parameters|null
-	 */
-	private $parameters = NULL;
+	/** @var Parameters|null */
+	private $parameters;
 
-	/**
-	 * @var DateTimeInterface|null
-	 */
-	private $now = NULL;
+	/** @var DateTimeInterface|null */
+	private $now;
+
 
 	/**
 	 * Creates instance of one task.
 	 *
 	 * @param object $object
-	 * @param Method $method
-	 * @param ITimestampStorage $timestampStorage
 	 */
-	public function __construct($object, Method $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = NULL)
+	public function __construct($object, Method $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = null)
 	{
 		$this->object = $object;
 		$this->method = $method;
@@ -54,35 +44,39 @@ final class Task
 		$this->setNow($now);
 	}
 
-	public function getObjectName() : string
+
+	public function getObjectName(): string
 	{
 		return get_class($this->object);
 	}
 
-	public function getMethodReflection() : Method
+
+	public function getMethodReflection(): Method
 	{
 		return $this->method;
 	}
 
-	public function getObjectPath() : string
+
+	public function getObjectPath(): string
 	{
 		$reflection = new ReflectionClass($this->object);
 
 		return $reflection->getFileName();
 	}
 
+
 	/**
 	 * Returns True if given parameters should be run.
 	 */
-	public function shouldBeRun(DateTimeInterface $now = NULL) : bool
+	public function shouldBeRun(DateTimeInterface $now = null): bool
 	{
-		if ($now === NULL) {
+		if ($now === null) {
 			$now = new DateTime();
 		}
 
 		$parameters = $this->getParameters();
 		if (!$parameters->isTask()) {
-			return FALSE;
+			return false;
 		}
 		$this->timestampStorage->setTaskName($parameters->getName());
 
@@ -92,10 +86,12 @@ final class Task
 			&& $parameters->isInDayOfMonth($now);
 	}
 
-	public function getName() : string
+
+	public function getName(): string
 	{
 		return $this->getParameters()->getName();
 	}
+
 
 	public function __invoke(DateTimeInterface $now)
 	{
@@ -105,34 +101,36 @@ final class Task
 		$this->timestampStorage->setTaskName();
 	}
 
-	/**
-	 * Returns instance of parsed parameters.
-	 */
-	private function getParameters() : Parameters
+
+	public function getNow()
 	{
-		if ($this->parameters === NULL) {
-			$this->parameters = new Parameters(Parameters::parseParameters($this->method, $this->getNow()));
+		if ($this->now === null) {
+			$this->now = new \DateTime();
 		}
 
-		return $this->parameters;
+		return $this->now;
 	}
 
 
-	public function setNow($now)
+	public function setNow(?DateTimeInterface $now): void
 	{
-		if ($now === NULL) {
-			$now = new DateTime();
+		if ($now === null) {
+			$now = new \DateTime();
 		}
 
 		$this->now = $now;
 	}
 
-	public function getNow()
+
+	/**
+	 * Returns instance of parsed parameters.
+	 */
+	private function getParameters(): Parameters
 	{
-		if ($this->now === NULL) {
-			$this->now = new DateTime();
+		if ($this->parameters === null) {
+			$this->parameters = new Parameters(Parameters::parseParameters($this->method, $this->getNow()));
 		}
-		return $this->now;
+
+		return $this->parameters;
 	}
 }
-

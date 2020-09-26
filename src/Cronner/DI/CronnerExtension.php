@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace stekycz\Cronner\DI;
 
+
+use Bileto\CriticalSection\CriticalSection;
+use Bileto\CriticalSection\Driver\FileDriver;
+use Bileto\CriticalSection\Driver\IDriver;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
@@ -13,33 +17,39 @@ use Nette\DI\Statement;
 use Nette\PhpGenerator\ClassType;
 use Nette\Utils\Json;
 use Nette\Utils\Validators;
-use Bileto\CriticalSection\CriticalSection;
-use Bileto\CriticalSection\Driver\FileDriver;
-use Bileto\CriticalSection\Driver\IDriver;
 use stekycz\Cronner\Bar\Tasks;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\ITimestampStorage;
 use stekycz\Cronner\TimestampStorage\FileStorage;
 
-class CronnerExtension extends CompilerExtension
+final class CronnerExtension extends CompilerExtension
 {
-
 	const TASKS_TAG = 'cronner.tasks';
 
 	const DEFAULT_STORAGE_CLASS = FileStorage::class;
+
 	const DEFAULT_STORAGE_DIRECTORY = '%tempDir%/cronner';
 
 	/**
 	 * @var array
 	 */
 	public $defaults = [
-		'timestampStorage' => NULL,
-		'maxExecutionTime' => NULL,
+		'timestampStorage' => null,
+		'maxExecutionTime' => null,
 		'criticalSectionTempDir' => "%tempDir%/critical-section",
-		'criticalSectionDriver' => NULL,
+		'criticalSectionDriver' => null,
 		'tasks' => [],
 		'bar' => '%debugMode%',
 	];
+
+
+	public static function register(Configurator $configurator)
+	{
+		$configurator->onCompile[] = function (Configurator $config, Compiler $compiler) {
+			$compiler->addExtension('cronner', new CronnerExtension());
+		};
+	}
+
 
 	public function loadConfiguration()
 	{
@@ -74,18 +84,18 @@ class CronnerExtension extends CompilerExtension
 		);
 
 		$criticalSection = $container->addDefinition($this->prefix("criticalSection"))
-			 ->setClass(CriticalSection::class, [
-			 	$criticalSectionDriver,
-			 ])
-			 ->setAutowired(FALSE)
-			 ->setInject(FALSE);
+			->setClass(CriticalSection::class, [
+				$criticalSectionDriver,
+			])
+			->setAutowired(false)
+			->setInject(false);
 
 		$runner = $container->addDefinition($this->prefix('runner'))
 			->setClass(Cronner::class, [
 				$storage,
 				$criticalSection,
 				$config['maxExecutionTime'],
-				array_key_exists('debugMode', $config) ? !$config['debugMode'] : TRUE,
+				array_key_exists('debugMode', $config) ? !$config['debugMode'] : true,
 			]);
 
 		Validators::assert($config['tasks'], 'array');
@@ -99,8 +109,8 @@ class CronnerExtension extends CompilerExtension
 				$def->setClass($def->factory->entity);
 			}
 
-			$def->setAutowired(FALSE);
-			$def->setInject(FALSE);
+			$def->setAutowired(false);
+			$def->setInject(false);
 			$def->addTag(self::TASKS_TAG);
 		}
 
@@ -113,6 +123,7 @@ class CronnerExtension extends CompilerExtension
 		}
 	}
 
+
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();
@@ -122,6 +133,7 @@ class CronnerExtension extends CompilerExtension
 			$runner->addSetup('addTasks', ['@' . $serviceName]);
 		}
 	}
+
 
 	public function afterCompile(ClassType $class)
 	{
@@ -136,21 +148,8 @@ class CronnerExtension extends CompilerExtension
 		}
 	}
 
-	public static function register(Configurator $configurator)
-	{
-		$configurator->onCompile[] = function (Configurator $config, Compiler $compiler) {
-			$compiler->addExtension('cronner', new CronnerExtension());
-		};
-	}
 
-	private function createServiceByConfig(
-		ContainerBuilder $container,
-		string $serviceName,
-		$config,
-		string $fallbackType,
-		string $fallbackClass,
-		array $fallbackArguments
-	) : ServiceDefinition
+	private function createServiceByConfig(ContainerBuilder $container, string $serviceName, $config, string $fallbackType, string $fallbackClass, array $fallbackArguments): ServiceDefinition
 	{
 		if (is_string($config) && $container->getServiceName($config)) {
 			$definition = $container->addDefinition($serviceName)
@@ -170,8 +169,7 @@ class CronnerExtension extends CompilerExtension
 		}
 
 		return $definition
-			->setAutowired(FALSE)
-			->setInject(FALSE);
+			->setAutowired(false)
+			->setInject(false);
 	}
-
 }
