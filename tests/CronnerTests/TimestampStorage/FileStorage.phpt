@@ -36,7 +36,10 @@ class FileStorageTest extends \TestCase
 	protected function tearDown()
 	{
 		parent::tearDown();
-		FileSystem::delete(static::getTempDirPath());
+		try {
+			FileSystem::delete(static::getTempDirPath());
+		} catch (Nette\IOException $e) {
+		}
 	}
 
 	private static function getTempDirPath()
