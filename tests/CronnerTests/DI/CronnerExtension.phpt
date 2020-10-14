@@ -43,6 +43,7 @@ class CronnerExtensionTest extends \TestCase
 	public function testCompleteConfiguration()
 	{
 		$compiler = $this->compiler;
+		$compiler->getContainerBuilder()->addDefinition('cronner.dummyStorage')->setFactory(DummyStorage::class);
 		$compiler->addConfig([
 			'cronner' => [
 				'timestampStorage' => DummyStorage::class,
