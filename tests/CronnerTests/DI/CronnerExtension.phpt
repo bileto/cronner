@@ -10,7 +10,6 @@ namespace stekycz\Cronner\tests\DI;
 use Bileto\CriticalSection\CriticalSection;
 use Nette\Configurator;
 use Nette\DI\Compiler;
-use Nette\DI\Statement;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\DI\CronnerExtension;
 use stekycz\Cronner\TimestampStorage\DummyStorage;
@@ -35,9 +34,9 @@ class CronnerExtensionTest extends \TestCase
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
 		$runner = $compiler->getContainerBuilder()->getDefinition('cronner.runner');
 
-		Assert::same(FileStorage::class, $timestampStorage->getClass());
-		Assert::same(CriticalSection::class, $criticalSection->getClass());
-		Assert::same(Cronner::class, $runner->getClass());
+		Assert::same(FileStorage::class, $timestampStorage->getType());
+		Assert::same(CriticalSection::class, $criticalSection->getType());
+		Assert::same(Cronner::class, $runner->getType());
 	}
 
 
@@ -46,9 +45,9 @@ class CronnerExtensionTest extends \TestCase
 		$compiler = $this->compiler;
 		$compiler->addConfig([
 			'cronner' => [
-				'timestampStorage' => new Statement(DummyStorage::class),
+				'timestampStorage' => DummyStorage::class,
 				'maxExecutionTime' => 120,
-				'criticalSectionTempDir' => '%tempDir%/cronner',
+				'criticalSectionTempDir' => __DIR__ . '../../tmp/cronner',
 			],
 		]);
 		$compiler->compile();
@@ -57,9 +56,9 @@ class CronnerExtensionTest extends \TestCase
 		$criticalSection = $compiler->getContainerBuilder()->getDefinition('cronner.criticalSection');
 		$runner = $compiler->getContainerBuilder()->getDefinition('cronner.runner');
 
-		Assert::same(DummyStorage::class, $timestampStorage->getClass());
-		Assert::same(CriticalSection::class, $criticalSection->getClass());
-		Assert::same(Cronner::class, $runner->getClass());
+		Assert::same(DummyStorage::class, $timestampStorage->getType());
+		Assert::same(CriticalSection::class, $criticalSection->getType());
+		Assert::same(Cronner::class, $runner->getType());
 	}
 
 

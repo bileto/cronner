@@ -55,7 +55,7 @@ However you can specify service manually if it is not autowireable.
 
 ```neon
 cronner:
-    timestampStorage: @myCoolTimestampStorage
+    timestampStorage: myCoolTimestampStorage
 ```
 
 Or you can change the directory for default storage.
