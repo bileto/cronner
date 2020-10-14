@@ -16,6 +16,7 @@ use Nette\DI\Definitions\Definition;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Definitions\Statement;
 use Nette\DI\Extensions\InjectExtension;
+use Nette\DI\Helpers;
 use Nette\PhpGenerator\ClassType;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
@@ -95,7 +96,7 @@ final class CronnerExtension extends CompilerExtension
 
 		foreach ($config['tasks'] ?? [] as $task) {
 			$def = $builder->addDefinition($this->prefix('task.' . md5(is_string($task) ? $task : $task->getEntity() . '-' . json_encode($task))));
-			[$def->factory] = Compiler::filterArguments([
+			[$def->factory] = Helpers::filterArguments([
 				is_string($task) ? new Statement($task) : $task,
 			]);
 
@@ -144,7 +145,7 @@ final class CronnerExtension extends CompilerExtension
 
 	private function createServiceByConfig(ContainerBuilder $container, string $serviceName, $config, string $fallbackType, string $fallbackClass, array $fallbackArguments): Definition
 	{
-		if (is_string($config) && $container->getServiceName($config)) {
+		if (is_string($config) && $container->getByType($config) !== null) {
 			$definition = $container->addDefinition($serviceName)
 				->setFactory($config);
 		} elseif ($config instanceof Statement) {
