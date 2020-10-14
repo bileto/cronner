@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace stekycz\Cronner\Tasks;
 
 
-use DateTime;
 use DateTimeInterface;
 use Nette\Reflection\Method;
-use ReflectionClass;
 use stekycz\Cronner\ITimestampStorage;
 
 final class Task
@@ -27,7 +25,7 @@ final class Task
 	/** @var Parameters|null */
 	private $parameters;
 
-	/** @var DateTimeInterface|null */
+	/** @var \DateTimeInterface|null */
 	private $now;
 
 
@@ -59,9 +57,11 @@ final class Task
 
 	public function getObjectPath(): string
 	{
-		$reflection = new ReflectionClass($this->object);
-
-		return $reflection->getFileName();
+		try {
+			return (new \ReflectionClass($this->object))->getFileName();
+		} catch (\Throwable $e) {
+			throw new \RuntimeException('Object "' . \get_class($this->object) . '" is broken: ' . $e->getMessage(), $e->getCode(), $e);
+		}
 	}
 
 
@@ -71,7 +71,11 @@ final class Task
 	public function shouldBeRun(DateTimeInterface $now = null): bool
 	{
 		if ($now === null) {
-			$now = new DateTime();
+			try {
+				$now = new \DateTime('now');
+			} catch (\Throwable $e) {
+				throw new \RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
+			}
 		}
 
 		$parameters = $this->getParameters();
@@ -93,7 +97,7 @@ final class Task
 	}
 
 
-	public function __invoke(DateTimeInterface $now)
+	public function __invoke(\DateTimeInterface $now)
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getName());
@@ -102,20 +106,28 @@ final class Task
 	}
 
 
-	public function getNow()
+	public function getNow(): \DateTimeInterface
 	{
 		if ($this->now === null) {
-			$this->now = new \DateTime();
+			try {
+				$this->now = new \DateTime('now');
+			} catch (\Throwable $e) {
+				throw new \RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
+			}
 		}
 
 		return $this->now;
 	}
 
 
-	public function setNow(?DateTimeInterface $now): void
+	public function setNow(?\DateTimeInterface $now): void
 	{
 		if ($now === null) {
-			$now = new \DateTime();
+			try {
+				$now = new \DateTime('now');
+			} catch (\Throwable $e) {
+				throw new \RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
+			}
 		}
 
 		$this->now = $now;

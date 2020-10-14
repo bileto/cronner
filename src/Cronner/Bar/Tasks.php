@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace stekycz\Cronner\Bar;
 
 
-use Nette\SmartObject;
 use stekycz\Cronner\Cronner;
 use Tracy\IBarPanel;
 
 final class Tasks implements IBarPanel
 {
-	use SmartObject;
 
 	/** @var Cronner */
 	private $cronner;

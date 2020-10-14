@@ -9,7 +9,7 @@ use DateTimeInterface;
 use Nette\SmartObject;
 use stekycz\Cronner\ITimestampStorage;
 
-class DummyStorage implements ITimestampStorage
+final class DummyStorage implements ITimestampStorage
 {
 	use SmartObject;
 

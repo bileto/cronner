@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace stekycz\Cronner\Tasks;
 
 
-use Nette\SmartObject;
 use Nette\Utils\Strings;
 use stekycz\Cronner\Exceptions\InvalidParameterException;
 
-class Parser
+final class Parser
 {
-	use SmartObject;
-
-
 	/**
 	 * Parses name of cron task.
 	 */
@@ -38,7 +34,8 @@ class Parser
 		if (Strings::length($annotation)) {
 			if (strtotime('+ ' . $annotation) === false) {
 				throw new InvalidParameterException(
-					"Given period parameter '" . $annotation . "' must be valid for strtotime() with '+' sign as its prefix (added by Cronner automatically)."
+					'Given period parameter "' . $annotation . '" must be valid for strtotime() '
+					. 'with "+" (plus) sign as its prefix (added by Cronner automatically).'
 				);
 			}
 			$period = $annotation;
@@ -49,10 +46,8 @@ class Parser
 
 
 	/**
-	 * Parses allowed days for cron task. If annotation is invalid
-	 * throws exception.
+	 * Parses allowed days for cron task. If annotation is invalid throws exception.
 	 *
-	 * @param string $annotation
 	 * @return string[]|null
 	 * @throws InvalidParameterException
 	 */
@@ -89,8 +84,7 @@ class Parser
 		$days = null;
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
-			$days = static::splitMultipleValues($annotation);
-			$days = static::expandDaysOfMonthRange($days);
+			$days = static::expandDaysOfMonthRange(static::splitMultipleValues($annotation));
 
 			$dayInMonthCount = cal_days_in_month(CAL_GREGORIAN, (int) $now->format('n'), (int) $now->format('Y'));
 
