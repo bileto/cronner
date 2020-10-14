@@ -6,10 +6,11 @@
 
 namespace stekycz\Cronner\tests\DI;
 
+
+use Bileto\CriticalSection\CriticalSection;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\Statement;
-use Bileto\CriticalSection\CriticalSection;
 use stekycz\Cronner\Cronner;
 use stekycz\Cronner\DI\CronnerExtension;
 use stekycz\Cronner\TimestampStorage\DummyStorage;
@@ -21,26 +22,9 @@ require_once(__DIR__ . "/../bootstrap.php");
 class CronnerExtensionTest extends \TestCase
 {
 
-	/**
-	 * @var Compiler
-	 */
+	/** @var Compiler */
 	private $compiler;
 
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->compiler = new Compiler();
-		$this->compiler->addConfig([
-			'parameters' => [
-				'appDir' => __DIR__ . '/../..',
-				'wwwDir' => __DIR__ . '/../..',
-				'tempDir' => TEMP_DIR,
-				'debugMode' => FALSE,
-				'productionMode' => TRUE,
-			],
-		]);
-		$this->compiler->addExtension('cronner', new CronnerExtension());
-	}
 
 	public function testDefaultConfiguration()
 	{
@@ -55,6 +39,7 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same(CriticalSection::class, $criticalSection->getClass());
 		Assert::same(Cronner::class, $runner->getClass());
 	}
+
 
 	public function testCompleteConfiguration()
 	{
@@ -77,6 +62,7 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same(Cronner::class, $runner->getClass());
 	}
 
+
 	public function testRegisterTasks()
 	{
 		\Tester\Helpers::purge(__DIR__ . '/../../tmp/');
@@ -91,6 +77,22 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same(2, count($cronner->getTasks()));
 	}
 
+
+	protected function setUp()
+	{
+		parent::setUp();
+		$this->compiler = new Compiler();
+		$this->compiler->addConfig([
+			'parameters' => [
+				'appDir' => __DIR__ . '/../..',
+				'wwwDir' => __DIR__ . '/../..',
+				'tempDir' => TEMP_DIR,
+				'debugMode' => false,
+				'productionMode' => true,
+			],
+		]);
+		$this->compiler->addExtension('cronner', new CronnerExtension());
+	}
 }
 
 run(new CronnerExtensionTest());
