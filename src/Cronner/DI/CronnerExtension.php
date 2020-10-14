@@ -108,7 +108,7 @@ final class CronnerExtension extends CompilerExtension
 			$def->addTag(self::TASKS_TAG);
 		}
 
-		if ($config['bar'] && class_exists('Tracy\Bar')) {
+		if ($config['bar'] ?? false) {
 			$builder->addDefinition($this->prefix('bar'))
 				->setFactory(Tasks::class, [
 					$this->prefix('@runner'),
