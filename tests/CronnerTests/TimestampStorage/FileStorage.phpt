@@ -8,16 +8,16 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\tests\TimestampStorage;
 
+require_once(__DIR__ . "/../bootstrap.php");
 
 use DateTime;
 use Nette;
 use Nette\Utils\FileSystem;
 use Bileto\Cronner\TimestampStorage\FileStorage;
+use TestCase;
 use Tester\Assert;
 
-require_once(__DIR__ . "/../bootstrap.php");
-
-class FileStorageTest extends \TestCase
+class FileStorageTest extends TestCase
 {
 
 	/** @var FileStorage */
@@ -29,7 +29,6 @@ class FileStorageTest extends \TestCase
 		return TEMP_DIR . '/cronner';
 	}
 
-
 	public function testIsAbleToSetTaskName()
 	{
 		$this->storage->setTaskName('Test task 1');
@@ -37,7 +36,6 @@ class FileStorageTest extends \TestCase
 		$this->storage->setTaskName();
 		Assert::$counter++; // Hack for nette tester
 	}
-
 
 	/**
 	 * @dataProvider dataProviderSetTaskName
@@ -48,14 +46,12 @@ class FileStorageTest extends \TestCase
 		$this->storage->setTaskName($taskName);
 	}
 
-
 	public function dataProviderSetTaskName(): array
 	{
 		return [
 			[''],
 		];
 	}
-
 
 	/**
 	 * Tests that saving do not throws any exception.
@@ -78,7 +74,6 @@ class FileStorageTest extends \TestCase
 		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
-
 	public function dataProviderSaveRunTime(): array
 	{
 		return [
@@ -87,7 +82,6 @@ class FileStorageTest extends \TestCase
 			[new Nette\Utils\DateTime('2013-01-30 18:31:01')],
 		];
 	}
-
 
 	public function testSavesLastRunTimeByTaskName()
 	{
@@ -116,14 +110,12 @@ class FileStorageTest extends \TestCase
 		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
-
 	protected function setUp()
 	{
 		parent::setUp();
 		FileSystem::createDir(static::getTempDirPath());
 		$this->storage = new FileStorage(static::getTempDirPath());
 	}
-
 
 	protected function tearDown()
 	{
@@ -135,4 +127,4 @@ class FileStorageTest extends \TestCase
 	}
 }
 
-run(new FileStorageTest());
+(new FileStorageTest())->run();

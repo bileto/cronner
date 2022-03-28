@@ -8,14 +8,15 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\tests\Tasks;
 
+require_once(__DIR__ . "/../bootstrap.php");
 
 use stdClass;
 use Bileto\Cronner\Tasks\Parser;
+use TestCase;
 use Tester\Assert;
 
-require_once(__DIR__ . "/../bootstrap.php");
 
-class ParserTest extends \TestCase
+class ParserTest extends TestCase
 {
 
 	/**
@@ -27,7 +28,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parseName($annotation));
 	}
-
 
 	public function dataProviderParseName(): array
 	{
@@ -46,7 +46,6 @@ class ParserTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderParsePeriod
 	 * @param string $expected
@@ -56,7 +55,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parsePeriod($annotation));
 	}
-
 
 	public function dataProviderParsePeriod(): array
 	{
@@ -69,7 +67,6 @@ class ParserTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
@@ -79,7 +76,6 @@ class ParserTest extends \TestCase
 	{
 		Parser::parsePeriod($annotation);
 	}
-
 
 	public function dataProviderParsePeriodError(): array
 	{
@@ -92,7 +88,6 @@ class ParserTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderParseDays
 	 * @param string[] $expected
@@ -102,7 +97,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parseDays($annotation));
 	}
-
 
 	public function dataProviderParseDays(): array
 	{
@@ -137,7 +131,6 @@ class ParserTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
@@ -147,7 +140,6 @@ class ParserTest extends \TestCase
 	{
 		Parser::parseDays($annotation);
 	}
-
 
 	public function dataProviderParseDaysError(): array
 	{
@@ -160,7 +152,6 @@ class ParserTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderParseTimes
 	 * @param string[][] $expected
@@ -170,7 +161,6 @@ class ParserTest extends \TestCase
 	{
 		Assert::equal($expected, Parser::parseTimes($annotation));
 	}
-
 
 	public function dataProviderParseTimes(): array
 	{
@@ -369,7 +359,6 @@ class ParserTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
@@ -379,7 +368,6 @@ class ParserTest extends \TestCase
 	{
 		Parser::parseTimes($annotation);
 	}
-
 
 	public function dataProviderParseTimesError(): array
 	{
@@ -393,4 +381,4 @@ class ParserTest extends \TestCase
 	}
 }
 
-run(new ParserTest());
+(new ParserTest())->run();

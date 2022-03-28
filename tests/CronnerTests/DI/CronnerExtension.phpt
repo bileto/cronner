@@ -6,6 +6,7 @@
 
 namespace Bileto\Cronner\tests\DI;
 
+require_once(__DIR__ . "/../bootstrap.php");
 
 use Bileto\CriticalSection\CriticalSection;
 use Nette\Configurator;
@@ -14,16 +15,15 @@ use Bileto\Cronner\Cronner;
 use Bileto\Cronner\DI\CronnerExtension;
 use Bileto\Cronner\TimestampStorage\DummyStorage;
 use Bileto\Cronner\TimestampStorage\FileStorage;
+use TestCase;
 use Tester\Assert;
+use Tester\Helpers;
 
-require_once(__DIR__ . "/../bootstrap.php");
-
-class CronnerExtensionTest extends \TestCase
+class CronnerExtensionTest extends TestCase
 {
 
 	/** @var Compiler */
 	private $compiler;
-
 
 	public function testDefaultConfiguration()
 	{
@@ -38,7 +38,6 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same(CriticalSection::class, $criticalSection->getType());
 		Assert::same(Cronner::class, $runner->getType());
 	}
-
 
 	public function testCompleteConfiguration()
 	{
@@ -62,10 +61,9 @@ class CronnerExtensionTest extends \TestCase
 		Assert::same(Cronner::class, $runner->getType());
 	}
 
-
 	public function testRegisterTasks()
 	{
-		\Tester\Helpers::purge(__DIR__ . '/../../tmp/');
+		Helpers::purge(__DIR__ . '/../../tmp/');
 
 		$config = new Configurator();
 		$config->setTempDirectory(__DIR__ . '/../../tmp/');
@@ -76,7 +74,6 @@ class CronnerExtensionTest extends \TestCase
 
 		Assert::same(2, count($cronner->getTasks()));
 	}
-
 
 	protected function setUp()
 	{
@@ -95,4 +92,4 @@ class CronnerExtensionTest extends \TestCase
 	}
 }
 
-run(new CronnerExtensionTest());
+(new CronnerExtensionTest())->run();

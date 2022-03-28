@@ -8,14 +8,13 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\tests\Tasks;
 
+require_once(__DIR__ . "/../bootstrap.php");
 
 use DateTime;
 use DateTimeInterface;
 use Nette;
 use Bileto\Cronner\Tasks\Parameters;
 use Tester\Assert;
-
-require_once(__DIR__ . "/../bootstrap.php");
 
 class ParametersTest extends \TestCase
 {
@@ -30,7 +29,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->getName());
 	}
-
 
 	public function dataProviderGetName(): array
 	{
@@ -47,7 +45,6 @@ class ParametersTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderIsTask
 	 * @param bool $expected
@@ -58,7 +55,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isTask());
 	}
-
 
 	public function dataProviderIsTask(): array
 	{
@@ -75,7 +71,6 @@ class ParametersTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderIsNextPeriod
 	 * @param bool $expected
@@ -88,7 +83,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::same($expected, $params->isNextPeriod($now, $lastRunTime));
 	}
-
 
 	public function dataProviderIsNextPeriod(): array
 	{
@@ -162,7 +156,6 @@ class ParametersTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderIsInDay
 	 * @param bool $expected
@@ -174,7 +167,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isInDay($now));
 	}
-
 
 	public function dataProviderIsInDay(): array
 	{
@@ -213,7 +205,6 @@ class ParametersTest extends \TestCase
 		];
 	}
 
-
 	/**
 	 * @dataProvider dataProviderIsInTime
 	 * @param bool $expected
@@ -226,7 +217,6 @@ class ParametersTest extends \TestCase
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->isInTime($now));
 	}
-
 
 	public function dataProviderIsInTime(): array
 	{
@@ -345,7 +335,6 @@ class ParametersTest extends \TestCase
 			],
 		];
 	}
-
 }
 
-run(new ParametersTest());
+(new ParametersTest())->run();

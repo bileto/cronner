@@ -8,23 +8,23 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\tests\Tasks;
 
+require_once(__DIR__ . "/../bootstrap.php");
 
 use Mockery;
 use Nette;
+use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
 use Bileto\Cronner\tests\objects\TestObject;
+use TestCase;
 use Tester\Assert;
 
-require_once(__DIR__ . "/../bootstrap.php");
-
-class TaskTest extends \TestCase
+class TaskTest extends TestCase
 {
 
 	/** @var object */
 	private $object;
-
 
 	public function testInvokesTaskWithSavingLastRunTime()
 	{
@@ -39,7 +39,6 @@ class TaskTest extends \TestCase
 		Assert::$counter++; // Hack for nette tester
 	}
 
-
 	/**
 	 * @dataProvider dataProviderShouldBeRun
 	 * @param bool $expected
@@ -53,7 +52,7 @@ class TaskTest extends \TestCase
 		$now = new Nette\Utils\DateTime($now);
 		$lastRunTime = $lastRunTime ? new Nette\Utils\DateTime($lastRunTime) : null;
 
-		$method = (new \Nette\Reflection\ClassType($this->object))->getMethod($methodName);
+		$method = (new ClassType($this->object))->getMethod($methodName);
 
 		$timestampStorage = Mockery::mock(ITimestampStorage::class);
 		$timestampStorage->shouldReceive("loadLastRunTime")->times($loads)->andReturn($lastRunTime);
@@ -62,7 +61,6 @@ class TaskTest extends \TestCase
 		$task = new Task($this->object, $method, $timestampStorage);
 		Assert::same($expected, $task->shouldBeRun($now));
 	}
-
 
 	public function dataProviderShouldBeRun(): array
 	{
@@ -80,7 +78,6 @@ class TaskTest extends \TestCase
 		];
 	}
 
-
 	public function testShouldBeRunOnShortLaterRun()
 	{
 		$timestampStorage = Mockery::mock(ITimestampStorage::class);
@@ -92,7 +89,6 @@ class TaskTest extends \TestCase
 		Assert::true($task->shouldBeRun(new Nette\Utils\DateTime('2014-08-15 09:17:00')));
 	}
 
-
 	protected function setUp()
 	{
 		parent::setUp();
@@ -100,4 +96,4 @@ class TaskTest extends \TestCase
 	}
 }
 
-run(new TaskTest());
+(new TaskTest())->run();

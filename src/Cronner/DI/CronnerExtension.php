@@ -25,7 +25,6 @@ final class CronnerExtension extends CompilerExtension
 {
 	private const TASKS_TAG = 'cronner.tasks';
 
-
 	public static function register(Configurator $configurator): void
 	{
 		$configurator->onCompile[] = static function (Configurator $config, Compiler $compiler): void {
@@ -33,20 +32,18 @@ final class CronnerExtension extends CompilerExtension
 		};
 	}
 
-
 	public function getConfigSchema(): Schema
 	{
 		return Expect::structure([
 			'assets' => Expect::arrayOf(Expect::string()),
-			'timestampStorage' => Expect::string(),
+			'timestampStorage' => Expect::string()->nullable(),
 			'maxExecutionTime' => Expect::int(),
 			'criticalSectionTempDir' => Expect::string(),
-			'criticalSectionDriver' => Expect::string(),
+			'criticalSectionDriver' => Expect::string()->nullable(),
 			'tasks' => Expect::array(),
 			'bar' => Expect::bool(),
 		])->castTo('array');
 	}
-
 
 	public function loadConfiguration(): void
 	{
@@ -54,13 +51,13 @@ final class CronnerExtension extends CompilerExtension
 		$config = $this->config;
 		$builder = $this->getContainerBuilder();
 
-		if ($config['timestampStorage'] === null) {
+		if (!array_key_exists('timestampStorage', $config) || $config['timestampStorage'] === null) {
 			$builder->addDefinition($this->prefix('fileStorage'))
 				->setFactory(FileStorage::class)
 				->setArgument('directory', $builder->parameters['tempDir'] . '/cronner')
 				->addTag(InjectExtension::TAG_INJECT, false);
 		}
-		if ($config['criticalSectionDriver'] === null) {
+		if (!array_key_exists('criticalSectionDriver', $config) || $config['criticalSectionDriver'] === null) {
 			$builder->addDefinition($this->prefix('criticalSectionDriver'))
 				->setFactory(FileDriver::class)
 				->setArgument('lockFilesDir', $builder->parameters['tempDir'] . '/critical-section');
@@ -97,7 +94,6 @@ final class CronnerExtension extends CompilerExtension
 		}
 	}
 
-
 	public function beforeCompile(): void
 	{
 		$builder = $this->getContainerBuilder();
@@ -108,7 +104,6 @@ final class CronnerExtension extends CompilerExtension
 			$runner->addSetup('addTasks', ['@' . $serviceName]);
 		}
 	}
-
 
 	public function afterCompile(ClassType $class): void
 	{
