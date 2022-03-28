@@ -6,13 +6,13 @@ declare(strict_types=1);
  * @testCase
  */
 
-namespace stekycz\Cronner\tests\Tasks;
+namespace Bileto\Cronner\tests\Tasks;
 
 
 use DateTime;
 use DateTimeInterface;
 use Nette;
-use stekycz\Cronner\Tasks\Parameters;
+use Bileto\Cronner\Tasks\Parameters;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");

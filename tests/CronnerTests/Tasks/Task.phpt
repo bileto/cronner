@@ -6,15 +6,15 @@ declare(strict_types=1);
  * @testCase
  */
 
-namespace stekycz\Cronner\tests\Tasks;
+namespace Bileto\Cronner\tests\Tasks;
 
 
 use Mockery;
 use Nette;
 use Nette\Reflection\Method;
-use stekycz\Cronner\ITimestampStorage;
-use stekycz\Cronner\Tasks\Task;
-use stekycz\Cronner\tests\objects\TestObject;
+use Bileto\Cronner\ITimestampStorage;
+use Bileto\Cronner\Tasks\Task;
+use Bileto\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");

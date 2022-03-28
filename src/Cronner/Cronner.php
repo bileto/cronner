@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner;
+namespace Bileto\Cronner;
 
 
 use Bileto\CriticalSection\ICriticalSection;
@@ -13,11 +13,11 @@ use Nette\Reflection\ClassType;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
 use ReflectionMethod;
-use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
-use stekycz\Cronner\Exceptions\InvalidArgumentException;
-use stekycz\Cronner\Exceptions\RuntimeException;
-use stekycz\Cronner\Tasks\Parameters;
-use stekycz\Cronner\Tasks\Task;
+use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
+use Bileto\Cronner\Exceptions\InvalidArgumentException;
+use Bileto\Cronner\Exceptions\RuntimeException;
+use Bileto\Cronner\Tasks\Parameters;
+use Bileto\Cronner\Tasks\Task;
 use Tracy\Debugger;
 
 /**

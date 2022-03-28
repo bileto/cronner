@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner;
+namespace Bileto\Cronner;
 
 
 use DateTimeInterface;

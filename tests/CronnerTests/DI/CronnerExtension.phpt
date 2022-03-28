@@ -4,16 +4,16 @@
  * @testCase
  */
 
-namespace stekycz\Cronner\tests\DI;
+namespace Bileto\Cronner\tests\DI;
 
 
 use Bileto\CriticalSection\CriticalSection;
 use Nette\Configurator;
 use Nette\DI\Compiler;
-use stekycz\Cronner\Cronner;
-use stekycz\Cronner\DI\CronnerExtension;
-use stekycz\Cronner\TimestampStorage\DummyStorage;
-use stekycz\Cronner\TimestampStorage\FileStorage;
+use Bileto\Cronner\Cronner;
+use Bileto\Cronner\DI\CronnerExtension;
+use Bileto\Cronner\TimestampStorage\DummyStorage;
+use Bileto\Cronner\TimestampStorage\FileStorage;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");
@@ -72,7 +72,7 @@ class CronnerExtensionTest extends \TestCase
 		$config->addConfig(__DIR__ . '/../config/config.neon');
 		$container = $config->createContainer();
 
-		$cronner = $container->getByType('stekycz\Cronner\Cronner');
+		$cronner = $container->getByType('Bileto\Cronner\Cronner');
 
 		Assert::same(2, count($cronner->getTasks()));
 	}

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\Exceptions;
+namespace Bileto\Cronner\Exceptions;
 
 
 final class DuplicateTaskNameException extends InvalidArgumentException

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\Tasks;
+namespace Bileto\Cronner\Tasks;
 
 
 use Nette\Utils\Strings;
-use stekycz\Cronner\Exceptions\InvalidParameterException;
+use Bileto\Cronner\Exceptions\InvalidParameterException;
 
 final class Parser
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\tests\objects;
+namespace Bileto\Cronner\tests\objects;
 
 
 use Exception;

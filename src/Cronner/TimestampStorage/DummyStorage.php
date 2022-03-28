@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\TimestampStorage;
+namespace Bileto\Cronner\TimestampStorage;
 
 
 use DateTimeInterface;
 use Nette\SmartObject;
-use stekycz\Cronner\ITimestampStorage;
+use Bileto\Cronner\ITimestampStorage;
 
 final class DummyStorage implements ITimestampStorage
 {

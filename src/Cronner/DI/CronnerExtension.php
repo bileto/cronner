@@ -2,8 +2,7 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\DI;
-
+namespace Bileto\Cronner\DI;
 
 use Bileto\CriticalSection\CriticalSection;
 use Bileto\CriticalSection\Driver\FileDriver;
@@ -17,9 +16,9 @@ use Nette\DI\Helpers;
 use Nette\PhpGenerator\ClassType;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
-use stekycz\Cronner\Bar\Tasks;
-use stekycz\Cronner\Cronner;
-use stekycz\Cronner\TimestampStorage\FileStorage;
+use Bileto\Cronner\Bar\Tasks;
+use Bileto\Cronner\Cronner;
+use Bileto\Cronner\TimestampStorage\FileStorage;
 use Tracy\Bar;
 
 final class CronnerExtension extends CompilerExtension

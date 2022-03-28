@@ -44,7 +44,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"stekycz\\": "src"
+			"Bileto\\": "src"
 		}
 	},
 	"autoload-dev": {

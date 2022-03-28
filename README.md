@@ -1,4 +1,4 @@
-# Cronner [![Build Status](https://travis-ci.org/stekycz/Cronner.svg?branch=master)](https://travis-ci.org/stekycz/Cronner)
+# Cronner [![Build Status](https://travis-ci.org/bileto/Cronner.svg?branch=master)](https://travis-ci.org/bileto/Cronner)
 
 - [Description](#description)
 - [Usage](#usage)
@@ -46,7 +46,7 @@ class CronTasks
 
 ```neon
 extension:
-    cronner: stekycz\Cronner\DI\CronnerExtension
+    cronner: Bileto\Cronner\DI\CronnerExtension
 ```
 
 It does not require any configuration however your own implementation of timestamp storage could be better
@@ -62,7 +62,7 @@ Or you can change the directory for default storage.
 
 ```neon
 cronner:
-    timestampStorage: stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner)
+    timestampStorage: Bileto\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner)
 ```
 
 It is also possible to define `maxExecutionTime` for Cronner so you do not have make it by you own code
@@ -79,7 +79,7 @@ Then you can use it very easily in `Presenter`
 class CronPresenter extends \Nette\Application\UI\Presenter
 {
     /**
-     * @var \stekycz\Cronner\Cronner
+     * @var \Bileto\Cronner\Cronner
      * @inject
      */
     public $cronner;
@@ -100,7 +100,7 @@ usage is recommended and preferable way. However you will still need to call `ru
 
 ```neon
 services:
-    cronner: stekycz\Cronner\Cronner(stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
+    cronner: Bileto\Cronner\Cronner(Bileto\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
     setup:
     	- addTasks(new CronTasks())
 ```
