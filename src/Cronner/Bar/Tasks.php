@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\Bar;
+namespace Bileto\Cronner\Bar;
 
 
-use stekycz\Cronner\Cronner;
+use Bileto\Cronner\Cronner;
 use Tracy\IBarPanel;
 
 final class Tasks implements IBarPanel

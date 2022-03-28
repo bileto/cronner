@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\Tasks;
+namespace Bileto\Cronner\Tasks;
 
 
 use DateTimeInterface;
 use Nette\Reflection\Method;
-use stekycz\Cronner\ITimestampStorage;
+use Bileto\Cronner\ITimestampStorage;
 
 final class Task
 {

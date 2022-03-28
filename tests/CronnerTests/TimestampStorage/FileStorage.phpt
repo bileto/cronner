@@ -6,13 +6,13 @@ declare(strict_types=1);
  * @testCase
  */
 
-namespace stekycz\Cronner\tests\TimestampStorage;
+namespace Bileto\Cronner\tests\TimestampStorage;
 
 
 use DateTime;
 use Nette;
 use Nette\Utils\FileSystem;
-use stekycz\Cronner\TimestampStorage\FileStorage;
+use Bileto\Cronner\TimestampStorage\FileStorage;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");
@@ -41,7 +41,7 @@ class FileStorageTest extends \TestCase
 
 	/**
 	 * @dataProvider dataProviderSetTaskName
-	 * @throws \stekycz\Cronner\Exceptions\InvalidTaskNameException
+	 * @throws \Bileto\Cronner\Exceptions\InvalidTaskNameException
 	 */
 	public function testThrowsExceptionOnInvalidTaskName(string $taskName = null)
 	{

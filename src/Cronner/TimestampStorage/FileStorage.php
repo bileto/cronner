@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace stekycz\Cronner\TimestampStorage;
+namespace Bileto\Cronner\TimestampStorage;
 
 
 use DateTime;
@@ -11,9 +11,9 @@ use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\SafeStream;
 use Nette\Utils\Strings;
-use stekycz\Cronner\Exceptions\EmptyTaskNameException;
-use stekycz\Cronner\Exceptions\InvalidTaskNameException;
-use stekycz\Cronner\ITimestampStorage;
+use Bileto\Cronner\Exceptions\EmptyTaskNameException;
+use Bileto\Cronner\Exceptions\InvalidTaskNameException;
+use Bileto\Cronner\ITimestampStorage;
 
 class FileStorage implements ITimestampStorage
 {

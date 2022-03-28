@@ -6,7 +6,7 @@ declare(strict_types=1);
  * @testCase
  */
 
-namespace stekycz\Cronner\tests;
+namespace Bileto\Cronner\tests;
 
 
 use Bileto\CriticalSection\ICriticalSection;
@@ -14,15 +14,15 @@ use Exception;
 use Mockery;
 use Nette\Utils\DateTime;
 use stdClass;
-use stekycz\Cronner\Cronner;
-use stekycz\Cronner\Exceptions\DuplicateTaskNameException;
-use stekycz\Cronner\ITimestampStorage;
-use stekycz\Cronner\Tasks\Task;
-use stekycz\Cronner\tests\objects\AnotherSimpleTestObject;
-use stekycz\Cronner\tests\objects\NextSimpleTestObject;
-use stekycz\Cronner\tests\objects\SameTaskNameObject;
-use stekycz\Cronner\tests\objects\TestExceptionObject;
-use stekycz\Cronner\tests\objects\TestObject;
+use Bileto\Cronner\Cronner;
+use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
+use Bileto\Cronner\ITimestampStorage;
+use Bileto\Cronner\Tasks\Task;
+use Bileto\Cronner\tests\objects\AnotherSimpleTestObject;
+use Bileto\Cronner\tests\objects\NextSimpleTestObject;
+use Bileto\Cronner\tests\objects\SameTaskNameObject;
+use Bileto\Cronner\tests\objects\TestExceptionObject;
+use Bileto\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
 require_once(__DIR__ . "/bootstrap.php");
@@ -87,7 +87,7 @@ class CronnerTest extends \TestCase
 
 	/**
 	 * @dataProvider dataProviderSetMaxExecutionTimeWrongValue
-	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
+	 * @throws \Bileto\Cronner\Exceptions\InvalidArgumentException
 	 */
 	public function testThrowsExceptionOnWrongValueOfMaxExecutionTime($value)
 	{
@@ -112,7 +112,7 @@ class CronnerTest extends \TestCase
 
 
 	/**
-	 * @throws \stekycz\Cronner\Exceptions\InvalidArgumentException
+	 * @throws \Bileto\Cronner\Exceptions\InvalidArgumentException
 	 */
 	public function testThrowsExceptionOnDuplicateTasksObjectAddition()
 	{

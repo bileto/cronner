@@ -6,12 +6,12 @@ declare(strict_types=1);
  * @testCase
  */
 
-namespace stekycz\Cronner\tests\Tasks;
+namespace Bileto\Cronner\tests\Tasks;
 
 
 use DateTime;
-use stekycz\Cronner\Tasks\Parameters;
-use stekycz\Cronner\tests\objects\TestObject;
+use Bileto\Cronner\Tasks\Parameters;
+use Bileto\Cronner\tests\objects\TestObject;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");
@@ -60,7 +60,7 @@ class ParametersParsingTest extends \TestCase
 			],
 			[
 				[
-					Parameters::TASK => 'stekycz\Cronner\tests\objects\TestObject - test02',
+					Parameters::TASK => 'Bileto\Cronner\tests\objects\TestObject - test02',
 					Parameters::PERIOD => '1 hour',
 					Parameters::DAYS => ['Mon', 'Wed', 'Fri',],
 					Parameters::DAYS_OF_MONTH => null,

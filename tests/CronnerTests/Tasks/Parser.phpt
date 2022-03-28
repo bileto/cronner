@@ -6,11 +6,11 @@ declare(strict_types=1);
  * @testCase
  */
 
-namespace stekycz\Cronner\tests\Tasks;
+namespace Bileto\Cronner\tests\Tasks;
 
 
 use stdClass;
-use stekycz\Cronner\Tasks\Parser;
+use Bileto\Cronner\Tasks\Parser;
 use Tester\Assert;
 
 require_once(__DIR__ . "/../bootstrap.php");
@@ -73,7 +73,7 @@ class ParserTest extends \TestCase
 	/**
 	 * @dataProvider dataProviderParsePeriodError
 	 * @param string $annotation
-	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
+	 * @throws \Bileto\Cronner\Exceptions\InvalidParameterException
 	 */
 	public function testThrowsExceptionOnWrongPeriodDefinition(string $annotation)
 	{
@@ -141,7 +141,7 @@ class ParserTest extends \TestCase
 	/**
 	 * @dataProvider dataProviderParseDaysError
 	 * @param string $annotation
-	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
+	 * @throws \Bileto\Cronner\Exceptions\InvalidParameterException
 	 */
 	public function testThrowsExceptionOnWrongDaysDefinition(string $annotation)
 	{
@@ -373,7 +373,7 @@ class ParserTest extends \TestCase
 	/**
 	 * @dataProvider dataProviderParseTimesError
 	 * @param string $annotation
-	 * @throws \stekycz\Cronner\Exceptions\InvalidParameterException
+	 * @throws \Bileto\Cronner\Exceptions\InvalidParameterException
 	 */
 	public function testThrowsExceptionOnWrongTimesDefinition(string $annotation)
 	{

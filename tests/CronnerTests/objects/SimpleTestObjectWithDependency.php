@@ -1,6 +1,6 @@
 <?php
 
-namespace stekycz\Cronner\tests\objects;
+namespace Bileto\Cronner\tests\objects;
 
 
 class SimpleTestObjectWithDependency
