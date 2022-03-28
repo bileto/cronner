@@ -95,7 +95,7 @@ usage is recommended and preferable way. However you will still need to call `ru
 
 ```neon
 services:
-    cronner: Bileto\Cronner\Cronner(stekycz\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
+    cronner: Bileto\Cronner\Cronner(Bileto\Cronner\TimestampStorage\FileStorage(%wwwDir%/../temp/cronner))
     setup:
         - addTasks(new CronTasks())
 ```
