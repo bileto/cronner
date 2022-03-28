@@ -1,7 +1,12 @@
+includes:
+	- phpstan-baseline.neon
+
 parameters:
-	projectDir: %rootDir%/../../..
-	autoload_files:
-		- %projectDir%/vendor/autoload.php
+	level: 6
+	paths:
+		- src
 	excludes_analyse:
-		- %projectDir%/tests/
-		- %projectDir%/vendor/
+		- tests
+		- vendor
+	ignoreErrors:
+		# - '#.*Redis::.*#'
