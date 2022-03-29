@@ -161,7 +161,7 @@ class Cronner
 	/**
 	 * Runs all cron tasks.
 	 */
-	public function run(DateTimeInterface $now = null)
+	public function run(DateTimeInterface $now = null): void
 	{
 		if ($now === null) {
 			$now = new DateTime();

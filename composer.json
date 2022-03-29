@@ -50,6 +50,6 @@
 		}
 	},
 	"autoload-dev": {
-		"classmap": ["tests/CronnerTests/objects"]
+		"classmap": ["tests/Bileto/CronnerTests/Objects"]
 	}
 }

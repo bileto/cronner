@@ -2,13 +2,9 @@
 
 declare(strict_types=1);
 
-/**
- * @testCase
- */
+namespace Bileto\CronnerTests\Tasks;
 
-namespace Bileto\Cronner\tests\Tasks;
-
-require_once(__DIR__ . "/../bootstrap.php");
+require_once(__DIR__ . '/../../../bootstrap.php');
 
 use Mockery;
 use Nette;
@@ -16,10 +12,13 @@ use Nette\Reflection\ClassType;
 use Nette\Reflection\Method;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
-use Bileto\Cronner\tests\objects\TestObject;
-use TestCase;
+use Bileto\CronnerTests\Objects\TestObject;
 use Tester\Assert;
+use Tester\TestCase;
 
+/**
+ * @testCase
+ */
 class TaskTest extends TestCase
 {
 
@@ -89,10 +88,14 @@ class TaskTest extends TestCase
 		Assert::true($task->shouldBeRun(new Nette\Utils\DateTime('2014-08-15 09:17:00')));
 	}
 
-	protected function setUp()
+	protected function setUp(): void
 	{
-		parent::setUp();
 		$this->object = new TestObject();
+	}
+
+	protected function tearDown()
+	{
+		Mockery::close();
 	}
 }
 

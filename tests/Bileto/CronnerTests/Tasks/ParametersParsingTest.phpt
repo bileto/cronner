@@ -2,27 +2,25 @@
 
 declare(strict_types=1);
 
-/**
- * @testCase
- */
+namespace Bileto\CronnerTests\Tasks;
 
-namespace Bileto\Cronner\tests\Tasks;
-
-require_once(__DIR__ . "/../bootstrap.php");
+require_once(__DIR__ . '/../../../bootstrap.php');
 
 use DateTime;
 use Bileto\Cronner\Tasks\Parameters;
-use Bileto\Cronner\tests\objects\TestObject;
+use Bileto\CronnerTests\Objects\TestObject;
 use Nette\Reflection\ClassType;
-use TestCase;
 use Tester\Assert;
+use Tester\TestCase;
 
+/**
+ * @testCase
+ */
 class ParametersParsingTest extends TestCase
 {
 
 	/** @var object */
 	private $object;
-
 
 	/**
 	 * @dataProvider dataProviderParse
@@ -60,7 +58,7 @@ class ParametersParsingTest extends TestCase
 			],
 			[
 				[
-					Parameters::TASK => 'Bileto\Cronner\tests\objects\TestObject - test02',
+					Parameters::TASK => 'Bileto\CronnerTests\Objects\TestObject - test02',
 					Parameters::PERIOD => '1 hour',
 					Parameters::DAYS => ['Mon', 'Wed', 'Fri',],
 					Parameters::DAYS_OF_MONTH => null,
@@ -105,9 +103,10 @@ class ParametersParsingTest extends TestCase
 		];
 	}
 
-	protected function setUp()
+	protected function setUp(): void
 	{
 		parent::setUp();
+
 		$this->object = new TestObject();
 	}
 }

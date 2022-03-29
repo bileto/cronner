@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\objects;
+namespace Bileto\CronnerTests\Objects;
 
+use Nette\SmartObject;
 
 class SameTaskNameObject
 {
-	use \Nette\SmartObject;
-
+	use SmartObject;
 
 	/**
 	 * @cronner-task Test
@@ -16,7 +16,6 @@ class SameTaskNameObject
 	public function test01()
 	{
 	}
-
 
 	/**
 	 * @cronner-task Test

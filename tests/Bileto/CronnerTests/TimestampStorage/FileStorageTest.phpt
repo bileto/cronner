@@ -2,38 +2,37 @@
 
 declare(strict_types=1);
 
-/**
- * @testCase
- */
+namespace Bileto\CronnerTests\TimestampStorage;
 
-namespace Bileto\Cronner\tests\TimestampStorage;
-
-require_once(__DIR__ . "/../bootstrap.php");
+require_once(__DIR__ . '/../../../bootstrap.php');
 
 use DateTime;
 use Nette;
 use Nette\Utils\FileSystem;
 use Bileto\Cronner\TimestampStorage\FileStorage;
-use TestCase;
 use Tester\Assert;
+use Tester\TestCase;
 
+/**
+ * @testCase
+ */
 class FileStorageTest extends TestCase
 {
 
 	/** @var FileStorage */
 	private $storage;
 
-
-	private static function getTempDirPath()
+	private static function getTempDirPath(): string
 	{
 		return TEMP_DIR . '/cronner';
 	}
 
-	public function testIsAbleToSetTaskName()
+	public function testIsAbleToSetTaskName(): void
 	{
 		$this->storage->setTaskName('Test task 1');
 		$this->storage->setTaskName(null);
 		$this->storage->setTaskName();
+
 		Assert::$counter++; // Hack for nette tester
 	}
 
@@ -41,7 +40,7 @@ class FileStorageTest extends TestCase
 	 * @dataProvider dataProviderSetTaskName
 	 * @throws \Bileto\Cronner\Exceptions\InvalidTaskNameException
 	 */
-	public function testThrowsExceptionOnInvalidTaskName(string $taskName = null)
+	public function testThrowsExceptionOnInvalidTaskName(string $taskName = null): void
 	{
 		$this->storage->setTaskName($taskName);
 	}
@@ -59,7 +58,7 @@ class FileStorageTest extends TestCase
 	 * @dataProvider dataProviderSaveRunTime
 	 * @param DateTime $date
 	 */
-	public function testLoadsAndSavesLastRunTimeWithoutErrors(DateTime $date)
+	public function testLoadsAndSavesLastRunTimeWithoutErrors(DateTime $date): void
 	{
 		$this->storage->setTaskName('Test task 1');
 
@@ -83,7 +82,7 @@ class FileStorageTest extends TestCase
 		];
 	}
 
-	public function testSavesLastRunTimeByTaskName()
+	public function testSavesLastRunTimeByTaskName(): void
 	{
 		$date = new DateTime('2013-01-30 17:30:00');
 
@@ -110,16 +109,18 @@ class FileStorageTest extends TestCase
 		Assert::equal($date->format('Y-m-d H:i:s O'), $lastRunTime->format('Y-m-d H:i:s O'));
 	}
 
-	protected function setUp()
+	protected function setUp(): void
 	{
 		parent::setUp();
+
 		FileSystem::createDir(static::getTempDirPath());
 		$this->storage = new FileStorage(static::getTempDirPath());
 	}
 
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		parent::tearDown();
+
 		try {
 			FileSystem::delete(static::getTempDirPath());
 		} catch (Nette\IOException $e) {
