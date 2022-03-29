@@ -24,14 +24,14 @@
 	"require": {
 		"php": ">=8.0",
 		"ext-json": "*",
-		"tracy/tracy": "^2.9",
 		"nette/di": "^3.0",
 		"nette/bootstrap": "^3.1",
 		"nette/schema": "^1.2",
 		"nette/utils": "^3.2",
 		"nette/reflection": "^2.4",
 		"nette/safe-stream": "^2.5",
-		"bileto/critical-section": "^2.1"
+		"bileto/critical-section": "^2.1",
+		"tracy/tracy": "^2.9"
 	},
 	"require-dev": {
 		"nette/tester": "^2.4",
@@ -53,6 +53,7 @@
 		"classmap": ["tests/Bileto/CronnerTests/Objects"]
 	},
 	"scripts": {
+		"phpstan": "vendor/bin/phpstan",
 		"test": "vendor/bin/tester ."
 	}
 }
