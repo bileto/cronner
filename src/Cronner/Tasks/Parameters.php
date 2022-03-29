@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\Tasks;
 
-
+use Bileto\Cronner\Utils\ReflectionSupport;
+use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
+use InvalidArgumentException;
 use Nette;
-use Nette\Reflection\Method;
+use Nette\SmartObject;
 use Nette\Utils\Strings;
+use ReflectionMethod;
 
 final class Parameters
 {
-	use Nette\SmartObject;
+	use SmartObject;
 
 	public const TASK = 'cronner-task';
 
@@ -24,102 +28,101 @@ final class Parameters
 
 	public const TIME = 'cronner-time';
 
-	/** @var mixed[] */
+	/** @var array<mixed> */
 	private $values;
 
-
 	/**
-	 * @param mixed[] $values
+	 * @param array<mixed> $values
 	 */
-	public function __construct(array $values)
+	public function __construct(array $values = [])
 	{
-		$values[static::TASK] = isset($values[static::TASK]) && is_string($values[static::TASK])
-			? Strings::trim($values[static::TASK])
+		$values[Parameters::TASK] = isset($values[Parameters::TASK]) && is_string($values[Parameters::TASK])
+			? Strings::trim($values[Parameters::TASK])
 			: '';
+
 		$this->values = $values;
 	}
 
-
 	/**
 	 * Parse cronner values from annotations.
+	 *
+	 * @return array<mixed>
 	 */
-	public static function parseParameters(Method $method, \DateTimeInterface $now): array
+	public static function parseParameters(ReflectionMethod $method, DateTimeInterface $now): array
 	{
+		$reflectionSupport = new ReflectionSupport();
+
 		$taskName = null;
-		if ($method->hasAnnotation(Parameters::TASK)) {
+
+		if ($reflectionSupport->hasMethodAnnotation($method, Parameters::TASK)) {
 			$className = $method->getDeclaringClass()->getName();
 			$methodName = $method->getName();
 			$taskName = $className . ' - ' . $methodName;
 		}
 
-		$taskAnnotation = $method->getAnnotation(Parameters::TASK);
+		$taskAnnotation = $reflectionSupport->getMethodAnnotation($method, Parameters::TASK);
 
 		$parameters = [
-			static::TASK => is_string($taskAnnotation)
+			Parameters::TASK => is_string($taskAnnotation)
 				? Parser::parseName($taskAnnotation)
 				: $taskName,
-			static::PERIOD => $method->hasAnnotation(Parameters::PERIOD)
-				? Parser::parsePeriod((string) $method->getAnnotation(Parameters::PERIOD))
+			Parameters::PERIOD => $reflectionSupport->hasMethodAnnotation($method, Parameters::PERIOD)
+				? Parser::parsePeriod((string) $reflectionSupport->getMethodAnnotation($method,Parameters::PERIOD))
 				: null,
-			static::DAYS => $method->hasAnnotation(Parameters::DAYS)
-				? Parser::parseDays((string) $method->getAnnotation(Parameters::DAYS))
+			Parameters::DAYS => $reflectionSupport->hasMethodAnnotation($method, Parameters::DAYS)
+				? Parser::parseDays((string) $reflectionSupport->getMethodAnnotation($method,Parameters::DAYS))
 				: null,
-			static::DAYS_OF_MONTH => $method->hasAnnotation(Parameters::DAYS_OF_MONTH)
-				? Parser::parseDaysOfMonth((string) $method->getAnnotation(Parameters::DAYS_OF_MONTH), $now)
+			Parameters::DAYS_OF_MONTH => $reflectionSupport->hasMethodAnnotation($method, Parameters::DAYS_OF_MONTH)
+				? Parser::parseDaysOfMonth((string) $reflectionSupport->getMethodAnnotation($method,Parameters::DAYS_OF_MONTH), $now)
 				: null,
-			static::TIME => $method->hasAnnotation(Parameters::TIME)
-				? Parser::parseTimes((string) $method->getAnnotation(Parameters::TIME))
+			Parameters::TIME => $reflectionSupport->hasMethodAnnotation($method, Parameters::TIME)
+				? Parser::parseTimes((string) $reflectionSupport->getMethodAnnotation($method,Parameters::TIME))
 				: null,
 		];
 
 		return $parameters;
 	}
 
-
 	public function getName(): string
 	{
-		return $this->values[static::TASK];
+		return $this->values[Parameters::TASK];
 	}
-
 
 	public function isTask(): bool
 	{
-		return Strings::length($this->values[static::TASK]) > 0;
+		return Strings::length($this->values[Parameters::TASK]) > 0;
 	}
-
 
 	/**
 	 * Returns true if today is allowed day of week.
 	 */
 	public function isInDay(DateTimeInterface $now): bool
 	{
-		if (($days = $this->values[static::DAYS]) !== null) {
+		if (($days = $this->values[Parameters::DAYS]) !== null) {
 			return in_array($now->format('D'), $days);
 		}
 
 		return true;
 	}
 
-
 	/**
 	 * Returns true if today is allowed day of month.
 	 */
 	public function isInDayOfMonth(DateTimeInterface $now): bool
 	{
-		if (($days = $this->values[static::DAYS_OF_MONTH]) !== null) {
+		if (($days = $this->values[Parameters::DAYS_OF_MONTH]) !== null) {
 			return in_array($now->format('j'), $days, true);
 		}
 
 		return true;
 	}
 
-
 	/**
 	 * Returns true if current time is in allowed range.
 	 */
 	public function isInTime(DateTimeInterface $now): bool
 	{
-		if ($times = $this->values[static::TIME]) {
+		if ($times = $this->values[Parameters::TIME]) {
 			foreach ($times as $time) {
 				if ($time['to'] && $time['to'] >= $now->format('H:i') && $time['from'] <= $now->format('H:i')) {
 					// Is in range with precision to minutes
@@ -137,20 +140,19 @@ final class Parameters
 		return true;
 	}
 
-
 	/**
 	 * Returns true if current time is next period of invocation.
 	 */
 	public function isNextPeriod(DateTimeInterface $now, DateTimeInterface $lastRunTime = null): bool
 	{
-		if ($lastRunTime !== null && !$lastRunTime instanceof \DateTimeImmutable && !$lastRunTime instanceof \DateTime) {
-			throw new \InvalidArgumentException;
+		if ($lastRunTime !== null && !$lastRunTime instanceof DateTimeImmutable && !$lastRunTime instanceof DateTime) {
+			throw new InvalidArgumentException;
 		}
-		if (isset($this->values[static::PERIOD]) && $this->values[static::PERIOD]) {
+		if (isset($this->values[Parameters::PERIOD]) && $this->values[Parameters::PERIOD]) {
 			// Prevent run task on next cronner run because of a few seconds shift
 			$now = Nette\Utils\DateTime::from($now)->modifyClone('+5 seconds');
 
-			return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[static::PERIOD]) <= $now;
+			return $lastRunTime === null || $lastRunTime->modify('+ ' . $this->values[Parameters::PERIOD]) <= $now;
 		}
 
 		return true;

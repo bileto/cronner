@@ -9,7 +9,7 @@ require_once(__DIR__ . '/../../../bootstrap.php');
 use DateTime;
 use Bileto\Cronner\Tasks\Parameters;
 use Bileto\CronnerTests\Objects\TestObject;
-use Nette\Reflection\ClassType;
+use ReflectionClass;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -18,18 +18,25 @@ use Tester\TestCase;
  */
 class ParametersParsingTest extends TestCase
 {
+	private TestObject $object;
 
-	/** @var object */
-	private $object;
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		$this->object = new TestObject();
+	}
 
 	/**
 	 * @dataProvider dataProviderParse
-	 * @param array $expected
+	 * @param array<mixed> $expected
 	 * @param string $methodName
 	 */
-	public function testParsesTaskSettings(array $expected, string $methodName)
+	public function testParsesTaskSettings(array $expected, string $methodName): void
 	{
-		if (!(new ClassType($this->object))->hasMethod($methodName)) {
+		$classType = new ReflectionClass($this->object);
+
+		if (!$classType->hasMethod($methodName)) {
 			Assert::fail('Tested class does not have method "' . $methodName . '".');
 
 			return;
@@ -37,12 +44,15 @@ class ParametersParsingTest extends TestCase
 
 		Assert::same($expected,
 			Parameters::parseParameters(
-				(new ClassType($this->object))->getMethod($methodName),
+				$classType->getMethod($methodName),
 				new DateTime('NOW')
 			)
 		);
 	}
 
+	/**
+	 * @return array<mixed>
+	 */
 	public function dataProviderParse(): array
 	{
 		return [
@@ -101,13 +111,6 @@ class ParametersParsingTest extends TestCase
 				'test04',
 			],
 		];
-	}
-
-	protected function setUp(): void
-	{
-		parent::setUp();
-
-		$this->object = new TestObject();
 	}
 }
 

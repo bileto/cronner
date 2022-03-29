@@ -6,21 +6,6 @@ parameters:
 			path: src/Cronner/Cronner.php
 
 		-
-			message: "#^Call to function is_string\\(\\) with Nette\\\\Reflection\\\\IAnnotation will always evaluate to false\\.$#"
-			count: 1
-			path: src/Cronner/Tasks/Parameters.php
-
-		-
-			message: "#^Cannot cast Nette\\\\Reflection\\\\IAnnotation to string\\.$#"
-			count: 4
-			path: src/Cronner/Tasks/Parameters.php
-
-		-
-			message: "#^Method Bileto\\\\Cronner\\\\Tasks\\\\Parameters\\:\\:parseParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Cronner/Tasks/Parameters.php
-
-		-
 			message: "#^Result of && is always false\\.$#"
 			count: 1
 			path: src/Cronner/Tasks/Parameters.php

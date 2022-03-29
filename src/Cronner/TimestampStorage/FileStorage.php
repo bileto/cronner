@@ -27,7 +27,6 @@ class FileStorage implements ITimestampStorage
 	/** @var string|null */
 	private $taskName;
 
-
 	public function __construct(string $directory)
 	{
 		SafeStream::register();
@@ -35,7 +34,6 @@ class FileStorage implements ITimestampStorage
 		FileSystem::createDir($directory);
 		$this->directory = $directory;
 	}
-
 
 	/**
 	 * Sets name of current task.
@@ -48,7 +46,6 @@ class FileStorage implements ITimestampStorage
 		$this->taskName = $taskName;
 	}
 
-
 	/**
 	 * Saves current date and time as last invocation time.
 	 */
@@ -57,7 +54,6 @@ class FileStorage implements ITimestampStorage
 		$filepath = $this->buildFilePath();
 		file_put_contents($filepath, $now->format(self::DATETIME_FORMAT));
 	}
-
 
 	/**
 	 * Returns date and time of last cron task invocation.
@@ -73,7 +69,6 @@ class FileStorage implements ITimestampStorage
 
 		return $date ? $date : null;
 	}
-
 
 	/**
 	 * Builds file path from directory and task name.
