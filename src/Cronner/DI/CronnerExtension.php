@@ -37,43 +37,47 @@ final class CronnerExtension extends CompilerExtension
 		return Expect::structure([
 			'assets' => Expect::arrayOf(Expect::string()),
 			'timestampStorage' => Expect::string()->nullable(),
-			'maxExecutionTime' => Expect::int(),
+			'maxExecutionTime' => Expect::int()->nullable(),
 			'criticalSectionTempDir' => Expect::string(),
 			'criticalSectionDriver' => Expect::string()->nullable(),
 			'tasks' => Expect::array(),
-			'bar' => Expect::bool(),
-		])->castTo('array');
+			'bar' => Expect::bool(false),
+		]);
 	}
 
 	public function loadConfiguration(): void
 	{
-		/** @var mixed[] $config */
+		/** @var object{assets: array, timestampStorage: string, maxExecutionTime: int, criticalSectionTempDir: string, criticalSectionDriver: string, tasks: array, bar: bool} */
 		$config = $this->config;
 		$builder = $this->getContainerBuilder();
 
-		if (!array_key_exists('timestampStorage', $config) || $config['timestampStorage'] === null) {
-			$builder->addDefinition($this->prefix('fileStorage'))
+		if ($config->timestampStorage === null) {
+			$builder
+				->addDefinition($this->prefix('fileStorage'))
 				->setFactory(FileStorage::class)
 				->setArgument('directory', $builder->parameters['tempDir'] . '/cronner')
 				->addTag(InjectExtension::TAG_INJECT, false);
 		}
-		if (!array_key_exists('criticalSectionDriver', $config) || $config['criticalSectionDriver'] === null) {
-			$builder->addDefinition($this->prefix('criticalSectionDriver'))
+		if ($config->criticalSectionDriver === null) {
+			$builder
+				->addDefinition($this->prefix('criticalSectionDriver'))
 				->setFactory(FileDriver::class)
 				->setArgument('lockFilesDir', $builder->parameters['tempDir'] . '/critical-section');
 		}
 
-		$builder->addDefinition($this->prefix('criticalSection'))
+		$builder
+			->addDefinition($this->prefix('criticalSection'))
 			->setFactory(CriticalSection::class)
-			->setArgument('driver', $builder->getDefinitionByType($config['criticalSectionDriver'] ?? FileDriver::class))
+			->setArgument('driver', $builder->getDefinitionByType($config->criticalSectionDriver ?? FileDriver::class))
 			->addTag(InjectExtension::TAG_INJECT, false);
 
 		$builder->addDefinition($this->prefix('runner'))
 			->setFactory(Cronner::class)
-			->setArgument('maxExecutionTime', $config['maxExecutionTime'])
-			->setArgument('skipFailedTask', array_key_exists('debugMode', $config) ? !$config['debugMode'] : true);
+			->setArgument('maxExecutionTime', $config->maxExecutionTime)
+			//->setArgument('skipFailedTask', !$config->debugMode)
+			;
 
-		foreach ($config['tasks'] ?? [] as $task) {
+		foreach ($config->tasks ?? [] as $task) {
 			$def = $builder->addDefinition($this->prefix('task.' . md5(is_string($task) ? $task : $task->getEntity() . '-' . json_encode($task))));
 			[$def->factory] = Helpers::filterArguments([
 				is_string($task) ? new Statement($task) : $task,
@@ -88,8 +92,9 @@ final class CronnerExtension extends CompilerExtension
 			$def->addTag(self::TASKS_TAG);
 		}
 
-		if ($config['bar'] ?? false) {
-			$builder->addDefinition($this->prefix('bar'))
+		if ($config->bar ?? false) {
+			$builder
+				->addDefinition($this->prefix('bar'))
 				->setFactory(Tasks::class);
 		}
 	}
@@ -108,7 +113,8 @@ final class CronnerExtension extends CompilerExtension
 	public function afterCompile(ClassType $class): void
 	{
 		if ($this->getContainerBuilder()->hasDefinition($this->prefix('bar'))) {
-			$class->getMethod('initialize')
+			$class
+				->getMethod('initialize')
 				->addBody('$this->getByType(?)->addPanel($this->getService(?));', [
 					Bar::class,
 					$this->prefix('bar'),
