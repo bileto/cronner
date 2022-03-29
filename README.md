@@ -10,7 +10,7 @@
 
 Simple tool which helps with maintenance of cron tasks.
 
-It requires **PHP >= 7.1.0** and **Nette Framework >= 2.4.0**.
+It requires **PHP >= 8.0** and **Nette Framework >= 3.0**.
 
 ## Usage
 
