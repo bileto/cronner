@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\Bar;
 
-
 use Bileto\Cronner\Cronner;
 use Tracy\IBarPanel;
 
 final class Tasks implements IBarPanel
 {
 
-	/** @var Cronner */
-	private $cronner;
-
+	private Cronner $cronner;
 
 	public function __construct(Cronner $cronner)
 	{
 		$this->cronner = $cronner;
 	}
-
 
 	public function getPanel(): string
 	{
@@ -36,7 +32,6 @@ final class Tasks implements IBarPanel
 
 		return ob_get_clean();
 	}
-
 
 	public function getTab(): string
 	{

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\Tasks;
 
+use DateTimeInterface;
 use Nette\Utils\Strings;
 use Bileto\Cronner\Exceptions\InvalidParameterException;
 
@@ -18,7 +19,6 @@ final class Parser
 
 		return Strings::length($name) > 0 ? $name : null;
 	}
-
 
 	/**
 	 * Parses period of cron task. If annotation is invalid throws exception.
@@ -42,7 +42,6 @@ final class Parser
 		return $period ?: null;
 	}
 
-
 	/**
 	 * Parses allowed days for cron task. If annotation is invalid throws exception.
 	 *
@@ -56,8 +55,8 @@ final class Parser
 		$days = null;
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
-			$days = static::translateToDayNames($annotation);
-			$days = static::expandDaysRange($days);
+			$days = Parser::translateToDayNames($annotation);
+			$days = Parser::expandDaysRange($days);
 			foreach ($days as $day) {
 				if (in_array($day, $validValues, true) === false) {
 					throw new InvalidParameterException("Given day parameter '" . $day . "' must be one from " . implode(', ', $validValues) . ".");
@@ -73,15 +72,15 @@ final class Parser
 	/**
 	 * Parses allowed days om month for cron task. If annotation is invalid throws exception.
 	 *
-	 * @return string[]|null
+	 * @return array<string>|null
 	 * @throws InvalidParameterException
 	 */
-	public static function parseDaysOfMonth(string $annotation, \DateTimeInterface $now): ?array
+	public static function parseDaysOfMonth(string $annotation, DateTimeInterface $now): ?array
 	{
 		$days = null;
 		$annotation = Strings::trim($annotation);
 		if (Strings::length($annotation)) {
-			$days = static::expandDaysOfMonthRange(static::splitMultipleValues($annotation));
+			$days = Parser::expandDaysOfMonthRange(static::splitMultipleValues($annotation));
 
 			$dayInMonthCount = cal_days_in_month(CAL_GREGORIAN, (int) $now->format('n'), (int) $now->format('Y'));
 
@@ -98,7 +97,6 @@ final class Parser
 		return $days ?: null;
 	}
 
-
 	/**
 	 * Parses allowed time ranges for cron task. If annotation is invalid
 	 * throws exception.
@@ -110,11 +108,11 @@ final class Parser
 	{
 		$times = null;
 		$annotation = Strings::trim($annotation);
-		if (Strings::length($annotation) && $values = static::splitMultipleValues($annotation)) {
+		if (Strings::length($annotation) && $values = Parser::splitMultipleValues($annotation)) {
 			$times = [];
 			foreach ($values as $time) {
 				// TODO: Fix by https://php.baraja.cz/mergovani-velkeho-pole
-				$times = array_merge($times, static::parseOneTime($time)); // TODO: Slow merge algorithm
+				$times = array_merge($times, Parser::parseOneTime($time)); // TODO: Slow merge algorithm
 			}
 			usort($times, static function ($a, $b) {
 				return $a < $b ? -1 : ($a > $b ? 1 : 0);
@@ -124,11 +122,10 @@ final class Parser
 		return $times ?: null;
 	}
 
-
 	/**
 	 * Translates given annotation to day names.
 	 *
-	 * @return string[]
+	 * @return array<string>
 	 */
 	private static function translateToDayNames(string $annotation): array
 	{
@@ -136,7 +133,7 @@ final class Parser
 		static $weekend = ['Sat', 'Sun',];
 
 		$days = [];
-		foreach (static::splitMultipleValues($annotation) as $value) {
+		foreach (Parser::splitMultipleValues($annotation) as $value) {
 			switch ($value) {
 				case 'working days':
 					$days = array_merge($days, $workingDays);
@@ -152,7 +149,6 @@ final class Parser
 
 		return array_unique($days);
 	}
-
 
 	/**
 	 * Expands given day names and day ranges to day names only. The day range must be
@@ -189,12 +185,11 @@ final class Parser
 		return array_unique($expandedValues);
 	}
 
-
 	/**
 	 * Expands given day of month ranges to array.
 	 *
-	 * @param string[] $days
-	 * @return string[]
+	 * @param array<string> $days
+	 * @return array<string>
 	 */
 	private static function expandDaysOfMonthRange(array $days): array
 	{
@@ -216,17 +211,15 @@ final class Parser
 		return array_unique($expandedValues);
 	}
 
-
 	/**
 	 * Splits given annotation by comma into array.
 	 *
-	 * @return string[]
+	 * @return array<string>
 	 */
 	private static function splitMultipleValues(string $annotation): array
 	{
 		return Strings::split($annotation, '/\s*,\s*/');
 	}
-
 
 	/**
 	 * Returns True if time in valid format is given, False otherwise.
@@ -236,7 +229,6 @@ final class Parser
 		return (bool) Strings::match($time, '/^\d{2}:\d{2}$/u');
 	}
 
-
 	/**
 	 * Parses one time annotation. If it is invalid throws exception.
 	 *
@@ -245,24 +237,23 @@ final class Parser
 	 */
 	private static function parseOneTime(string $time): array
 	{
-		$time = static::translateToTimes($time);
+		$time = Parser::translateToTimes($time);
 		$parts = Strings::split($time, '/\s*-\s*/');
-		if (!static::isValidTime($parts[0]) || (isset($parts[1]) && !static::isValidTime($parts[1]))) {
+		if (!Parser::isValidTime($parts[0]) || (isset($parts[1]) && !Parser::isValidTime($parts[1]))) {
 			throw new InvalidParameterException(
 				"Times annotation is not in valid format. It must looks like 'hh:mm[ - hh:mm]' but '" . $time . "' was given."
 			);
 		}
 		$times = [];
-		if (static::isTimeOverMidnight($parts[0], $parts[1] ?? null)) {
-			$times[] = static::timePartsToArray('00:00', $parts[1]);
-			$times[] = static::timePartsToArray($parts[0], '23:59');
+		if (Parser::isTimeOverMidnight($parts[0], $parts[1] ?? null)) {
+			$times[] = Parser::timePartsToArray('00:00', $parts[1]);
+			$times[] = Parser::timePartsToArray($parts[0], '23:59');
 		} else {
-			$times[] = static::timePartsToArray($parts[0], $parts[1] ?? null);
+			$times[] = Parser::timePartsToArray($parts[0], $parts[1] ?? null);
 		}
 
 		return $times;
 	}
-
 
 	/**
 	 * Translates given annotation to day names.
@@ -281,7 +272,6 @@ final class Parser
 		return array_key_exists($time, $translationMap) ? $translationMap[$time] : $time;
 	}
 
-
 	/**
 	 * Returns True if given times includes midnight, False otherwise.
 	 */
@@ -290,9 +280,10 @@ final class Parser
 		return $to !== null && $to < $from;
 	}
 
-
 	/**
 	 * Returns array structure with given times.
+	 *
+	 * @return array<string, string>
 	 */
 	private static function timePartsToArray(string $from, string $to = null): array
 	{

@@ -29,7 +29,7 @@ final class Parameters
 	public const TIME = 'cronner-time';
 
 	/** @var array<mixed> */
-	private $values;
+	private array $values;
 
 	/**
 	 * @param array<mixed> $values

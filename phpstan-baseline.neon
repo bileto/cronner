@@ -11,18 +11,8 @@ parameters:
 			path: src/Cronner/Tasks/Parameters.php
 
 		-
-			message: "#^Method Bileto\\\\Cronner\\\\Tasks\\\\Parser\\:\\:timePartsToArray\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Cronner/Tasks/Parser.php
-
-		-
 			message: "#^Dead catch \\- Throwable is never thrown in the try block\\.$#"
 			count: 3
-			path: src/Cronner/Tasks/Task.php
-
-		-
-			message: "#^Method Bileto\\\\Cronner\\\\Tasks\\\\Task\\:\\:__invoke\\(\\) has no return type specified\\.$#"
-			count: 1
 			path: src/Cronner/Tasks/Task.php
 
 		-

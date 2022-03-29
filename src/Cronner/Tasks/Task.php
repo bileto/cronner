@@ -9,6 +9,7 @@ use DateTimeInterface;
 use Bileto\Cronner\ITimestampStorage;
 use Nette\SmartObject;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use RuntimeException;
 use Throwable;
@@ -18,27 +19,20 @@ final class Task
 {
 	use SmartObject;
 
-	/** @var object */
-	private $object;
+	private object $object;
 
-	/** @var ReflectionMethod */
-	private $method;
+	private ReflectionMethod $method;
 
-	/** @var ITimestampStorage */
-	private $timestampStorage;
+	private ITimestampStorage $timestampStorage;
 
-	/** @var Parameters|null */
-	private $parameters;
+	private ?Parameters $parameters = null;
 
-	/** @var DateTimeInterface|null */
-	private $now;
+	private ?DateTimeInterface $now;
 
 	/**
 	 * Creates instance of one task.
-	 *
-	 * @param object $object
 	 */
-	public function __construct($object, ReflectionMethod $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = null)
+	public function __construct(object $object, ReflectionMethod $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = null)
 	{
 		$this->object = $object;
 		$this->method = $method;
@@ -95,7 +89,10 @@ final class Task
 		return $this->getParameters()->getName();
 	}
 
-	public function __invoke(DateTimeInterface $now)
+	/**
+	 * @throws ReflectionException
+	 */
+	public function __invoke(DateTimeInterface $now): void
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getName());
