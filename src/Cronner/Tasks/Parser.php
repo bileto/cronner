@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\Tasks;
 
-
 use Nette\Utils\Strings;
 use Bileto\Cronner\Exceptions\InvalidParameterException;
 
@@ -16,9 +15,8 @@ final class Parser
 	public static function parseName(string $annotation): ?string
 	{
 		$name = Strings::trim($annotation);
-		$name = Strings::length($name) > 0 ? $name : null;
 
-		return $name;
+		return Strings::length($name) > 0 ? $name : null;
 	}
 
 
@@ -71,7 +69,6 @@ final class Parser
 
 		return $days ?: null;
 	}
-
 
 	/**
 	 * Parses allowed days om month for cron task. If annotation is invalid throws exception.

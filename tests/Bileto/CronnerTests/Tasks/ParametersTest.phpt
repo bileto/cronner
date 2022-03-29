@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-/**
- * @testCase
- */
+namespace Bileto\CronnerTests\Tasks;
 
-namespace Bileto\Cronner\tests\Tasks;
-
-require_once(__DIR__ . "/../bootstrap.php");
+require_once(__DIR__ . '/../../../bootstrap.php');
 
 use DateTime;
 use DateTimeInterface;
 use Nette;
 use Bileto\Cronner\Tasks\Parameters;
 use Tester\Assert;
+use Tester\TestCase;
 
-class ParametersTest extends \TestCase
+/**
+ * @testCase
+ */
+class ParametersTest extends TestCase
 {
 
 	/**
@@ -24,7 +24,7 @@ class ParametersTest extends \TestCase
 	 * @param string $expected
 	 * @param array $parameters
 	 */
-	public function testReturnsTaskName(string $expected, array $parameters)
+	public function testReturnsTaskName(string $expected, array $parameters): void
 	{
 		$params = new Parameters($parameters);
 		Assert::equal($expected, $params->getName());
@@ -50,12 +50,16 @@ class ParametersTest extends \TestCase
 	 * @param bool $expected
 	 * @param array $parameters
 	 */
-	public function testDetectsTask(bool $expected, array $parameters)
+	public function testDetectsTask(bool $expected, array $parameters): void
 	{
 		$params = new Parameters($parameters);
+
 		Assert::equal($expected, $params->isTask());
 	}
 
+	/**
+	 * @return array<array<bool, array<string, mixed>>>
+	 */
 	public function dataProviderIsTask(): array
 	{
 		return [
@@ -162,9 +166,10 @@ class ParametersTest extends \TestCase
 	 * @param array $parameters
 	 * @param DateTime $now
 	 */
-	public function testDetectsAllowedDaysOfWeek(bool $expected, array $parameters, DateTime $now)
+	public function testDetectsAllowedDaysOfWeek(bool $expected, array $parameters, DateTime $now): void
 	{
 		$params = new Parameters($parameters);
+
 		Assert::equal($expected, $params->isInDay($now));
 	}
 

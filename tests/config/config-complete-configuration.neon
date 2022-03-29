@@ -1,0 +1,10 @@
+extensions:
+	cronner: Bileto\Cronner\DI\CronnerExtension
+
+services:
+	fooService: Bileto\CronnerTests\Objects\FooService
+	dummyTimestampStorage: Bileto\Cronner\TimestampStorage\DummyStorage
+
+cronner:
+	timestampStorage: @dummyTimestampStorage
+	maxExecutionTime: 120

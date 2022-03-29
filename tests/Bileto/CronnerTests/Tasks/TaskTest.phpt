@@ -2,40 +2,49 @@
 
 declare(strict_types=1);
 
-/**
- * @testCase
- */
+namespace Bileto\CronnerTests\Tasks;
 
-namespace Bileto\Cronner\tests\Tasks;
-
-require_once(__DIR__ . "/../bootstrap.php");
+require_once(__DIR__ . '/../../../bootstrap.php');
 
 use Mockery;
 use Nette;
-use Nette\Reflection\ClassType;
-use Nette\Reflection\Method;
 use Bileto\Cronner\ITimestampStorage;
 use Bileto\Cronner\Tasks\Task;
-use Bileto\Cronner\tests\objects\TestObject;
-use TestCase;
+use Bileto\CronnerTests\Objects\TestObject;
+use ReflectionClass;
+use ReflectionMethod;
 use Tester\Assert;
+use Tester\TestCase;
 
+/**
+ * @testCase
+ */
 class TaskTest extends TestCase
 {
+	private TestObject $object;
 
-	/** @var object */
-	private $object;
+	protected function setUp(): void
+	{
+		$this->object = new TestObject();
+	}
+
+	protected function tearDown()
+	{
+		Mockery::close();
+	}
 
 	public function testInvokesTaskWithSavingLastRunTime()
 	{
 		$now = new Nette\Utils\DateTime();
+		/** @var Mockery\MockInterface|ITimestampStorage $timestampStorage */
 		$timestampStorage = Mockery::mock(ITimestampStorage::class);
 		$timestampStorage->shouldReceive("saveRunTime")->with($now)->once();
 		$timestampStorage->shouldReceive("setTaskName")->times(2);
 
-		$method = new Method($this->object, 'test01');
+		$method = new ReflectionMethod($this->object, 'test01');
 		$task = new Task($this->object, $method, $timestampStorage);
 		$task($now);
+
 		Assert::$counter++; // Hack for nette tester
 	}
 
@@ -52,8 +61,9 @@ class TaskTest extends TestCase
 		$now = new Nette\Utils\DateTime($now);
 		$lastRunTime = $lastRunTime ? new Nette\Utils\DateTime($lastRunTime) : null;
 
-		$method = (new ClassType($this->object))->getMethod($methodName);
+		$method = (new ReflectionClass($this->object))->getMethod($methodName);
 
+		/** @var Mockery\MockInterface|ITimestampStorage $timestampStorage */
 		$timestampStorage = Mockery::mock(ITimestampStorage::class);
 		$timestampStorage->shouldReceive("loadLastRunTime")->times($loads)->andReturn($lastRunTime);
 		$timestampStorage->shouldReceive("setTaskName")->atLeast(1);
@@ -80,19 +90,14 @@ class TaskTest extends TestCase
 
 	public function testShouldBeRunOnShortLaterRun()
 	{
+		/** @var Mockery\MockInterface|ITimestampStorage $timestampStorage */
 		$timestampStorage = Mockery::mock(ITimestampStorage::class);
 		$timestampStorage->shouldReceive("loadLastRunTime")->once()->andReturn(new Nette\Utils\DateTime('2014-08-15 09:00:01'));
 		$timestampStorage->shouldReceive("setTaskName")->atLeast(1);
 
-		$method = new Method($this->object, 'test03');
+		$method = new ReflectionMethod($this->object, 'test03');
 		$task = new Task($this->object, $method, $timestampStorage);
 		Assert::true($task->shouldBeRun(new Nette\Utils\DateTime('2014-08-15 09:17:00')));
-	}
-
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->object = new TestObject();
 	}
 }
 

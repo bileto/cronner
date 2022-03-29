@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner;
 
-
 use Bileto\CriticalSection\ICriticalSection;
+use Bileto\Cronner\Utils\ReflectionSupport;
 use DateTime;
 use DateTimeInterface;
 use Exception;
-use Nette\Reflection\ClassType;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
+use ReflectionClass;
 use ReflectionMethod;
 use Bileto\Cronner\Exceptions\DuplicateTaskNameException;
 use Bileto\Cronner\Exceptions\InvalidArgumentException;
@@ -56,12 +56,14 @@ class Cronner
 	/** @var bool */
 	private $skipFailedTask = true;
 
+	private ReflectionSupport $reflectionSupport;
 
 	/**
 	 * @param int|null $maxExecutionTime It is used only when Cronner runs
 	 */
 	public function __construct(ITimestampStorage $timestampStorage, ICriticalSection $criticalSection, int $maxExecutionTime = null, bool $skipFailedTask = true)
 	{
+		$this->reflectionSupport = new ReflectionSupport();
 		$this->setTimestampStorage($timestampStorage);
 		$this->criticalSection = $criticalSection;
 		$this->setMaxExecutionTime($maxExecutionTime);
@@ -71,7 +73,6 @@ class Cronner
 		};
 	}
 
-
 	/**
 	 * @return Task[]
 	 */
@@ -80,14 +81,12 @@ class Cronner
 		return $this->tasks;
 	}
 
-
 	public function setTimestampStorage(ITimestampStorage $timestampStorage): self
 	{
 		$this->timestampStorage = $timestampStorage;
 
 		return $this;
 	}
-
 
 	/**
 	 * Sets flag that thrown exceptions will not be thrown but cached and logged.
@@ -99,7 +98,6 @@ class Cronner
 		return $this;
 	}
 
-
 	/**
 	 * Returns max execution time for Cronner. It does not load INI value.
 	 */
@@ -107,7 +105,6 @@ class Cronner
 	{
 		return !is_null($this->maxExecutionTime) ? $this->maxExecutionTime : null;
 	}
-
 
 	/**
 	 * Sets max execution time for Cronner. It is used only when Cronner runs.
@@ -123,7 +120,6 @@ class Cronner
 
 		return $this;
 	}
-
 
 	/**
 	 * Adds task case to be processed when cronner runs. If tasks
@@ -141,10 +137,10 @@ class Cronner
 			throw new InvalidArgumentException("Tasks with ID '" . $tasksId . "' have been already added.");
 		}
 
-		$reflection = new ClassType($tasks);
+		$reflection = new ReflectionClass($tasks);
 		$methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
 		foreach ($methods as $method) {
-			if (!Strings::startsWith($method->getName(), '__') && $method->hasAnnotation(Parameters::TASK)) {
+			if (!Strings::startsWith($method->getName(), '__') && $this->reflectionSupport->hasMethodAnnotation($method, Parameters::TASK)) {
 				$task = new Task($tasks, $method, $this->timestampStorage);
 				if (array_key_exists($task->getName(), $this->tasks)) {
 					throw new DuplicateTaskNameException('Cannot use more tasks with the same name "' . $task->getName() . '".');
@@ -157,11 +153,10 @@ class Cronner
 		return $this;
 	}
 
-
 	/**
 	 * Runs all cron tasks.
 	 */
-	public function run(DateTimeInterface $now = null)
+	public function run(DateTimeInterface $now = null): void
 	{
 		if ($now === null) {
 			$now = new DateTime();
@@ -196,7 +191,6 @@ class Cronner
 		}
 	}
 
-
 	/**
 	 * Returns count of added task objects.
 	 */
@@ -205,7 +199,6 @@ class Cronner
 		return count($this->registeredTaskObjects);
 	}
 
-
 	/**
 	 * Returns count of added tasks.
 	 */
@@ -213,7 +206,6 @@ class Cronner
 	{
 		return count($this->tasks);
 	}
-
 
 	/**
 	 * Creates and returns identification string for given object.

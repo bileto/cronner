@@ -6,78 +6,8 @@ parameters:
 			path: src/Cronner/Cronner.php
 
 		-
-			message: "#^Method Bileto\\\\Cronner\\\\Cronner\\:\\:run\\(\\) has no return typehint specified\\.$#"
+			message: "#^Result of && is always false\\.$#"
 			count: 1
-			path: src/Cronner/Cronner.php
-
-		-
-			message: "#^Return typehint of method Bileto\\\\Cronner\\\\DI\\\\CronnerExtension\\:\\:getConfigSchema\\(\\) has invalid type Nette\\\\Schema\\\\Schema\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to static method structure\\(\\) on an unknown class Nette\\\\Schema\\\\Expect\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to static method arrayOf\\(\\) on an unknown class Nette\\\\Schema\\\\Expect\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to static method string\\(\\) on an unknown class Nette\\\\Schema\\\\Expect\\.$#"
-			count: 4
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to static method int\\(\\) on an unknown class Nette\\\\Schema\\\\Expect\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to static method array\\(\\) on an unknown class Nette\\\\Schema\\\\Expect\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to static method bool\\(\\) on an unknown class Nette\\\\Schema\\\\Expect\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to an undefined method Nette\\\\DI\\\\ServiceDefinition\\:\\:setArgument\\(\\)\\.$#"
-			count: 4
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Instantiated class Nette\\\\DI\\\\Definitions\\\\Statement not found\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$runner contains unknown class Nette\\\\DI\\\\Definitions\\\\ServiceDefinition\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Call to method addSetup\\(\\) on an unknown class Nette\\\\DI\\\\Definitions\\\\ServiceDefinition\\.$#"
-			count: 1
-			path: src/Cronner/DI/CronnerExtension.php
-
-		-
-			message: "#^Method Bileto\\\\Cronner\\\\Tasks\\\\Parameters\\:\\:parseParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Cronner/Tasks/Parameters.php
-
-		-
-			message: "#^Call to function is_string\\(\\) with Nette\\\\Reflection\\\\IAnnotation will always evaluate to false\\.$#"
-			count: 1
-			path: src/Cronner/Tasks/Parameters.php
-
-		-
-			message: "#^Cannot cast Nette\\\\Reflection\\\\IAnnotation to string\\.$#"
-			count: 4
 			path: src/Cronner/Tasks/Parameters.php
 
 		-
@@ -86,7 +16,17 @@ parameters:
 			path: src/Cronner/Tasks/Parser.php
 
 		-
-			message: "#^Method Bileto\\\\Cronner\\\\Tasks\\\\Task\\:\\:__invoke\\(\\) has no return typehint specified\\.$#"
+			message: "#^Dead catch \\- Throwable is never thrown in the try block\\.$#"
+			count: 3
+			path: src/Cronner/Tasks/Task.php
+
+		-
+			message: "#^Method Bileto\\\\Cronner\\\\Tasks\\\\Task\\:\\:__invoke\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Cronner/Tasks/Task.php
+
+		-
+			message: "#^Property Bileto\\\\Cronner\\\\TimestampStorage\\\\DummyStorage\\:\\:\\$taskName is never read, only written\\.$#"
+			count: 1
+			path: src/Cronner/TimestampStorage/DummyStorage.php
 

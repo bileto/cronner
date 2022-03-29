@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-/**
- * @testCase
- */
+namespace  Bileto\CronnerTests\Tasks;
 
-namespace Bileto\Cronner\tests\Tasks;
-
-require_once(__DIR__ . "/../bootstrap.php");
+require_once(__DIR__ . '/../../../bootstrap.php');
 
 use stdClass;
 use Bileto\Cronner\Tasks\Parser;
-use TestCase;
 use Tester\Assert;
+use Tester\TestCase;
 
-
+/**
+ * @testCase
+ */
 class ParserTest extends TestCase
 {
 

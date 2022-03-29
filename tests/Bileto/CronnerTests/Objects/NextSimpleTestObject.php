@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bileto\Cronner\tests\objects;
+namespace Bileto\CronnerTests\Objects;
 
+use Nette\SmartObject;
 
 class NextSimpleTestObject
 {
-	use \Nette\SmartObject;
-
+	use SmartObject;
 
 	/**
 	 * @cronner-task Test

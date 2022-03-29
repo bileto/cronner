@@ -4,19 +4,24 @@ declare(strict_types=1);
 
 namespace Bileto\Cronner\Tasks;
 
-
+use DateTime;
 use DateTimeInterface;
-use Nette\Reflection\Method;
 use Bileto\Cronner\ITimestampStorage;
+use Nette\SmartObject;
+use ReflectionClass;
+use ReflectionMethod;
+use RuntimeException;
+use Throwable;
+use function get_class;
 
 final class Task
 {
-	use \Nette\SmartObject;
+	use SmartObject;
 
 	/** @var object */
 	private $object;
 
-	/** @var Method */
+	/** @var ReflectionMethod */
 	private $method;
 
 	/** @var ITimestampStorage */
@@ -25,16 +30,15 @@ final class Task
 	/** @var Parameters|null */
 	private $parameters;
 
-	/** @var \DateTimeInterface|null */
+	/** @var DateTimeInterface|null */
 	private $now;
-
 
 	/**
 	 * Creates instance of one task.
 	 *
 	 * @param object $object
 	 */
-	public function __construct($object, Method $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = null)
+	public function __construct($object, ReflectionMethod $method, ITimestampStorage $timestampStorage, DateTimeInterface $now = null)
 	{
 		$this->object = $object;
 		$this->method = $method;
@@ -42,28 +46,24 @@ final class Task
 		$this->setNow($now);
 	}
 
-
 	public function getObjectName(): string
 	{
 		return get_class($this->object);
 	}
 
-
-	public function getMethodReflection(): Method
+	public function getMethodReflection(): ReflectionMethod
 	{
 		return $this->method;
 	}
 
-
 	public function getObjectPath(): string
 	{
 		try {
-			return (new \ReflectionClass($this->object))->getFileName();
-		} catch (\Throwable $e) {
-			throw new \RuntimeException('Object "' . \get_class($this->object) . '" is broken: ' . $e->getMessage(), $e->getCode(), $e);
+			return (new ReflectionClass($this->object))->getFileName();
+		} catch (Throwable $e) {
+			throw new RuntimeException('Object "' . get_class($this->object) . '" is broken: ' . $e->getMessage(), $e->getCode(), $e);
 		}
 	}
-
 
 	/**
 	 * Returns True if given parameters should be run.
@@ -72,9 +72,9 @@ final class Task
 	{
 		if ($now === null) {
 			try {
-				$now = new \DateTime('now');
-			} catch (\Throwable $e) {
-				throw new \RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
+				$now = new DateTime('now');
+			} catch (Throwable $e) {
+				throw new RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
 			}
 		}
 
@@ -90,14 +90,12 @@ final class Task
 			&& $parameters->isInDayOfMonth($now);
 	}
 
-
 	public function getName(): string
 	{
 		return $this->getParameters()->getName();
 	}
 
-
-	public function __invoke(\DateTimeInterface $now)
+	public function __invoke(DateTimeInterface $now)
 	{
 		$this->method->invoke($this->object);
 		$this->timestampStorage->setTaskName($this->getName());
@@ -105,34 +103,31 @@ final class Task
 		$this->timestampStorage->setTaskName();
 	}
 
-
-	public function getNow(): \DateTimeInterface
+	public function getNow(): DateTimeInterface
 	{
 		if ($this->now === null) {
 			try {
-				$this->now = new \DateTime('now');
-			} catch (\Throwable $e) {
-				throw new \RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
+				$this->now = new DateTime('now');
+			} catch (Throwable $e) {
+				throw new RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
 			}
 		}
 
 		return $this->now;
 	}
 
-
-	public function setNow(?\DateTimeInterface $now): void
+	public function setNow(?DateTimeInterface $now): void
 	{
 		if ($now === null) {
 			try {
-				$now = new \DateTime('now');
-			} catch (\Throwable $e) {
-				throw new \RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
+				$now = new DateTime('now');
+			} catch (Throwable $e) {
+				throw new RuntimeException('Datetime error: ' . $e->getMessage(), $e->getCode(), $e);
 			}
 		}
 
 		$this->now = $now;
 	}
-
 
 	/**
 	 * Returns instance of parsed parameters.

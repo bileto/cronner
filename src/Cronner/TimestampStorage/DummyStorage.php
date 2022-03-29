@@ -13,7 +13,7 @@ final class DummyStorage implements ITimestampStorage
 	use SmartObject;
 
 	/** @var string|null */
-	private $taskName;
+	private ?string $taskName;
 	/** @var DateTimeInterface|null */
 	private $runTime;
 
