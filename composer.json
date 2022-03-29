@@ -51,5 +51,8 @@
 	},
 	"autoload-dev": {
 		"classmap": ["tests/Bileto/CronnerTests/Objects"]
+	},
+	"scripts": {
+		"test": "vendor/bin/tester ."
 	}
 }
