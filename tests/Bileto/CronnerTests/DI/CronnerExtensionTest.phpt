@@ -22,9 +22,7 @@ use Tester\TestCase;
  */
 class CronnerExtensionTest extends TestCase
 {
-
-	/** @var Compiler */
-	private $compiler;
+	private Compiler $compiler;
 
 	public function testDefaultConfiguration(): void
 	{

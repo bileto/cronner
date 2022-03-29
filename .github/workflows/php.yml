@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout Bileto Cronner source code
+      uses: actions/checkout@v3
 
-    - name: Validate composer.json and composer.lock
+    - name: Validate Composer files
       run: composer validate --strict
 
     - name: Cache Composer packages
@@ -30,9 +31,16 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Check code style with PHPStan
-      run: composer run-script phpstan
+      uses: php-actions/phpstan@v2
+      with:
+        php_version: "8.0"
+        php_extensions: calendar
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
     - name: Run test suite
-      run: composer run-script test
+      uses: php-actions/composer@v6
+      with:
+        php_version: "8.0"
+        php_extensions: calendar
+        command: run-script test
