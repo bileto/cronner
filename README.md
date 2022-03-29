@@ -1,4 +1,4 @@
-# Cronner [![Build Status](https://travis-ci.org/bileto/Cronner.svg?branch=master)](https://travis-ci.org/bileto/Cronner)
+# Cronner [![PHP Composer](https://github.com/bileto/cronner/actions/workflows/php.yml/badge.svg)](https://github.com/bileto/cronner/actions/workflows/php.yml)
 
 - [Description](#description)
 - [Usage](#usage)
