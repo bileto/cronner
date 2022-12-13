@@ -28,7 +28,7 @@
 		"nette/di": "^3.0",
 		"nette/schema": "^1.2",
 		"nette/utils": "^3.2",
-		"nette/safe-stream": "^2.5",
+		"nette/safe-stream": "^3.0",
 		"bileto/critical-section": "^2.1",
 		"tracy/tracy": "^2.9"
 	},
